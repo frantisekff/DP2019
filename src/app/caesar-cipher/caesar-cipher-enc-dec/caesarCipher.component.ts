@@ -35,7 +35,7 @@ export class CaesarCipher implements OnInit {
         this.encryptedText = '';
         for (const letter of this.message) {
             const letterAscii = letter.charCodeAt(0);
-            const encryptedLetter: number = (((letterAscii - this.aAscii) + this.key) % 26) + this.aAscii;
+            const encryptedLetter: number = (((letterAscii - this.aAscii) + this.key + 26) % 26) + this.aAscii;
             this.encryptedText += String.fromCharCode(encryptedLetter);
         }
 

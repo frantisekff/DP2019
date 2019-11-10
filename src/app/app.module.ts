@@ -5,7 +5,6 @@ import { MatInputModule } from '@angular/material/input';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { CaesarCipher } from './ceaserCipher/caesarCipher.component';
 import { Routes, RouterModule } from '@angular/router';
 import { Transpositioncipher } from './transpositionCipher/transpositionCipher.component';
 import { Home } from './home/home.component';
@@ -15,7 +14,7 @@ import { from } from 'rxjs';
 const appRoutes: Routes = [
   { path: '', component: Home},
   { path: 'home/:id', component: Home},
-  { path: 'caesarcipher', component: CaesarCipher},
+  { path: 'caesarcipher', loadChildren: './caesar-cipher/caesar-cipher.module#CaesarCipherModule'},
   { path: 'transpositioncipher', component: Transpositioncipher}
 
 ];
@@ -24,7 +23,6 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     HeaderComponent,
-    CaesarCipher,
     Transpositioncipher,
     Home
   ],
