@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
     selector: 'app-transpositioncipher',
     templateUrl: 'transpositionCipher.component.html',
 })
-export class Transpositioncipher {
+export class TranspositioncipherComponent {
 
 }

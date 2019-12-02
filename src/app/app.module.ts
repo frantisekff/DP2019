@@ -6,24 +6,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { Routes, RouterModule } from '@angular/router';
-import { Transpositioncipher } from './transpositionCipher/transpositionCipher.component';
 import { Home } from './home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule} from '@angular/forms';
-import { from } from 'rxjs';
-const appRoutes: Routes = [
-  { path: '', component: Home},
-  { path: 'home/:id', component: Home},
-  { path: 'caesarcipher', loadChildren: './caesar-cipher/caesar-cipher.module#CaesarCipherModule'},
-  { path: 'transpositioncipher', component: Transpositioncipher}
+import { FormsModule } from '@angular/forms';
+import { HighchartsChartModule } from 'highcharts-angular';
 
+const appRoutes: Routes = [
+  { path: '', component: Home },
+  { path: 'home/:id', component: Home },
+  { path: 'caesarcipher', loadChildren: './caesar-cipher/caesar-cipher.module#CaesarCipherModule' },
+  { path: 'transpositioncipher', loadChildren: './transposition-cipher/transposition-cipher.module#TranspositionCipherModule' }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    Transpositioncipher,
     Home
   ],
   imports: [
@@ -31,7 +29,8 @@ const appRoutes: Routes = [
     MatInputModule,
     RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    HighchartsChartModule
   ],
   providers: [],
   bootstrap: [AppComponent]

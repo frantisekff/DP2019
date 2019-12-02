@@ -1,24 +1,141 @@
-<h1>Ceasar Cipher</h1>
 <div class="container">
-    <div class="row">
-        <div class="col-sm">
-            <form class="example-form">
-                <mat-form-field class="example-full-width">
-                    <input matInput placeholder="Set shift" name="keyInput" [(ngModel)]="key">
+    <div class="row text-center">
+        <div class="col-md-12">
+            <h2>Ceasar Cipher</h2>
+            <br>
+
+            <form>
+                <mat-form-field>
+                    <input matInput type="number" placeholder="Set shift" name="keyInput" [(ngModel)]="key">
                 </mat-form-field>
                 <br>
-                <mat-form-field class="example-full-width">
-                    <textarea matInput placeholder="Type message to encrypt" name="messageInput" [(ngModel)]="message"></textarea>
+                <mat-form-field style="width:50vw">
+                    <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="2"
+                        cdkAutosizeMaxRows="9" placeholder="Type message to encrypt" name="messageInput"
+                        [(ngModel)]="message"></textarea>
                 </mat-form-field>
                 <br>
             </form>
-            <button mat-flat-button color="primary" (click)="encrypt()" >Encrypt Text</button>
+            <button mat-stroked-button color="primary" (click)="enDeCryptMessage()">En/Decrypt Text</button>
+        </div>
 
-            <h4>Encrypted Text: {{encryptedText}}</h4>
-            <button mat-flat-button color="primary" (click)="decrypt()" >Dencrypt Text</button>
 
-            <h4>Dencrypted Text: {{decryptedText}}</h4>
-
+    </div>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>Encrypted Text</mat-card-title>
+                </mat-card-header>
+                <mat-card-content style="word-wrap: break-word;">
+                    <p>
+                        {{encryptedText}}
+                    </p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <div class="col-md-6">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>Dencrypted Text</mat-card-title>
+                </mat-card-header>
+                <mat-card-content style="word-wrap: break-word;">
+                    <p>
+                        {{decryptedText}}
+                    </p>
+                </mat-card-content>
+            </mat-card>
         </div>
     </div>
-</div>
+
+    <div class="col-md-12">
+        <br>
+        <br>
+        <button mat-stroked-button color="primary" (click)="calculateFrequency()">Calculate Frequency</button>
+    </div>
+    <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsFreqGraph" [(update)]="updateFlagFreqGraph"
+        style="width: 100%; height: 400px; display: block;"></highcharts-chart>
+
+
+
+    <div class="col-md-12">
+        <br>
+        <button mat-stroked-button color="primary" (click)="getIC()">Calculate Index if coincidence</button>
+        <br>
+        <br>
+        <div *ngIf="passedMinIc; else notPassed" class="alert alert-danger" role="alert">
+            <strong>Input text is not from language</strong>
+            <br>
+            <span>Index of coincidence for encrypted text is: {{ic}}</span>
+
+            <br>
+        </div>
+        <ng-template #notPassed>
+            <div class="alert alert-success" role="alert">
+                <span>Index of coincidence for encrypted text is: {{ic}}</span>
+                <br>
+                <span>Probably the text is from {{nearestLanguage}} language</span>
+
+            </div>
+        </ng-template>
+
+        <br><br>
+
+
+    </div>
+    <br><br>
+    <div class="row ">
+        <table mat-table [dataSource]="dataSourceRefFreqLang" class="mat-elevation-z8 col-md-6 offset-md-3">
+            <!-- Name Column -->
+            <ng-container mat-text-column="end" matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef>Index of Coincidence</th>
+                <td mat-cell *matCellDef="let element">{{element.value}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnsRefFreqLanguage"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsRefFreqLanguage; "></tr>
+        </table>
+    </div>
+    <br><br>
+
+    <div class="row ">
+        <table mat-table [dataSource]="dataSourceCalcFreqLang"
+            class=" example-container mat-elevation-z8 col-md-6 offset-md-3">
+
+            <ng-container matColumnDef="shift">
+                <th mat-header-cell *matHeaderCellDef>Shift</th>
+                <td mat-cell *matCellDef="let element">{{element.shift}}</td>
+            </ng-container>
+            <ng-template ngFor let-item [ngForOf]="alphabet">
+                <ng-container mat-text-column="end" [matColumnDef]="item">
+                    <th mat-header-cell *matHeaderCellDef>{{item}}</th>
+                    <td mat-cell *matCellDef="let element">{{element[item]}}</td>
+                </ng-container>
+            </ng-template>
+
+            <ng-container matColumnDef="sum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Sum</th>
+                <td mat-cell *matCellDef="let element">{{element.sum}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsCalcFreqLanguage ; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsCalcFreqLanguage; "></tr>
+        </table>
+    </div>
+
+    <br><br>
+
+    <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsCompareFreq" [(update)]="updateFlagCompareFreq"
+        style="width: 100%; height: 400px; display: block;"></highcharts-chart>
+
+    <mat-button-toggle-group [(value)]="selectedValue" #group="matButtonToggleGroup">
+        <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="selectionChanged($event)" [value]="item">
+            {{item}}</mat-button-toggle>
+    </mat-button-toggle-group>
