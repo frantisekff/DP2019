@@ -238,6 +238,8 @@ export class CaesarCipher implements OnInit {
 
         console.log(this.freqDecryptedTexts);
 
+        // Calculate differecnies between frequancies of input text and referal values for language 
+        // for every letter
         for (let row = 0; row < this.freqDecryptedTexts.length; row++) {
             const freqForOneShift = this.freqDecryptedTexts[row];
             const diffFreqForOneShift = [];
@@ -257,7 +259,8 @@ export class CaesarCipher implements OnInit {
         this.chartOptionsCompareFreq.series[0].data = Array.from(this.freqDecryptedTexts[14]);
     }
 
-    selectionChanged(item) {
+    // Change data for updateFlagCompareFreq based of selection <1-26>
+    selectionOfGraphChanged(item) {
         this.actualDataInCompareGraph = Array.from(this.freqDecryptedTexts[item.value - 1]);
         this.chartOptionsCompareFreq.series[0].data = this.actualDataInCompareGraph;
         this.updateFlagCompareFreq = true;
@@ -274,6 +277,14 @@ export class CaesarCipher implements OnInit {
         }
     }
 
+    public decryptForEveryKey(): Array<string> {
+        const decryptedTexts = [];
+        for (let key = 1; key <= this.alphabet.length; key++) {
+            decryptedTexts.push(this.decrypt(key));
+        }
+        return decryptedTexts;
+    }
+
     public decrypt(inputKey?: number): string {
         let key: number;
         let decryptedText = '';
@@ -283,7 +294,6 @@ export class CaesarCipher implements OnInit {
         } else {
             key = inputKey;
         }
-        // this.decryptedText = '';
         for (const letter of this.encryptedText) {
             const letterAscii = letter.charCodeAt(0);
             const decryptedLetter: number = ((letterAscii - this.aAscii - key + 26) % 26) + this.aAscii;
@@ -319,6 +329,7 @@ export class CaesarCipher implements OnInit {
         return tmpFrequency;
     }
 
+    // Calculate frequencies for updateFlagFreqGraph
     public calculateFrequencyGraph() {
         this.frequency = this.getFrequencyOfText(this.encryptedText);
         this.frequencyInPercentage = [];
@@ -365,14 +376,6 @@ export class CaesarCipher implements OnInit {
             }
         });
         this.nearestLanguage = nearestLang;
-    }
-
-    public decryptForEveryKey(): Array<string> {
-        const decryptedTexts = [];
-        for (let key = 1; key <= this.alphabet.length; key++) {
-            decryptedTexts.push(this.decrypt(key));
-        }
-        return decryptedTexts;
     }
 
     private generateArrayOfNum(length: number): string[] {

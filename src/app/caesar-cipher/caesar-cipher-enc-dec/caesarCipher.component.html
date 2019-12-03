@@ -3,7 +3,6 @@
         <div class="col-md-12">
             <h2>Ceasar Cipher</h2>
             <br>
-
             <form>
                 <mat-form-field>
                     <input matInput type="number" placeholder="Set shift" name="keyInput" [(ngModel)]="key">
@@ -18,8 +17,6 @@
             </form>
             <button mat-stroked-button color="primary" (click)="enDeCryptMessage()">En/Decrypt Text</button>
         </div>
-
-
     </div>
     <br>
     <br>
@@ -80,11 +77,9 @@
 
             </div>
         </ng-template>
-
         <br><br>
-
-
     </div>
+
     <br><br>
     <div class="row ">
         <table mat-table [dataSource]="dataSourceRefFreqLang" class="mat-elevation-z8 col-md-6 offset-md-3">
@@ -131,11 +126,11 @@
     </div>
 
     <br><br>
-
     <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsCompareFreq" [(update)]="updateFlagCompareFreq"
         style="width: 100%; height: 400px; display: block;"></highcharts-chart>
 
     <mat-button-toggle-group [(value)]="selectedValue" #group="matButtonToggleGroup">
-        <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="selectionChanged($event)" [value]="item">
+        <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="selectionOfGraphChanged($event)"
+            [value]="item">
             {{item}}</mat-button-toggle>
     </mat-button-toggle-group>
