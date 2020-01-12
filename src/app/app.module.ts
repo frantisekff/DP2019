@@ -15,7 +15,8 @@ const appRoutes: Routes = [
   { path: '', component: Home },
   { path: 'home/:id', component: Home },
   { path: 'caesarcipher', loadChildren: './caesar-cipher/caesar-cipher.module#CaesarCipherModule' },
-  { path: 'transpositioncipher', loadChildren: './transposition-cipher/transposition-cipher.module#TranspositionCipherModule' }
+  { path: 'transpositioncipher', loadChildren: './transposition-cipher/transposition-cipher.module#TranspositionCipherModule' },
+  { path: 'polyalphcipher', loadChildren: './polyalphabetic-cipher/polyalphabeticCipher.module#PolyalphCipherModule' }
 ];
 
 @NgModule({
