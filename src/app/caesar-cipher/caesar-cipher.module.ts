@@ -10,6 +10,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatIconModule} from '@angular/material/icon';
+import {MatSortModule} from '@angular/material/sort';
 
 const caesarRoutes: Routes = [
   { path: '', component: CaesarCipher},
@@ -28,6 +29,7 @@ const caesarRoutes: Routes = [
     MatCardModule,
     MatButtonModule,
     MatTableModule,
+    MatSortModule,
     MatButtonToggleModule,
     MatIconModule
 

@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as Highcharts from 'highcharts';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 export interface LanguageIcElement {
     name: string;
@@ -77,8 +79,9 @@ export class CaesarCipher implements OnInit {
     private columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
         'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
 
-    private dataSourceRefFreqLang = LANGUAGEIC_DATA;
-    private dataSourceCalcFreqLang = DIFFFREQ_DATA;
+    private dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
+    private dataSourceCalcFreqLang =  new MatTableDataSource(DIFFFREQ_DATA);
+        
 
     private Highcharts = Highcharts;
     // Options for Graph - Encrypted text graph
@@ -198,7 +201,15 @@ export class CaesarCipher implements OnInit {
     private selectedValue = '15';
     private toggleOptions: string[] = [];
 
+
+    @ViewChild('sortCalcFreq', { static: true }) sortCalcFreq: MatSort;
+    @ViewChild('sortRefFreq', { static: true }) sortRefFreq: MatSort;
+
     ngOnInit(): void {
+        // this.dataSourceRefFreqLang.sort = this.sortRefFreq;
+        // this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
+        this.dataSourceRefFreqLang.sort = this.sortRefFreq;
+        this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
         //  ---------------   Ceaser Cipher  -------------
         console.log(" ------------ Ceaser Cipher ------------");
         console.log('For testing: aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz');
@@ -206,7 +217,6 @@ export class CaesarCipher implements OnInit {
         this.enAlphabetFrequency.forEach(element => {
             this.enAlphabetFreqPerc.push(Math.round(element * 100) / 10000);
         });
-
         this.enDeCryptMessage();
     }
 
@@ -218,6 +228,8 @@ export class CaesarCipher implements OnInit {
         this.decryptedText = this.decrypt();
         this.calculateFrequencyGraph();
         this.getIC();
+        console.log('Frequency in %', this.frequencyInPercentage);
+
 
         this.decryptedTexts = this.decryptForEveryKey();
         this.freqDecryptedTexts = [];
@@ -254,8 +266,14 @@ export class CaesarCipher implements OnInit {
             lang.shift = (row + 1).toString();
 
             lang.sum = Math.round(this.diffFreqDecryptedTexts[row].reduce(this.sumFunc) * 100) / 100;
-            this.dataSourceCalcFreqLang.push(lang);
+            DIFFFREQ_DATA.push(lang);
         }
+
+        this.dataSourceCalcFreqLang.data = DIFFFREQ_DATA;
+        
+        console.log('Data Calc', this.dataSourceCalcFreqLang);
+        console.log('Data Ref', this.dataSourceRefFreqLang);
+
         this.chartOptionsCompareFreq.series[0].data = Array.from(this.freqDecryptedTexts[14]);
     }
 
@@ -368,7 +386,7 @@ export class CaesarCipher implements OnInit {
         let nearestLang = '';
         let nearestValue = 10;
 
-        this.dataSourceRefFreqLang.forEach(element => {
+        LANGUAGEIC_DATA.forEach(element => {
             const actualDiff = Math.abs(element.value - this.ic);
             if (nearestValue > actualDiff) {
                 nearestValue = actualDiff;
