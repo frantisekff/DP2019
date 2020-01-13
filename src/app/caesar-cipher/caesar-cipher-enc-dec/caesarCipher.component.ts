@@ -80,8 +80,7 @@ export class CaesarCipher implements OnInit {
         'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
 
     private dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
-    private dataSourceCalcFreqLang =  new MatTableDataSource(DIFFFREQ_DATA);
-        
+    private dataSourceCalcFreqLang =  new MatTableDataSource();
 
     private Highcharts = Highcharts;
     // Options for Graph - Encrypted text graph
