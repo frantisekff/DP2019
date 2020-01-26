@@ -2,136 +2,235 @@
     <div class="row text-center">
         <div class="col-md-12">
             <h2>Ceasar Cipher</h2>
-            <br>
-            <form>
-                <mat-form-field>
-                    <input matInput type="number" placeholder="Set shift" name="keyInput" [(ngModel)]="key">
-                </mat-form-field>
-                <br>
-                <mat-form-field style="width:50vw">
-                    <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="2"
-                        cdkAutosizeMaxRows="9" placeholder="Type message to encrypt" name="messageInput"
-                        [(ngModel)]="message"></textarea>
-                </mat-form-field>
-                <br>
-            </form>
-            <button mat-stroked-button color="primary" (click)="enDeCryptMessage()">En/Decrypt Text</button>
         </div>
     </div>
     <br>
+    <div class="col-md-8 col-md-offset-2">
+        The main function of Caesar Cipher is replace every letter in message with diferent letter.
+        Different letter is shift by n letters in 26 alpahabet. For example: when we use shift 2, a will be
+        c.
+    </div>
     <br>
-    <div class="row">
-        <div class="col-md-6">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Encrypted Text</mat-card-title>
-                </mat-card-header>
-                <mat-card-content style="word-wrap: break-word;">
-                    <p>
-                        {{encryptedText}}
-                    </p>
-                </mat-card-content>
-            </mat-card>
-        </div>
-        <div class="col-md-6">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Dencrypted Text</mat-card-title>
-                </mat-card-header>
-                <mat-card-content style="word-wrap: break-word;">
-                    <p>
-                        {{decryptedText}}
-                    </p>
-                </mat-card-content>
-            </mat-card>
-        </div>
-    </div>
+
+    <br>
+    <br>
 
     <div class="col-md-12">
-        <br>
-        <br>
-        <button mat-stroked-button color="primary" (click)="calculateFrequency()">Calculate Frequency</button>
+
+        <mat-card>
+            <mat-vertical-stepper [linear]="isLinear" #stepper>
+                <mat-step [stepControl]="inputsFormGroup">
+                    <form [formGroup]="inputsFormGroup">
+                        <ng-template matStepLabel>Fill out Key and Message</ng-template>
+
+                        <mat-form-field>
+                            <input matInput type="number" placeholder="Set shift" name="keyInput" formControlName="key">
+                        </mat-form-field>
+                        <br>
+                        <mat-form-field style="width:50vw">
+                            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                                cdkAutosizeMinRows="2" cdkAutosizeMaxRows="9" placeholder="Type message to encrypt"
+                                name="messageInput" formControlName="message"></textarea>
+                        </mat-form-field>
+                        <br>
+                        <br>
+
+                        <div>
+                            <button mat-button matStepperNext (click)="enDeCryptMessage()">Next</button>
+                        </div>
+                    </form>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>Encrypted and Decrypted Message</ng-template>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <mat-card>
+                                <mat-card-header>
+                                    <mat-card-title>Encrypted Text</mat-card-title>
+                                </mat-card-header>
+                                <mat-card-content style="word-wrap: break-word;">
+                                    <p>
+                                        {{encryptedText}}
+                                    </p>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                        <div class="col-md-6">
+                            <mat-card>
+                                <mat-card-header>
+                                    <mat-card-title>Dencrypted Text</mat-card-title>
+                                </mat-card-header>
+                                <mat-card-content style="word-wrap: break-word;">
+                                    <p>
+                                        {{decryptedText}}
+                                    </p>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                        <button mat-button matStepperPrevious>Back</button>
+                        <button mat-button matStepperNext>Next</button>
+                    </div>
+                </mat-step>
+
+                <mat-step>
+                    <ng-template matStepLabel>Frequency of Encrypted Message</ng-template>
+                    <p>We calculate frequency of letters by couting occurence every letter from 26 alphabet and
+                        convert to percentage</p>
+                    <!-- <div class="col-md-12">
+                                <br>
+                                <br>
+                                <button mat-stroked-button color="primary" (click)="calculateFrequencyGraph()">Calculate
+                                    Frequency</button>
+                            </div> -->
+                    <div class="container">
+                        <div class="row">
+                            <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsFreqGraph"
+                                [(update)]="updateFlagFreqGraph">
+                            </highcharts-chart>
+                        </div>
+                    </div>
+
+
+                    <br>
+                    <br>
+                    <div>
+                        <button mat-button matStepperPrevious>Back</button>
+                        <button mat-button matStepperNext>Next</button>
+                    </div>
+                </mat-step>
+
+                <mat-step>
+                    <ng-template matStepLabel>Index of Coincidence for Message</ng-template>
+
+                    <p>The index of coincidence is an indicator used in cryptanalysis which makes it possible to
+                        evaluate the global distribution of letters in encrypted message for a given alphabet.
+                        Source: https://www.dcode.fr/index-coincidence
+
+                    </p>
+                    <p> !!!! POJDE TU ESTE ROVNICA !!!!!
+                    </p>
+                    <div class="col-md-12">
+                        <div class="row ">
+
+                            <br>
+                            <!-- <button mat-stroked-button color="primary" (click)="getIC()">Calculate Index if
+                                    coincidence</button> -->
+                            <br>
+                            <br>
+                            <div *ngIf="passedMinIc; else notPassed" class="alert alert-danger" role="alert">
+                                <strong>Input text is not from language</strong>
+                                <br>
+                                <span>Index of coincidence for encrypted text is: {{ic}}</span>
+
+                                <br>
+                            </div>
+                            <ng-template #notPassed>
+                                <div class="alert alert-success" role="alert">
+                                    <span>Index of coincidence for encrypted text is: {{ic}}</span>
+                                    <br>
+                                    <span>Probably the text is from {{nearestLanguage}} language</span>
+
+                                </div>
+                            </ng-template>
+                            <br><br>
+
+                            <br><br>
+                            <table mat-table #sortRefFreq="matSort" [dataSource]="dataSourceRefFreqLang" matSort
+                                matSortActive="name" matSortDirection="asc" class="mat-elevation-z8">
+                                <!-- Name Column -->
+                                <ng-container mat-text-column="end" matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                                    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="value">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Index of Coincidence</th>
+                                    <td mat-cell *matCellDef="let element">{{element.value}}</td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="columnsRefFreqLanguage"></tr>
+                                <tr mat-row *matRowDef="let row; columns: columnsRefFreqLanguage; "></tr>
+                            </table>
+                        </div>
+                        <br><br>
+                    </div>
+
+                    <h5>For every shift we make difference between frequency of letter from encrypted text and real data
+                        for language </h5>
+                    <span>Based of minimum frequency for shift, we guess shift</span>
+
+                    <div class="row scrollTable">
+                        <table mat-table #sortCalcFreq="matSort" [dataSource]="dataSourceCalcFreqLang" matSort
+                            matSortActive="sum" matSortDirection="asc"
+                            class=" example-container mat-elevation-z8 col-md-6 offset-md-3">
+
+                            <ng-container matColumnDef="shift">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Shift</th>
+                                <td mat-cell *matCellDef="let element">{{element.shift}}</td>
+                            </ng-container>
+                            <ng-template ngFor let-item [ngForOf]="alphabet">
+                                <ng-container mat-text-column="end" [matColumnDef]="item">
+                                    <th mat-header-cell *matHeaderCellDef>{{item}}</th>
+                                    <td mat-cell *matCellDef="let element">{{element[item]}}</td>
+                                </ng-container>
+                            </ng-template>
+
+                            <ng-container matColumnDef="sum">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Sum</th>
+                                <td mat-cell *matCellDef="let element">{{element.sum}}</td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="columnsCalcFreqLanguage; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnsCalcFreqLanguage; let i = index ">
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <button mat-button matStepperPrevious>Back</button>
+                        <button mat-button matStepperNext>Next</button>
+                    </div>
+                </mat-step>
+
+
+                <mat-step>
+                    <ng-template matStepLabel>Compare Language accuracy of message with real data</ng-template>
+                    <br><br>
+                    <p>Based on minimal frequency we guess that length of is {{minDisctanceLength}}. When we compare
+                        frequencies of
+                        letters
+                        with real data of english language we can see the similarity</p>
+
+                    <div class="container">
+                        <div class="row">
+                            <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsCompareFreq"
+                                [(update)]="updateFlagCompareFreq">
+                            </highcharts-chart>
+                        </div>
+                    </div>
+
+                    <mat-button-toggle-group class="btn-group" [(ngModel)]="selectedValue"
+                        #group="matButtonToggleGroup">
+                        <mat-button-toggle *ngFor="let item of toggleOptions;"
+                            (change)="selectionOfGraphChanged($event)" [value]="item">
+                            {{item}}</mat-button-toggle>
+                    </mat-button-toggle-group>
+
+
+
+
+                    <div>
+                        <button mat-button matStepperPrevious>Back</button>
+                    </div>
+                </mat-step>
+            </mat-vertical-stepper>
+            <!-- <button mat-stroked-button color="primary" (click)="enDeCryptMessage()">En/Decrypt Text</button> -->
+        </mat-card>
+
     </div>
-    <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsFreqGraph" [(update)]="updateFlagFreqGraph"
-        style="width: 100%; height: 400px; display: block;"></highcharts-chart>
 
-
-
-    <div class="col-md-12">
-        <br>
-        <button mat-stroked-button color="primary" (click)="getIC()">Calculate Index if coincidence</button>
-        <br>
-        <br>
-        <div *ngIf="passedMinIc; else notPassed" class="alert alert-danger" role="alert">
-            <strong>Input text is not from language</strong>
-            <br>
-            <span>Index of coincidence for encrypted text is: {{ic}}</span>
-
-            <br>
-        </div>
-        <ng-template #notPassed>
-            <div class="alert alert-success" role="alert">
-                <span>Index of coincidence for encrypted text is: {{ic}}</span>
-                <br>
-                <span>Probably the text is from {{nearestLanguage}} language</span>
-
-            </div>
-        </ng-template>
-        <br><br>
-    </div>
-
-    <br><br>
-    <div class="row ">
-        <table mat-table  #sortRefFreq="matSort" [dataSource]="dataSourceRefFreqLang" matSort matSortActive="name" matSortDirection="asc"
-        class="mat-elevation-z8 col-md-6 offset-md-3">
-            <!-- Name Column -->
-            <ng-container mat-text-column="end" matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-                <td mat-cell *matCellDef="let element">{{element.name}}</td>
-            </ng-container>
-
-            <!-- Weight Column -->
-            <ng-container matColumnDef="value">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Index of Coincidence</th>
-                <td mat-cell *matCellDef="let element">{{element.value}}</td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="columnsRefFreqLanguage"></tr>
-            <tr mat-row *matRowDef="let row; columns: columnsRefFreqLanguage; "></tr>
-        </table>
-    </div>
-    <br><br>
-
-    <div class="row scrollTable">
-        <table mat-table  #sortCalcFreq="matSort"  [dataSource]="dataSourceCalcFreqLang" matSort matSortActive="sum" matSortDirection="desc"
-            class=" example-container mat-elevation-z8 col-md-6 offset-md-3">
-
-            <ng-container matColumnDef="shift">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Shift</th>
-                <td mat-cell *matCellDef="let element">{{element.shift}}</td>
-            </ng-container>
-            <ng-template ngFor let-item [ngForOf]="alphabet">
-                <ng-container mat-text-column="end" [matColumnDef]="item">
-                    <th mat-header-cell *matHeaderCellDef >{{item}}</th>
-                    <td mat-cell *matCellDef="let element">{{element[item]}}</td>
-                </ng-container>
-            </ng-template>
-
-            <ng-container matColumnDef="sum">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header >Sum</th>
-                <td mat-cell *matCellDef="let element">{{element.sum}}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="columnsCalcFreqLanguage; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: columnsCalcFreqLanguage; let i = index " ></tr>
-        </table>
-    </div>
-
-    <br><br>
-    <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsCompareFreq" [(update)]="updateFlagCompareFreq"
-        style="width: 100%; height: 400px; display: block;"></highcharts-chart>
-
-    <mat-button-toggle-group [(ngModel)]="selectedValue" #group="matButtonToggleGroup">
-        <mat-button-toggle *ngFor="let item of toggleOptions;" (change)="selectionOfGraphChanged($event)"
-            [value]="item">
-            {{item}}</mat-button-toggle>
-    </mat-button-toggle-group>
+    <br>

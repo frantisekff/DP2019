@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { element } from 'protractor';
 
 export interface LanguageIcElement {
     name: string;
@@ -49,7 +51,7 @@ const LANGUAGEIC_DATA: LanguageIcElement[] = [
     { name: 'Min IC', value: 0.0384 }
 
 ];
-const DIFFFREQ_DATA: AlphabetElement[] = [];
+let DIFFFREQ_DATA: AlphabetElement[] = [];
 
 
 @Component({
@@ -58,6 +60,7 @@ const DIFFFREQ_DATA: AlphabetElement[] = [];
     templateUrl: './caesarCipher.component.html'
 })
 export class CaesarCipher implements OnInit {
+
     private enAlphabetFrequency = [8.12, 1.49, 2.71, 4.32, 12.02, 2.30, 2.03, 5.92, 7.31, 0.10,
         0.69, 3.98, 2.61, 6.95, 7.68, 1.82, 0.11, 6.02, 6.28, 9.10, 2.88, 1.11, 2.09, 0.17, 2.11, 0.07];
     private alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -70,7 +73,7 @@ export class CaesarCipher implements OnInit {
         'mauris vitae ultricies leo integer malesuada nunc vel. Varius vel pharetra vel turpis nunc eget lorem. Lacinia at quis risus sed' +
         'vulputate odio ut enim blandit. Vitae suscipit tellus mauris a diam maecenas sed enim. Malesuada fames ac turpis egestas sed ' +
         ' et pharetra. Elit sed vulputate mi sit amet mauris commodo. Sapien pellentesque habitant morbi tristique senectus et netus et' +
-        ' malesuada. Aliquam etiam erat velit scelerisque. Proin fermentum leo vel orci porta non pulvinar neque.';
+        ' malesuada. Aliquam etiam erat velit scelerisque. Proin fermentum leo vel orci porta non pulvinar neque.fffffffffffff';
     private minIc = 0.0384;
     private aAscii: number = 'a'.charCodeAt(0);
 
@@ -80,7 +83,7 @@ export class CaesarCipher implements OnInit {
         'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
 
     private dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
-    private dataSourceCalcFreqLang =  new MatTableDataSource();
+    private dataSourceCalcFreqLang = new MatTableDataSource();
 
     private Highcharts = Highcharts;
     // Options for Graph - Encrypted text graph
@@ -199,12 +202,26 @@ export class CaesarCipher implements OnInit {
     private sumDiffFreq = [];
     private selectedValue = '15';
     private toggleOptions: string[] = [];
+    public minDisctanceLength: string = '';
+
+    isLinear = false;
+    inputsFormGroup: FormGroup;
+    secondFormGroup: FormGroup;
+    thirdFormGroup: FormGroup;
+    fourthFormGroup: FormGroup;
 
 
     @ViewChild('sortCalcFreq', { static: true }) sortCalcFreq: MatSort;
     @ViewChild('sortRefFreq', { static: true }) sortRefFreq: MatSort;
 
     ngOnInit(): void {
+
+        this.inputsFormGroup = this._formBuilder.group({
+            key: [this.key, Validators.required],
+            message: [this.message, Validators.required]
+        });
+
+
         // this.dataSourceRefFreqLang.sort = this.sortRefFreq;
         // this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
         this.dataSourceRefFreqLang.sort = this.sortRefFreq;
@@ -219,10 +236,14 @@ export class CaesarCipher implements OnInit {
         this.enDeCryptMessage();
     }
 
+    constructor(private _formBuilder: FormBuilder) { }
+
+
     public enDeCryptMessage() {
+        DIFFFREQ_DATA = [];
         // word and function will be executed for every match
         // Strip all whitespaces and toLowerCase
-        this.formatedMessage = this.message.replace(/\s/g, '').toLowerCase();
+        this.formatedMessage = this.inputsFormGroup.controls.message.value.replace(/\s/g, '').toLowerCase();
         this.encrypt();
         this.decryptedText = this.decrypt();
         this.calculateFrequencyGraph();
@@ -231,26 +252,18 @@ export class CaesarCipher implements OnInit {
 
 
         this.decryptedTexts = this.decryptForEveryKey();
-        this.freqDecryptedTexts = [];
+        
 
         // Calculate frequency for all decrypted options. Shift 1-25
-        this.decryptedTexts.forEach(element => {
-            const length = element.length;
-            const compFreq = this.getFrequencyOfText(element);
-            const compFreqInPerc = [];
-
-            compFreq.forEach(alphabet => {
-                let inPercentage = alphabet / length * 100;
-                inPercentage = Math.round(inPercentage * 100) / 100;
-                compFreqInPerc.push(inPercentage);
-            });
-            this.freqDecryptedTexts.push(compFreqInPerc);
-        });
-
+        this.freqDecryptedTexts =  this.computeFreqForArray(this.decryptedTexts);
         console.log(this.freqDecryptedTexts);
 
         // Calculate differecnies between frequancies of input text and referal values for language 
         // for every letter
+        let minDistance = 100;
+        this.minDisctanceLength = '';
+        let approximatedDisLength = {};
+
         for (let row = 0; row < this.freqDecryptedTexts.length; row++) {
             const freqForOneShift = this.freqDecryptedTexts[row];
             const diffFreqForOneShift = [];
@@ -266,15 +279,55 @@ export class CaesarCipher implements OnInit {
 
             lang.sum = Math.round(this.diffFreqDecryptedTexts[row].reduce(this.sumFunc) * 100) / 100;
             DIFFFREQ_DATA.push(lang);
+            console.log(lang.shift);
+            console.log(lang.sum);
+            if (lang.sum <= minDistance) {
+                minDistance = lang.sum;
+                approximatedDisLength[lang.shift] = lang.sum;
+            }
         }
-
         this.dataSourceCalcFreqLang.data = DIFFFREQ_DATA;
-        
         console.log('Data Calc', this.dataSourceCalcFreqLang);
         console.log('Data Ref', this.dataSourceRefFreqLang);
+        console.log('approximatedDisLength', approximatedDisLength);
 
         this.chartOptionsCompareFreq.series[0].data = Array.from(this.freqDecryptedTexts[14]);
+        this.updateFlagFreqGraph = true;
+        this.minDisctanceLength = Object.keys(approximatedDisLength).sort(function (a, b) {
+            return approximatedDisLength[a] - approximatedDisLength[b];
+        })[0];
+        this.selectedValue = this.minDisctanceLength;
+        // console.log('Min Approx Length', this.minDisctanceLength);
+
+        // Object.values(approximatedDisLength).forEach(distance => {
+        //     if ((distance < (approximatedDisLength[min] + 1)) || distance === approximatedDisLength[min]) {
+        //         // this.minDisctanceLength.push(distance);
+        //         console.log(distance);
+        //     }
+        // });
+        console.log('Min Distance Length', this.minDisctanceLength);
+
     }
+    
+    public computeFreqForArray(texts: string[]){
+        const freqForTexts = [];
+        // this.decryptedTexts.forEach(element => {
+        texts.forEach(text => {
+            const length = text.length;
+            const compFreq = this.getFrequencyOfText(text);
+            const compFreqInPerc = [];
+
+            compFreq.forEach(alphabet => {
+                let inPercentage = alphabet / length * 100;
+                inPercentage = Math.round(inPercentage * 100) / 100;
+                compFreqInPerc.push(inPercentage);
+            });
+            // this.freqDecryptedTexts.push(compFreqInPerc);
+            freqForTexts.push(compFreqInPerc);
+        });
+        return freqForTexts;
+    }
+  
 
     // Change data for updateFlagCompareFreq based of selection <1-26>
     selectionOfGraphChanged(item) {
@@ -289,7 +342,10 @@ export class CaesarCipher implements OnInit {
         this.encryptedText = '';
         for (const letter of this.formatedMessage) {
             const letterAscii = letter.charCodeAt(0);
-            const encryptedLetter: number = (((letterAscii - this.aAscii) + this.key + 26) % 26) + this.aAscii;
+
+            const encryptedLetter: number = (((letterAscii - this.aAscii) +
+                this.inputsFormGroup.controls.key.value + 26) % 26) + this.aAscii;
+
             this.encryptedText += String.fromCharCode(encryptedLetter);
         }
     }
@@ -307,7 +363,7 @@ export class CaesarCipher implements OnInit {
         let decryptedText = '';
 
         if (typeof inputKey === 'undefined') {
-            key = this.key;
+            key = this.inputsFormGroup.controls.key.value;
         } else {
             key = inputKey;
         }

@@ -9,3 +9,18 @@ table {
 .highlight-blue{
   background-color: azure;
 }
+
+mat-button-toggle-group {
+  flex-wrap: wrap;
+}
+
+mat-button-toggle {
+  background-color: rgba(36, 47, 201, 0.527); /* Green */
+  border: none;
+  color: white;
+  padding: 3px 3px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+}
