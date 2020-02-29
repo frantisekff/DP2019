@@ -10,7 +10,8 @@ export interface LanguageIcElement {
 }
 
 export interface AlphabetElement {
-    shift: string;
+    key: string;
+    decryptedText: string;
     sum: number;
     a: string;
     b: string;
@@ -114,6 +115,7 @@ export class PolyalphCipher implements OnInit {
     private allBoxes;
     public highestIC;
     public bestKeyLength;
+    public best10Results = [];
 
     ngOnInit(): void {
 
@@ -156,13 +158,13 @@ export class PolyalphCipher implements OnInit {
         const minimDiffFreqAllCombinations = [];
 
 
-        for (const keyLength of freqAllCombinations) {
+        for (let keyLength = 0; keyLength < freqAllCombinations.length; keyLength++) {
             let diffFreqDecryptedTexts = [];
             let minForKeyLength = 1000;
             let minForKeyLengthIndex = 0;
 
-            for (let row = 0; row < keyLength.length; row++) {
-                const freqForKeyLength = keyLength[row];
+            for (let row = 0; row < freqAllCombinations[keyLength].length; row++) {
+                const freqForKeyLength = freqAllCombinations[keyLength][row];
                 const diffFreqForKeyLength = [];
                 const lang = {} as AlphabetElement;
 
@@ -173,11 +175,13 @@ export class PolyalphCipher implements OnInit {
                 }
 
                 lang.sum = Math.round(diffFreqForKeyLength.reduce(this.sumFunc) * 100) / 100;
+                lang.key = allCombinations[keyLength][row];
+                lang.decryptedText = decryptedAllCombinations[keyLength][row];
                 // Find min sum for KeyLength
-                if (minForKeyLength > lang.sum) { 
+                if (minForKeyLength > lang.sum) {
                     minForKeyLength = lang.sum;
                     minForKeyLengthIndex = row;
-                } 
+                }
 
                 diffFreqDecryptedTexts[row] = lang;
 
@@ -186,12 +190,24 @@ export class PolyalphCipher implements OnInit {
             diffFreqAllCombinations.push(diffFreqDecryptedTexts);
             diffFreqDecryptedTexts = [];
             // console.log('Minimum', minForKeyLength);
-            minimDiffFreqAllCombinations.push({index : minForKeyLengthIndex,value : minForKeyLength });
+            minimDiffFreqAllCombinations.push({
+                index: minForKeyLengthIndex,
+                value: minForKeyLength, decryptedText: decryptedAllCombinations[keyLength][minForKeyLengthIndex]
+            });
             minForKeyLength = 1000;
+            console.log('Decrypted all combinations ');
         }
+        minimDiffFreqAllCombinations.push({
+            index: 28,
+            value: diffFreqAllCombinations[2][28], decryptedText: decryptedAllCombinations[2][28]
+        });
 
         console.log('All Minimum', minimDiffFreqAllCombinations);
         console.log('All Diff', diffFreqAllCombinations);
+        const sortedDiff = diffFreqAllCombinations[2].sort((a, b) => a.sum - b.sum);
+
+        console.log('Sorted Diff', sortedDiff);
+        this.best10Results = sortedDiff.slice(0, 9);
 
     }
 
@@ -233,9 +249,10 @@ export class PolyalphCipher implements OnInit {
             const boxesFrequency: number[][] = [];
             const boxesIc: number[] = [];
             boxes.forEach(box => {
-                const boxFreq: number[] = this.calculateFreqPerc(box);
+                // const boxFreq: number[] = this.calculateFreqPerc(box);
+                const boxFreq: number[] = this.getFrequencyOfText(box);
                 boxesFrequency.push(boxFreq);
-                boxesIc.push(this.getIC(boxFreq));
+                boxesIc.push(this.getIC(boxFreq, box.length));
             });
 
             this.allBoxesFrequency.push(boxesFrequency);
@@ -378,12 +395,13 @@ export class PolyalphCipher implements OnInit {
     }
 
     // Calculate Index of coincidence and find nearest Language
-    public getIC(frequencyInPercentage: number[]): number {
+    public getIC(frequencyInPercentage: number[], length: number): number {
         let ic = 0;
         frequencyInPercentage.forEach(element => {
-            element = element / 100;
-            ic += element * element;
+           // element = element / 100;
+            ic += element * (element - 1);
         });
+        ic /=  length * (length - 1);
         return ic;
     }
 
