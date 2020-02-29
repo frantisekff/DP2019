@@ -4,55 +4,10 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-export interface LanguageIcElement {
-    name: string;
-    value: number;
-}
+import { AlphabetElement } from '../../models/common.model';
+import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, COLORS, A_ASCII } from '../../constants/language.constants';
 
-export interface AlphabetElement {
-    key: string;
-    decryptedText: string;
-    sum: number;
-    a: string;
-    b: string;
-    c: string;
-    d: string;
-    e: string;
-    f: string;
-    g: string;
-    h: string;
-    i: string;
-    j: string;
-    k: string;
-    l: string;
-    m: string;
-    n: string;
-    o: string;
-    p: string;
-    q: string;
-    r: string;
-    s: string;
-    t: string;
-    u: string;
-    v: string;
-    w: string;
-    x: string;
-    y: string;
-    z: string;
-}
-
-const LANGUAGEIC_DATA: LanguageIcElement[] = [
-    { name: 'English', value: 0.0667 },
-    { name: 'German', value: 0.0762 },
-    { name: 'Italian', value: 0.0738 },
-    { name: 'French', value: 0.0778 },
-    { name: 'Spanish', value: 0.0770 },
-    { name: 'Russian', value: 0.0529 },
-    { name: 'Min IC', value: 0.0384 }
-
-];
 const DIFFFREQ_DATA: AlphabetElement[] = [];
-
 
 @Component({
     selector: 'app-polyalphcipher',
@@ -60,10 +15,8 @@ const DIFFFREQ_DATA: AlphabetElement[] = [];
     templateUrl: './polyalphCipherEncDec.component.html'
 })
 export class PolyalphCipher implements OnInit {
-    private enAlphabetFrequency = [8.12, 1.49, 2.71, 4.32, 12.02, 2.30, 2.03, 5.92, 7.31, 0.10,
-        0.69, 3.98, 2.61, 6.95, 7.68, 1.82, 0.11, 6.02, 6.28, 9.10, 2.88, 1.11, 2.09, 0.17, 2.11, 0.07];
-    private alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-        'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    colors = COLORS;
+
     private key = 'abc';
     // Array to length of key for iterate to length of key
     private keyIterator;
@@ -76,11 +29,6 @@ export class PolyalphCipher implements OnInit {
         'pellentesque elit ullamcorper dignissim cras tincidunt. Posuere urna nec tincidunt praesent semper feugiat. Ridiculus mus';
 
     private encMessageSplitted: string[];
-    private colors = ['#7B241C', '#E74C3C', '#9B59B6', '#2980B9', '#85C1E9', '#148F77', '#16A085',
-        '#27AE60', '#2ECC71', '#F1C40F', '#F39C12', '#E67E22', '#D35400', '#95A5A6', '#7F8C8D'];
-
-    private minIc = 0.0384;
-    private aAscii: number = 'a'.charCodeAt(0);
 
     // Variables for Tables
     private columnsRefFreqLanguage: string[] = ['name', 'value'];
@@ -121,7 +69,7 @@ export class PolyalphCipher implements OnInit {
 
         //  ---------------   Polyalphabetic Cipher  -------------
         console.log(' ------------ Polyalphabetic Cipher ------------');
-        this.enAlphabetFrequency.forEach(element => {
+        EN_ALPHABET_FREQUENCY.forEach(element => {
             this.enAlphabetFreqPerc.push(Math.round(element * 100) / 10000);
         });
         this.toggleOptions = Array.from({ length: this.maxSelectedValue - 2 }, (x, i) => (i + 2).toString());
@@ -169,9 +117,9 @@ export class PolyalphCipher implements OnInit {
                 const lang = {} as AlphabetElement;
 
                 for (let letter = 0; letter < freqForKeyLength.length; letter++) {
-                    const freqDiff = Math.round(Math.abs(freqForKeyLength[letter] - this.enAlphabetFrequency[letter]) * 100) / 100;
+                    const freqDiff = Math.round(Math.abs(freqForKeyLength[letter] - EN_ALPHABET_FREQUENCY[letter]) * 100) / 100;
                     diffFreqForKeyLength.push(freqDiff);
-                    lang[this.alphabet[letter]] = freqDiff;
+                    lang[ALPHABET[letter]] = freqDiff;
                 }
 
                 lang.sum = Math.round(diffFreqForKeyLength.reduce(this.sumFunc) * 100) / 100;
@@ -339,8 +287,8 @@ export class PolyalphCipher implements OnInit {
         let encText = '';
         for (let i = 0; i < plainText.length; i++) {
             const letterAscii = plainText[i].charCodeAt(0);
-            const key = keys[i % keys.length].charCodeAt(0) - this.aAscii;
-            const encryptedLetter: number = ((letterAscii - this.aAscii + key) % 26) + this.aAscii;
+            const key = keys[i % keys.length].charCodeAt(0) - A_ASCII;
+            const encryptedLetter: number = ((letterAscii - A_ASCII + key) % 26) + A_ASCII;
             encText += String.fromCharCode(encryptedLetter);
         }
         return encText;
@@ -350,8 +298,8 @@ export class PolyalphCipher implements OnInit {
         let decText = '';
         for (let i = 0; i < encryptedText.length; i++) {
             const letterAscii = encryptedText[i].charCodeAt(0);
-            const key = keys[i % keys.length].charCodeAt(0) - this.aAscii;
-            const decryptedLetter: number = ((letterAscii - this.aAscii - key + 26) % 26) + this.aAscii;
+            const key = keys[i % keys.length].charCodeAt(0) - A_ASCII;
+            const decryptedLetter: number = ((letterAscii - A_ASCII - key + 26) % 26) + A_ASCII;
             decText += String.fromCharCode(decryptedLetter);
         }
         return decText;
@@ -359,7 +307,7 @@ export class PolyalphCipher implements OnInit {
 
     public computeCombinationKeyLength(maxGuessKeyLength: number): string[] {
         const allCombinations = [];
-        allCombinations[0] = this.alphabet;
+        allCombinations[0] = ALPHABET;
         for (let index = 1; index < maxGuessKeyLength; index++) {
             const result = this.addAllCombinationForArray(allCombinations[index - 1]);
             console.log('All Combinations for KeyLength ', index, 'Result', result);
@@ -371,7 +319,7 @@ export class PolyalphCipher implements OnInit {
     public addAllCombinationForArray(inputArray: string[]): string[] {
         const allCombinations = [];
         for (const input of inputArray) {
-            for (const letter1 of this.alphabet) {
+            for (const letter1 of ALPHABET) {
                 const word = input + letter1;
                 allCombinations.push(word);
             }
@@ -440,7 +388,7 @@ export class PolyalphCipher implements OnInit {
     private getFrequencyOfText(message: string): number[] {
         const tmpFrequency = [];
         // console.log(message);
-        for (const char of this.alphabet) {
+        for (const char of ALPHABET) {
             const splittedText = message.split(char);
             tmpFrequency.push(splittedText.length - 1);
         }

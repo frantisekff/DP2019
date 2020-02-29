@@ -3,54 +3,10 @@ import * as Highcharts from 'highcharts';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { element } from 'protractor';
+import { LanguageIcElement,  AlphabetElement } from '../../models/common.model';
+import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, A_ASCII } from '../../constants/language.constants';
 
-export interface LanguageIcElement {
-    name: string;
-    value: number;
-}
 
-export interface AlphabetElement {
-    shift: string;
-    sum: number;
-    a: string;
-    b: string;
-    c: string;
-    d: string;
-    e: string;
-    f: string;
-    g: string;
-    h: string;
-    i: string;
-    j: string;
-    k: string;
-    l: string;
-    m: string;
-    n: string;
-    o: string;
-    p: string;
-    q: string;
-    r: string;
-    s: string;
-    t: string;
-    u: string;
-    v: string;
-    w: string;
-    x: string;
-    y: string;
-    z: string;
-}
-
-const LANGUAGEIC_DATA: LanguageIcElement[] = [
-    { name: 'English', value: 0.0667 },
-    { name: 'German', value: 0.0762 },
-    { name: 'Italian', value: 0.0738 },
-    { name: 'French', value: 0.0778 },
-    { name: 'Spanish', value: 0.0770 },
-    { name: 'Russian', value: 0.0529 },
-    { name: 'Min IC', value: 0.0384 }
-
-];
 let DIFFFREQ_DATA: AlphabetElement[] = [];
 
 
@@ -61,10 +17,8 @@ let DIFFFREQ_DATA: AlphabetElement[] = [];
 })
 export class CaesarCipher implements OnInit {
 
-    private enAlphabetFrequency = [8.12, 1.49, 2.71, 4.32, 12.02, 2.30, 2.03, 5.92, 7.31, 0.10,
-        0.69, 3.98, 2.61, 6.95, 7.68, 1.82, 0.11, 6.02, 6.28, 9.10, 2.88, 1.11, 2.09, 0.17, 2.11, 0.07];
-    private alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-        'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    private enAlphabetFrequency = EN_ALPHABET_FREQUENCY;
+    private alphabet = ALPHABET;
     private key = 4;
     private message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
         'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Neque gravida in fermentum et sollicitudin.' +
@@ -74,9 +28,7 @@ export class CaesarCipher implements OnInit {
         'vulputate odio ut enim blandit. Vitae suscipit tellus mauris a diam maecenas sed enim. Malesuada fames ac turpis egestas sed ' +
         ' et pharetra. Elit sed vulputate mi sit amet mauris commodo. Sapien pellentesque habitant morbi tristique senectus et netus et' +
         ' malesuada. Aliquam etiam erat velit scelerisque. Proin fermentum leo vel orci porta non pulvinar neque.fffffffffffff';
-    private minIc = 0.0384;
-    private aAscii: number = 'a'.charCodeAt(0);
-
+    
     // Variables for Tables
     private columnsRefFreqLanguage: string[] = ['name', 'value'];
     private columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -343,8 +295,8 @@ export class CaesarCipher implements OnInit {
         for (const letter of this.formatedMessage) {
             const letterAscii = letter.charCodeAt(0);
 
-            const encryptedLetter: number = (((letterAscii - this.aAscii) +
-                this.inputsFormGroup.controls.key.value + 26) % 26) + this.aAscii;
+            const encryptedLetter: number = (((letterAscii - A_ASCII) +
+                this.inputsFormGroup.controls.key.value + 26) % 26) + A_ASCII;
 
             this.encryptedText += String.fromCharCode(encryptedLetter);
         }
@@ -369,7 +321,7 @@ export class CaesarCipher implements OnInit {
         }
         for (const letter of this.encryptedText) {
             const letterAscii = letter.charCodeAt(0);
-            const decryptedLetter: number = ((letterAscii - this.aAscii - key + 26) % 26) + this.aAscii;
+            const decryptedLetter: number = ((letterAscii - A_ASCII - key + 26) % 26) + A_ASCII;
             decryptedText += String.fromCharCode(decryptedLetter);
         }
         return decryptedText;
