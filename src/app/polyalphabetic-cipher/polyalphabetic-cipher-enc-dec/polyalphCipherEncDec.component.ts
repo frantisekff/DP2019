@@ -6,6 +6,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AlphabetElement } from '../../models/common.model';
 import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, COLORS, A_ASCII } from '../../constants/language.constants';
+import Utils from 'src/app/utils';
+import AnalysisText from 'src/app/analysis-text';
 
 const DIFFFREQ_DATA: AlphabetElement[] = [];
 
@@ -96,7 +98,7 @@ export class PolyalphCipher implements OnInit {
         // Calculate frequency for all decrypted options.
         const freqAllCombinations = [];
         for (const allMessagesOfLength of decryptedAllCombinations) {
-            const forArray = this.computeFreqForArray(allMessagesOfLength);
+            const forArray = AnalysisText.computeFreqForArray(allMessagesOfLength);
             freqAllCombinations.push(forArray);
         }
 
@@ -122,7 +124,7 @@ export class PolyalphCipher implements OnInit {
                     lang[ALPHABET[letter]] = freqDiff;
                 }
 
-                lang.sum = Math.round(diffFreqForKeyLength.reduce(this.sumFunc) * 100) / 100;
+                lang.sum = Math.round(diffFreqForKeyLength.reduce(Utils.sumFunc) * 100) / 100;
                 lang.key = allCombinations[keyLength][row];
                 lang.decryptedText = decryptedAllCombinations[keyLength][row];
                 // Find min sum for KeyLength
@@ -198,9 +200,9 @@ export class PolyalphCipher implements OnInit {
             const boxesIc: number[] = [];
             boxes.forEach(box => {
                 // const boxFreq: number[] = this.calculateFreqPerc(box);
-                const boxFreq: number[] = this.getFrequencyOfText(box);
+                const boxFreq: number[] = AnalysisText.getFrequencyOfText(box);
                 boxesFrequency.push(boxFreq);
-                boxesIc.push(this.getIC(boxFreq, box.length));
+                boxesIc.push(AnalysisText.getIC(boxFreq, box.length));
             });
 
             this.allBoxesFrequency.push(boxesFrequency);
@@ -231,27 +233,6 @@ export class PolyalphCipher implements OnInit {
         console.log('Highest IC after filter ', this.highestIC);
 
     }
-
-    public computeFreqForArray(texts: string[]) {
-        const freqForTexts = [];
-        // this.decryptedTexts.forEach(element => {
-        texts.forEach(text => {
-            const length = text.length;
-            const compFreq = this.getFrequencyOfText(text);
-            const compFreqInPerc = [];
-
-            compFreq.forEach(alphabet => {
-                let inPercentage = alphabet / length * 100;
-                inPercentage = Math.round(inPercentage * 100) / 100;
-                compFreqInPerc.push(inPercentage);
-            });
-            // this.freqDecryptedTexts.push(compFreqInPerc);
-            freqForTexts.push(compFreqInPerc);
-        });
-        return freqForTexts;
-    }
-
-
 
     public getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] === value);
@@ -332,7 +313,7 @@ export class PolyalphCipher implements OnInit {
         this.ic = this.allBoxesAvgIc[item.value - 2];
         console.log('All Boxes Avg IC: ', this.allBoxesAvgIc);
 
-        this.findNearestLanguage();
+        this.nearestLanguage = AnalysisText.findNearestLanguage(this.ic, LANGUAGEIC_DATA);
         if (this.nearestLanguage === 'Min IC') {
             this.passedMinIc = true;
         }
@@ -341,62 +322,4 @@ export class PolyalphCipher implements OnInit {
         this.quessKeyLength = this.quessKey.length;
         console.log('Selected value: ' + item.value);
     }
-
-    // Calculate Index of coincidence and find nearest Language
-    public getIC(frequencyInPercentage: number[], length: number): number {
-        let ic = 0;
-        frequencyInPercentage.forEach(element => {
-           // element = element / 100;
-            ic += element * (element - 1);
-        });
-        ic /=  length * (length - 1);
-        return ic;
-    }
-
-    public findNearestLanguage() {
-        let nearestLang = '';
-        let nearestValue = 10;
-
-        this.dataSourceRefFreqLang.forEach(element => {
-            const actualDiff = Math.abs(element.value - this.ic);
-            if (nearestValue > actualDiff) {
-                nearestValue = actualDiff;
-                nearestLang = element.name;
-            }
-        });
-        this.nearestLanguage = nearestLang;
-    }
-
-
-    // Calculate Frequency and convert it to percentage
-    public calculateFreqPerc(message: string): number[] {
-        const frequency = this.getFrequencyOfText(message);
-        const frequencyInPercentage = [];
-        const encryptedTextLength = message.length;
-
-        // console.log('Frequency', frequency);
-        const tmpData = [];
-        for (const item of frequency) {
-            let inPercentage = item / encryptedTextLength * 100;
-            inPercentage = Math.round(inPercentage * 100) / 100;
-            frequencyInPercentage.push(inPercentage);
-            tmpData.push(inPercentage);
-        }
-        return frequencyInPercentage;
-    }
-
-    private getFrequencyOfText(message: string): number[] {
-        const tmpFrequency = [];
-        // console.log(message);
-        for (const char of ALPHABET) {
-            const splittedText = message.split(char);
-            tmpFrequency.push(splittedText.length - 1);
-        }
-        return tmpFrequency;
-    }
-    private sumFunc(total, num) {
-        return total + num;
-    }
-
-
 }

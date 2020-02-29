@@ -3,9 +3,10 @@ import * as Highcharts from 'highcharts';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LanguageIcElement,  AlphabetElement } from '../../models/common.model';
+import { LanguageIcElement, AlphabetElement } from '../../models/common.model';
 import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, A_ASCII } from '../../constants/language.constants';
-
+import AnalysisText from '../../analysis-text';
+import Utils from 'src/app/utils';
 
 let DIFFFREQ_DATA: AlphabetElement[] = [];
 
@@ -28,7 +29,7 @@ export class CaesarCipher implements OnInit {
         'vulputate odio ut enim blandit. Vitae suscipit tellus mauris a diam maecenas sed enim. Malesuada fames ac turpis egestas sed ' +
         ' et pharetra. Elit sed vulputate mi sit amet mauris commodo. Sapien pellentesque habitant morbi tristique senectus et netus et' +
         ' malesuada. Aliquam etiam erat velit scelerisque. Proin fermentum leo vel orci porta non pulvinar neque.fffffffffffff';
-    
+
     // Variables for Tables
     private columnsRefFreqLanguage: string[] = ['name', 'value'];
     private columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -181,7 +182,7 @@ export class CaesarCipher implements OnInit {
         //  ---------------   Ceaser Cipher  -------------
         console.log(" ------------ Ceaser Cipher ------------");
         console.log('For testing: aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz');
-        this.toggleOptions = this.generateArrayOfNum(26);
+        this.toggleOptions = Array.from(Array(26), (x, index) => (index + 1).toString());
         this.enAlphabetFrequency.forEach(element => {
             this.enAlphabetFreqPerc.push(Math.round(element * 100) / 10000);
         });
@@ -199,15 +200,23 @@ export class CaesarCipher implements OnInit {
         this.encrypt();
         this.decryptedText = this.decrypt();
         this.calculateFrequencyGraph();
+
+        // TO DO 
         this.getIC();
+
+
+        this.nearestLanguage = AnalysisText.findNearestLanguage(this.ic, LANGUAGEIC_DATA);
+        if (this.nearestLanguage === 'Min IC') {
+            this.passedMinIc = true;
+        }
         console.log('Frequency in %', this.frequencyInPercentage);
 
 
         this.decryptedTexts = this.decryptForEveryKey();
-        
+
 
         // Calculate frequency for all decrypted options. Shift 1-25
-        this.freqDecryptedTexts =  this.computeFreqForArray(this.decryptedTexts);
+        this.freqDecryptedTexts = AnalysisText.computeFreqForArray(this.decryptedTexts);
         console.log(this.freqDecryptedTexts);
 
         // Calculate differecnies between frequancies of input text and referal values for language 
@@ -229,7 +238,7 @@ export class CaesarCipher implements OnInit {
             this.diffFreqDecryptedTexts[row] = diffFreqForOneShift;
             lang.shift = (row + 1).toString();
 
-            lang.sum = Math.round(this.diffFreqDecryptedTexts[row].reduce(this.sumFunc) * 100) / 100;
+            lang.sum = Math.round(this.diffFreqDecryptedTexts[row].reduce(Utils.sumFunc) * 100) / 100;
             DIFFFREQ_DATA.push(lang);
             console.log(lang.shift);
             console.log(lang.sum);
@@ -260,26 +269,9 @@ export class CaesarCipher implements OnInit {
         console.log('Min Distance Length', this.minDisctanceLength);
 
     }
-    
-    public computeFreqForArray(texts: string[]){
-        const freqForTexts = [];
-        // this.decryptedTexts.forEach(element => {
-        texts.forEach(text => {
-            const length = text.length;
-            const compFreq = this.getFrequencyOfText(text);
-            const compFreqInPerc = [];
 
-            compFreq.forEach(alphabet => {
-                let inPercentage = alphabet / length * 100;
-                inPercentage = Math.round(inPercentage * 100) / 100;
-                compFreqInPerc.push(inPercentage);
-            });
-            // this.freqDecryptedTexts.push(compFreqInPerc);
-            freqForTexts.push(compFreqInPerc);
-        });
-        return freqForTexts;
-    }
-  
+
+
 
     // Change data for updateFlagCompareFreq based of selection <1-26>
     selectionOfGraphChanged(item) {
@@ -327,36 +319,9 @@ export class CaesarCipher implements OnInit {
         return decryptedText;
     }
 
-    // Calculate Frequency and convert it to percentage
-    public calculateFreqPerc(message: string): number[] {
-        this.frequency = this.getFrequencyOfText(message);
-        this.frequencyInPercentage = [];
-        const encryptedTextLength = message.length;
-
-        console.log(this.frequency);
-        const tmpData = [];
-        for (const item of this.frequency) {
-            let inPercentage = item / encryptedTextLength * 100;
-            inPercentage = Math.round(inPercentage * 100) / 100;
-            this.frequencyInPercentage.push(inPercentage);
-            tmpData.push(inPercentage);
-        }
-        return this.frequencyInPercentage;
-    }
-
-    private getFrequencyOfText(message: string): number[] {
-        const tmpFrequency = [];
-        // console.log(message);
-        for (const char of this.alphabet) {
-            const splittedText = message.split(char);
-            tmpFrequency.push(splittedText.length - 1);
-        }
-        return tmpFrequency;
-    }
-
     // Calculate frequencies for updateFlagFreqGraph
     public calculateFrequencyGraph() {
-        this.frequency = this.getFrequencyOfText(this.encryptedText);
+        this.frequency = AnalysisText.getFrequencyOfText(this.encryptedText);
         this.frequencyInPercentage = [];
         const encryptedTextLength = this.encryptedText.length;
 
@@ -384,35 +349,7 @@ export class CaesarCipher implements OnInit {
         });
 
         this.ic = ic;
-        this.findNearestLanguage();
-        if (this.nearestLanguage === 'Min IC') {
-            this.passedMinIc = true;
-        }
-    }
-    public findNearestLanguage() {
-        let nearestLang = '';
-        let nearestValue = 10;
-
-        LANGUAGEIC_DATA.forEach(element => {
-            const actualDiff = Math.abs(element.value - this.ic);
-            if (nearestValue > actualDiff) {
-                nearestValue = actualDiff;
-                nearestLang = element.name;
-            }
-        });
-        this.nearestLanguage = nearestLang;
-    }
-
-    private generateArrayOfNum(length: number): string[] {
-        const genArray = [];
-        for (let index = 1; index <= length; index++) {
-            genArray.push(index.toString());
-        }
-        return genArray;
-    }
-
-    private sumFunc(total, num) {
-        return total + num;
+   
     }
 
 }
