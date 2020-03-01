@@ -134,9 +134,9 @@
                     <mat-step>
                         <ng-template matStepLabel>Compute all combinations for key</ng-template>
                         <div class="col-md-12">
-                            <p *ngFor= "let result of best10Results">
-                                Key: {{result.key}} , Frequency: {{result.sum}} , Decrypted Text: {{result.decryptedText| slice:0:30}}...
-                            </p>
+                            <app-table [columnNames]="columnsBestResults" [dataSource]="dataSourceBestResults"
+                            [defaultSort]="sortBestResults">
+                        </app-table>
                         </div>
                     </mat-step>
 

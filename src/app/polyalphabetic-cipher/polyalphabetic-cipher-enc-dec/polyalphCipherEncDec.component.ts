@@ -3,8 +3,9 @@ import * as Highcharts from 'highcharts';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { map, filter } from 'rxjs/operators';
 
-import { AlphabetElement } from '../../models/common.model';
+import { AlphabetElement, SortTable, Ordering } from '../../models/common.model';
 import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, COLORS, A_ASCII } from '../../constants/language.constants';
 import Utils from 'src/app/utils';
 import AnalysisText from 'src/app/analysis-text';
@@ -66,8 +67,12 @@ export class PolyalphCipher implements OnInit {
     public highestIC;
     public bestKeyLength;
     public best10Results = [];
+    columnsBestResults: string[] = ['key', 'sum', 'decryptedText'];
+    sortBestResults: SortTable = { sortByColumn: 'sum', order: Ordering.desc } as SortTable;
+    dataSourceBestResults: MatTableDataSource<any>;
 
     ngOnInit(): void {
+
 
         //  ---------------   Polyalphabetic Cipher  -------------
         console.log(' ------------ Polyalphabetic Cipher ------------');
@@ -157,7 +162,11 @@ export class PolyalphCipher implements OnInit {
         const sortedDiff = diffFreqAllCombinations[2].sort((a, b) => a.sum - b.sum);
 
         console.log('Sorted Diff', sortedDiff);
-        this.best10Results = sortedDiff.slice(0, 9);
+        this.best10Results = sortedDiff.slice(0, 9).map((data) => {
+            data['decryptedText'] = data['decryptedText'].substring(0, 30);
+            return data;
+        });
+        this.dataSourceBestResults = new MatTableDataSource(this.best10Results);
 
     }
 

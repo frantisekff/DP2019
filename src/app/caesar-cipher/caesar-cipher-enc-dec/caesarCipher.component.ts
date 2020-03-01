@@ -3,7 +3,7 @@ import * as Highcharts from 'highcharts';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LanguageIcElement, AlphabetElement, SortTable,  Ordering} from '../../models/common.model';
+import { LanguageIcElement, AlphabetElement, SortTable, Ordering } from '../../models/common.model';
 import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, A_ASCII } from '../../constants/language.constants';
 import AnalysisText from '../../analysis-text';
 import Utils from 'src/app/utils';
@@ -32,8 +32,8 @@ export class CaesarCipher implements OnInit {
 
     // Variables for Tables
     columnsRefFreqLanguage: string[] = ['name', 'value'];
-    sortRefFreqLang: SortTable = {sortByColumn: 'value', order: 'asc'} as SortTable;
-    sortCalcFreqLang: SortTable = {sortByColumn: 'sum', order: 'asc'} as SortTable;
+    sortRefFreqLang: SortTable = { sortByColumn: 'value', order: Ordering.asc } as SortTable;
+    sortCalcFreqLang: SortTable = { sortByColumn: 'sum', order: Ordering.asc } as SortTable;
 
     private columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
         'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
