@@ -28,7 +28,6 @@ const caesarRoutes: Routes = [
     RouterModule.forChild(caesarRoutes),
     MatInputModule,
     FormsModule,
-    HighchartsChartModule,
     MatCardModule,
     MatButtonModule,
     MatButtonToggleModule,

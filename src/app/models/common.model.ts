@@ -42,5 +42,5 @@ export enum Ordering {
 
 export interface SortTable {
     sortByColumn: string;
-    order: Ordering; 
+    order: Ordering;
 }

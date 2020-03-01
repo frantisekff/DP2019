@@ -177,9 +177,6 @@ export class CaesarCipher implements OnInit {
             message: [this.message, Validators.required]
         });
 
-
-        // this.dataSourceRefFreqLang.sort = this.sortRefFreq;
-        // this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
         this.dataSourceRefFreqLang.sort = this.sortRefFreq;
         this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
         //  ---------------   Ceaser Cipher  -------------
@@ -257,6 +254,7 @@ export class CaesarCipher implements OnInit {
 
         this.chartOptionsCompareFreq.series[0].data = Array.from(this.freqDecryptedTexts[14]);
         this.updateFlagFreqGraph = true;
+
         this.minDisctanceLength = Object.keys(approximatedDisLength).sort(function (a, b) {
             return approximatedDisLength[a] - approximatedDisLength[b];
         })[0];

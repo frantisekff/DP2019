@@ -88,14 +88,8 @@
                                     Frequency</button>
                             </div> -->
                     <div class="container">
-                        <div class="row">
-                            <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsFreqGraph"
-                                [(update)]="updateFlagFreqGraph">
-                            </highcharts-chart>
-                        </div>
+                        <app-graph [chartOptionsFreqGraph]="chartOptionsFreqGraph" [updateFlagFreqGraph]="updateFlagFreqGraph"></app-graph>   
                     </div>
-
-
                     <br>
                     <br>
                     <div>
@@ -173,9 +167,10 @@
 
                     <div class="container">
                         <div class="row">
-                            <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsCompareFreq"
+                            <!-- <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsCompareFreq"
                                 [(update)]="updateFlagCompareFreq">
-                            </highcharts-chart>
+                            </highcharts-chart> -->
+                            <app-graph [chartOptionsFreqGraph]="chartOptionsCompareFreq" [updateFlagFreqGraph]="updateFlagCompareFreq"></app-graph>   
                         </div>
                     </div>
 
