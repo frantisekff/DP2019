@@ -7,6 +7,7 @@ import { LanguageIcElement, AlphabetElement, SortTable, Ordering } from '../../m
 import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, A_ASCII } from '../../constants/language.constants';
 import AnalysisText from '../../analysis-text';
 import Utils from 'src/app/utils';
+import { GraphComponent } from 'src/app/components/graph/graph.component';
 
 let DIFFFREQ_DATA: AlphabetElement[] = [];
 
@@ -159,6 +160,7 @@ export class CaesarCipher implements OnInit {
     private selectedValue = '15';
     private toggleOptions: string[] = [];
     public minDisctanceLength: string = '';
+    dataSource;
 
     isLinear = false;
     inputsFormGroup: FormGroup;
@@ -166,7 +168,7 @@ export class CaesarCipher implements OnInit {
     thirdFormGroup: FormGroup;
     fourthFormGroup: FormGroup;
 
-
+    @ViewChild('freqGraph', {static: true}) freqGraph: GraphComponent;
     @ViewChild('sortCalcFreq', { static: true }) sortCalcFreq: MatSort;
     @ViewChild('sortRefFreq', { static: true }) sortRefFreq: MatSort;
 
@@ -251,6 +253,7 @@ export class CaesarCipher implements OnInit {
         console.log('Data Calc', this.dataSourceCalcFreqLang);
         console.log('Data Ref', this.dataSourceRefFreqLang);
         console.log('approximatedDisLength', approximatedDisLength);
+        this.dataSource =  Array.from(this.freqDecryptedTexts[14]);
 
         this.chartOptionsCompareFreq.series[0].data = Array.from(this.freqDecryptedTexts[14]);
         this.updateFlagFreqGraph = true;
@@ -268,9 +271,11 @@ export class CaesarCipher implements OnInit {
 
     // Change data for updateFlagCompareFreq based of selection <1-26>
     selectionOfGraphChanged(item) {
+        this.dataSource = Array.from(this.freqDecryptedTexts[item.value - 1]);
+
         this.actualDataInCompareGraph = Array.from(this.freqDecryptedTexts[item.value - 1]);
         this.chartOptionsCompareFreq.series[0].data = this.actualDataInCompareGraph;
-        this.updateFlagCompareFreq = true;
+        this.freqGraph.updateGraph();
         console.log("Selected value: " + item.value);
         console.log(this.actualDataInCompareGraph);
     }
