@@ -34,3 +34,13 @@ export interface AlphabetElement {
     y: string;
     z: string;
 }
+
+export enum Ordering {
+  asc = 'asc',
+  desc = 'desc'
+}
+
+export interface SortTable {
+    sortByColumn: string;
+    order: Ordering; 
+}

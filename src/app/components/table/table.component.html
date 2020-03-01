@@ -1,0 +1,11 @@
+<table mat-table #sort="matSort" [dataSource]="dataSource" matSort [matSortActive]="defaultSort.sortByColumn" [matSortDirection]="defaultSort.order"
+    class="mat-elevation-z8">
+
+    <ng-container *ngFor="let name of columnNames" mat-text-column="end" [matColumnDef]="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{name}}</th>
+        <td mat-cell *matCellDef="let element">{{element[name]}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnNames"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnNames; "></tr>
+</table>

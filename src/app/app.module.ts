@@ -10,6 +10,10 @@ import { Home } from './home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { TableComponent } from './components/table/table.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { SharedModule } from './shared/shared.module';
 
 const appRoutes: Routes = [
   { path: '', component: Home },
@@ -31,7 +35,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
     FormsModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

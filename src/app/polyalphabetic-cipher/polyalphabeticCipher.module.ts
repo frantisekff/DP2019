@@ -13,6 +13,8 @@ import {MatIconModule} from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import {MatStepperModule} from '@angular/material/stepper';
+import { TableComponent } from '../components/table/table.component';
+import { SharedModule } from '../shared/shared.module';
 
 const polyalphRoutes: Routes = [
   { path: '', component: PolyalphCipher},
@@ -30,14 +32,12 @@ const polyalphRoutes: Routes = [
     HighchartsChartModule,
     MatCardModule,
     MatButtonModule,
-    MatTableModule,
     MatButtonToggleModule,
     MatIconModule,
-    MatSortModule,
     CdkStepperModule,
     MatStepperModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class PolyalphCipherModule { }

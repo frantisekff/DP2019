@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import {MatStepperModule} from '@angular/material/stepper';
+import { SharedModule } from '../shared/shared.module';
 
 const caesarRoutes: Routes = [
   { path: '', component: CaesarCipher },
@@ -30,13 +31,12 @@ const caesarRoutes: Routes = [
     HighchartsChartModule,
     MatCardModule,
     MatButtonModule,
-    MatTableModule,
-    MatSortModule,
     MatButtonToggleModule,
     MatIconModule,
     CdkStepperModule,
     MatStepperModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class CaesarCipherModule { }
