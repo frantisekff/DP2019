@@ -187,17 +187,7 @@ export class PolyalphCipher implements OnInit {
             this.toggleOptions = Array.from({ length: this.formatedMessage.length - 2 }, (x, i) => (i + 2).toString());
             this.selectedValue = '2';
         }
-
-        // this.frequencyInPercentage = this.calculateFreqPerc(this.encryptedText);
-        // console.log('Frequency in %', this.frequencyInPercentage);
-
-        // this.ic = this.getIC(this.frequencyInPercentage);
-        // this.findNearestLanguage();
-        // if (this.nearestLanguage === 'Min IC') {
-        //     this.passedMinIc = true;
-        // }
-
-
+        
         this.encMessageSplitted = this.encryptedText.split('');
         this.allBoxes = this.calculateBoxes(this.encMessageSplitted);
         let counterBoxes = 2;

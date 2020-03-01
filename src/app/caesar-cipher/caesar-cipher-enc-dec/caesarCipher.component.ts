@@ -261,14 +261,6 @@ export class CaesarCipher implements OnInit {
             return approximatedDisLength[a] - approximatedDisLength[b];
         })[0];
         this.selectedValue = this.minDisctanceLength;
-        // console.log('Min Approx Length', this.minDisctanceLength);
-
-        // Object.values(approximatedDisLength).forEach(distance => {
-        //     if ((distance < (approximatedDisLength[min] + 1)) || distance === approximatedDisLength[min]) {
-        //         // this.minDisctanceLength.push(distance);
-        //         console.log(distance);
-        //     }
-        // });
         console.log('Min Distance Length', this.minDisctanceLength);
 
     }
