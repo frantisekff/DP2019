@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import * as Highcharts from 'highcharts';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LanguageIcElement, AlphabetElement, SortTable, Ordering } from '../../models/common.model';
+import { AlphabetElement, SortTable, Ordering } from '../../models/common.model';
 import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, A_ASCII } from '../../constants/language.constants';
 import AnalysisText from '../../analysis-text';
 import Utils from 'src/app/utils';
@@ -36,16 +35,15 @@ export class CaesarCipher implements OnInit {
     sortRefFreqLang: SortTable = { sortByColumn: 'value', order: Ordering.asc } as SortTable;
     sortCalcFreqLang: SortTable = { sortByColumn: 'sum', order: Ordering.asc } as SortTable;
 
-    private columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+    columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
         'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
 
-    private dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
-    private dataSourceCalcFreqLang = new MatTableDataSource();
+    dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
+    dataSourceCalcFreqLang = new MatTableDataSource();
 
-    private Highcharts = Highcharts;
     // Options for Graph - Encrypted text graph
-    private updateFlagFreqGraph = false;
-    private chartOptionsFreqGraph = {
+    updateFlagFreqGraph = false;
+    chartOptionsFreqGraph = {
         chart: {
             type: 'column'
         },
@@ -99,8 +97,8 @@ export class CaesarCipher implements OnInit {
     };
 
     // Options for Graph - Compare letter accuracy with language data values
-    private updateFlagCompareFreq = false;
-    private chartOptionsCompareFreq = {
+    updateFlagCompareFreq = false;
+    chartOptionsCompareFreq = {
         chart: {
             type: 'column'
         },
@@ -144,24 +142,22 @@ export class CaesarCipher implements OnInit {
     };
 
     private enAlphabetFreqPerc = [];
-    private frequency = [];
+    frequency = [];
     private frequencyInPercentage = [];
     private formatedMessage;
-    private encryptedText = '';
-    private decryptedText = '';
-    private ic = -1;
-    private passedMinIc = false;
-    private nearestLanguage: string;
+    encryptedText = '';
+    decryptedText = '';
+    ic = -1;
+    passedMinIc = false;
+    nearestLanguage: string;
     private decryptedTexts = [];
     private freqDecryptedTexts = [];
     private actualDataInCompareGraph = [];
     private diffFreqDecryptedTexts = [];
-    private sumDiffFreq = [];
-    private selectedValue = '15';
-    private toggleOptions: string[] = [];
-    public minDisctanceLength: string = '';
+    selectedValue = '15';
+    toggleOptions: string[] = [];
+    minDisctanceLength: string = '';
     dataSource;
-
     isLinear = false;
     inputsFormGroup: FormGroup;
     secondFormGroup: FormGroup;
@@ -266,9 +262,6 @@ export class CaesarCipher implements OnInit {
 
     }
 
-
-
-
     // Change data for updateFlagCompareFreq based of selection <1-26>
     selectionOfGraphChanged(item) {
         this.dataSource = Array.from(this.freqDecryptedTexts[item.value - 1]);
@@ -345,9 +338,7 @@ export class CaesarCipher implements OnInit {
             element = element / 100;
             ic += element * element;
         });
-
         this.ic = ic;
-
     }
 
 }
