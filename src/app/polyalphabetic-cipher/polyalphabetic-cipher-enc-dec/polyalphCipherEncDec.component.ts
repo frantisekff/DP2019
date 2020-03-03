@@ -22,10 +22,6 @@ export class PolyalphCipher implements OnInit {
 
     private key = 'abc';
     // Array to length of key for iterate to length of key
-    private keyIterator;
-    private keyLength;
-    private quessKey;
-    private quessKeyLength;
     private message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
         'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Neque gravida in fermentum et sollicitudin.' +
         ' Libero nunc consequat interdum varius sit. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Rhoncus est' +
@@ -33,40 +29,23 @@ export class PolyalphCipher implements OnInit {
 
     private encMessageSplitted: string[];
 
-    // Variables for Tables
-    private columnsRefFreqLanguage: string[] = ['name', 'value'];
-    private columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-        'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
-
-    private dataSourceRefFreqLang = LANGUAGEIC_DATA;
-    private dataSourceCalcFreqLang = DIFFFREQ_DATA;
-
     private enAlphabetFreqPerc = [];
-    private frequency = [];
-    private frequencyInPercentage = [];
     private formatedMessage;
     private encryptedText = '';
-    private decryptedText = '';
-    private ic = -1;
-    private passedMinIc = false;
+    decryptedText = '';
+    ic = -1;
+    passedMinIc = false;
     private nearestLanguage: string;
-    private decryptedTexts = [];
-    private freqDecryptedTexts = [];
-    private actualDataInCompareGraph = [];
-    private diffFreqDecryptedTexts = [];
-    private sumDiffFreq = [];
-    public selectedValue = '2';
+    selectedValue = '2';
     private maxSelectedValue = 17;
-    private toggleOptions: string[] = [];
-
-
+    toggleOptions: string[] = [];
     private allBoxesFrequency: number[][][] = [];
-    private allBoxesIc: number[][] = [];
+    allBoxesIc: number[][] = [];
     private allBoxesAvgIc = [];
-    private allBoxes;
-    public highestIC;
-    public bestKeyLength;
-    public best10Results = [];
+    allBoxes;
+    highestIC;
+    bestKeyLength;
+    best10Results = [];
     columnsBestResults: string[] = ['key', 'sum', 'decryptedText'];
     sortBestResults: SortTable = { sortByColumn: 'sum', order: Ordering.desc } as SortTable;
     dataSourceBestResults: MatTableDataSource<any>;
@@ -171,8 +150,6 @@ export class PolyalphCipher implements OnInit {
     }
 
     public enDeCryptMessage() {
-        this.keyIterator = this.key.split('');
-        this.keyLength = this.key.length;
         this.allBoxesFrequency = [];
         this.allBoxesIc = [];
         this.allBoxesAvgIc = [];
@@ -316,9 +293,6 @@ export class PolyalphCipher implements OnInit {
         if (this.nearestLanguage === 'Min IC') {
             this.passedMinIc = true;
         }
-        // this.calculateFreqPerc = calculateFreqPerc();
-        this.quessKey = Array.from({ length: item.value }, (x, i) => i);
-        this.quessKeyLength = this.quessKey.length;
         console.log('Selected value: ' + item.value);
     }
 }

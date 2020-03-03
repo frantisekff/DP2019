@@ -7,6 +7,7 @@ import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, A_ASCII } from '../..
 import AnalysisText from '../../analysis-text';
 import Utils from 'src/app/utils';
 import { GraphComponent } from 'src/app/components/graph/graph.component';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 let DIFFFREQ_DATA: AlphabetElement[] = [];
 
@@ -133,7 +134,7 @@ export class CaesarCipher implements OnInit {
             }
         },
         series: [{
-            name: 'Frequencies for encrypted text',
+            name: 'Frequencies for decrypted text',
             data: []
         }, {
             name: 'Reference frequencies for language',
@@ -156,17 +157,21 @@ export class CaesarCipher implements OnInit {
     private diffFreqDecryptedTexts = [];
     selectedValue = '15';
     toggleOptions: string[] = [];
-    minDisctanceLength: string = '';
-    dataSource;
+    minDisctanceLength = '';
+  
     isLinear = false;
     inputsFormGroup: FormGroup;
     secondFormGroup: FormGroup;
     thirdFormGroup: FormGroup;
     fourthFormGroup: FormGroup;
 
+    @ViewChild('comparefreqGraph', {static: true}) comparefreqGraph: GraphComponent;
     @ViewChild('freqGraph', {static: true}) freqGraph: GraphComponent;
+    dataSourceCompareFreqGraph;
+    dataSourceFreqGraph;
     @ViewChild('sortCalcFreq', { static: true }) sortCalcFreq: MatSort;
     @ViewChild('sortRefFreq', { static: true }) sortRefFreq: MatSort;
+    equation = '\\sum_{i=A}^{i=Z}\\frac {n_i (n_i - 1)} {N (N - 1)}  ';
 
     ngOnInit(): void {
 
@@ -181,9 +186,12 @@ export class CaesarCipher implements OnInit {
         console.log(" ------------ Ceaser Cipher ------------");
         console.log('For testing: aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz');
         this.toggleOptions = Array.from(Array(26), (x, index) => (index + 1).toString());
+
+        //Freq na percenta
         this.enAlphabetFrequency.forEach(element => {
             this.enAlphabetFreqPerc.push(Math.round(element * 100) / 10000);
         });
+
         this.enDeCryptMessage();
     }
 
@@ -209,11 +217,10 @@ export class CaesarCipher implements OnInit {
         }
         console.log('Frequency in %', this.frequencyInPercentage);
 
-
+        // desifrovanie pre kazdy kluc <1-26>
         this.decryptedTexts = this.decryptForEveryKey();
 
-
-        // Calculate frequency for all decrypted options. Shift 1-25
+        // Calculate frequency for all decrypted options. Shift 1-26
         this.freqDecryptedTexts = AnalysisText.computeFreqForArray(this.decryptedTexts);
         console.log(this.freqDecryptedTexts);
 
@@ -221,7 +228,7 @@ export class CaesarCipher implements OnInit {
         // for every letter
         let minDistance = 100;
         this.minDisctanceLength = '';
-        let approximatedDisLength = {};
+        const approximatedDisLength = {};
 
         for (let row = 0; row < this.freqDecryptedTexts.length; row++) {
             const freqForOneShift = this.freqDecryptedTexts[row];
@@ -249,28 +256,26 @@ export class CaesarCipher implements OnInit {
         console.log('Data Calc', this.dataSourceCalcFreqLang);
         console.log('Data Ref', this.dataSourceRefFreqLang);
         console.log('approximatedDisLength', approximatedDisLength);
-        this.dataSource =  Array.from(this.freqDecryptedTexts[14]);
 
-        this.chartOptionsCompareFreq.series[0].data = Array.from(this.freqDecryptedTexts[14]);
-        this.updateFlagFreqGraph = true;
-
-        this.minDisctanceLength = Object.keys(approximatedDisLength).sort(function (a, b) {
+        // sortovanie od najmensieh po najvacsie a vybratie najmensieho
+        this.minDisctanceLength = Object.keys(approximatedDisLength).sort( (a, b) => {
             return approximatedDisLength[a] - approximatedDisLength[b];
         })[0];
         this.selectedValue = this.minDisctanceLength;
+
+        this.dataSourceCompareFreqGraph =  Array.from(this.freqDecryptedTexts[+this.minDisctanceLength - 1 ]);
+        this.comparefreqGraph.updateGraph();
+
         console.log('Min Distance Length', this.minDisctanceLength);
 
     }
 
-    // Change data for updateFlagCompareFreq based of selection <1-26>
-    selectionOfGraphChanged(item) {
-        this.dataSource = Array.from(this.freqDecryptedTexts[item.value - 1]);
-
-        this.actualDataInCompareGraph = Array.from(this.freqDecryptedTexts[item.value - 1]);
-        this.chartOptionsCompareFreq.series[0].data = this.actualDataInCompareGraph;
-        this.freqGraph.updateGraph();
-        console.log("Selected value: " + item.value);
-        console.log(this.actualDataInCompareGraph);
+    // Change data for CompareFreq based of selection <1-26>
+    selectionOfGraphChanged(item: MatButtonToggleChange) {
+        this.dataSourceCompareFreqGraph = Array.from(this.freqDecryptedTexts[item.value - 1]);
+        this.comparefreqGraph.updateGraph();
+        console.log('Selected value: ', item.value);
+        console.log(this.dataSourceCompareFreqGraph);
     }
 
     public encrypt() {
@@ -310,7 +315,7 @@ export class CaesarCipher implements OnInit {
         return decryptedText;
     }
 
-    // Calculate frequencies for updateFlagFreqGraph
+    // Calculate frequencies for FreqGraph
     public calculateFrequencyGraph() {
         this.frequency = AnalysisText.getFrequencyOfText(this.encryptedText);
         this.frequencyInPercentage = [];
@@ -325,8 +330,8 @@ export class CaesarCipher implements OnInit {
             tmpData.push([this.alphabet[index], inPercentage]);
         }
         this.chartOptionsFreqGraph.series[0].data = tmpData;
-
-        this.updateFlagFreqGraph = true;
+        this.dataSourceFreqGraph = tmpData;
+        this.freqGraph.updateGraph();
         console.log(this.chartOptionsFreqGraph.series[0].data);
     }
 

@@ -5,10 +5,11 @@ import { TableComponent } from '../components/table/table.component';
 import { CommonModule } from '@angular/common';
 import { GraphComponent } from '../components/graph/graph.component';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { KatexModule } from 'ng-katex';
 
 @NgModule({
-    imports: [ MatTableModule, MatSortModule, CommonModule, HighchartsChartModule ],
+    imports: [ MatTableModule, MatSortModule, CommonModule, HighchartsChartModule, KatexModule ],
     declarations: [TableComponent, GraphComponent],
-    exports: [ MatTableModule, MatSortModule, TableComponent, GraphComponent, HighchartsChartModule ]
+    exports: [ MatTableModule, MatSortModule, TableComponent, GraphComponent, HighchartsChartModule, KatexModule ]
   })
   export class SharedModule {}

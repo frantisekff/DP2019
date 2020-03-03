@@ -88,7 +88,7 @@
                                     Frequency</button>
                             </div> -->
                     <div class="container">
-                        <app-graph [chartOptionsFreqGraph]="chartOptionsFreqGraph"></app-graph>   
+                        <app-graph #freqGraph [chartOptionsFreqGraph]="chartOptionsFreqGraph"  [data]="dataSourceFreqGraph"></app-graph>   
                     </div>
                     <br>
                     <br>
@@ -106,8 +106,9 @@
                         Source: https://www.dcode.fr/index-coincidence
 
                     </p>
-                    <p> !!!! POJDE TU ESTE ROVNICA !!!!!
-                    </p>
+               
+                        <h3><ng-katex [equation]="equation"></ng-katex></h3>
+                   
                     <div class="col-md-12">
                         <div class="row ">
 
@@ -170,7 +171,7 @@
                             <!-- <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptionsCompareFreq"
                                 [(update)]="updateFlagCompareFreq">
                             </highcharts-chart> -->
-                            <app-graph #freqGraph [chartOptionsFreqGraph]="chartOptionsCompareFreq"  [data]="dataSource"></app-graph>   
+                            <app-graph #comparefreqGraph [chartOptionsFreqGraph]="chartOptionsCompareFreq"  [data]="dataSourceCompareFreqGraph"></app-graph>   
                         </div>
                     </div>
 

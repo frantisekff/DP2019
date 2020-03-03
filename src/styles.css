@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+/* Import for  LaTeX equation  */
+@import '~katex/dist/katex.css';
 
 html, body { 
     height: 100%;
