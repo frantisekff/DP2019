@@ -5,8 +5,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { map, filter } from 'rxjs/operators';
 
-import { AlphabetElement, SortTable, Ordering } from '../../models/common.model';
-import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, COLORS, A_ASCII } from '../../constants/language.constants';
+import { AlphabetElement, SortTable, Ordering } from '../../../models/common.model';
+import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, COLORS, A_ASCII } from '../../../constants/language.constants';
 import Utils from 'src/app/utils';
 import AnalysisText from 'src/app/analysis-text';
 
@@ -14,8 +14,8 @@ const DIFFFREQ_DATA: AlphabetElement[] = [];
 
 @Component({
     selector: 'app-polyalphcipher',
-    styleUrls: ['./polyalphCipherEncDec.component.scss'],
-    templateUrl: './polyalphCipherEncDec.component.html'
+    styleUrls: ['./polyalphCipher.component.scss'],
+    templateUrl: './polyalphCipher.component.html'
 })
 export class PolyalphCipher implements OnInit {
     colors = COLORS;
@@ -55,10 +55,14 @@ export class PolyalphCipher implements OnInit {
 
         //  ---------------   Polyalphabetic Cipher  -------------
         console.log(' ------------ Polyalphabetic Cipher ------------');
+
+        // Frequency to percentage
         EN_ALPHABET_FREQUENCY.forEach(element => {
             this.enAlphabetFreqPerc.push(Math.round(element * 100) / 10000);
         });
+        // generate array <2-16>
         this.toggleOptions = Array.from({ length: this.maxSelectedValue - 2 }, (x, i) => (i + 2).toString());
+
 
         this.enDeCryptMessage();
         this.selectionOfGraphChanged({ value: this.selectedValue });
@@ -66,18 +70,20 @@ export class PolyalphCipher implements OnInit {
         const maxGuessKeyLength = 3;
         const allCombinations = this.computeCombinationKeyLength(maxGuessKeyLength);
         console.log('All Combinations', allCombinations);
+
+        // Decrypt encrypted text for every key
         const decryptedAllCombinations = [];
 
         for (const allKeysOfLength of allCombinations) {
-            const decryptedForLength = []
+            const decryptedForLength = [];
             for (const key of allKeysOfLength) {
                 const decryptedText = this.decrypt(this.encryptedText, key);
                 decryptedForLength.push(decryptedText);
             }
             decryptedAllCombinations.push(decryptedForLength);
         }
-
         console.log('Decrypted Texts for All Combinations', decryptedAllCombinations);
+
 
         // Calculate frequency for all decrypted options.
         const freqAllCombinations = [];
@@ -85,12 +91,12 @@ export class PolyalphCipher implements OnInit {
             const forArray = AnalysisText.computeFreqForArray(allMessagesOfLength);
             freqAllCombinations.push(forArray);
         }
-
         console.log('Freq for All Combinations', freqAllCombinations);
 
+        // Calculate differencies between en alphabet freq and all decrypted options.
+        // Find minimum differences from all decrypted texts
         const diffFreqAllCombinations = [];
         const minimDiffFreqAllCombinations = [];
-
 
         for (let keyLength = 0; keyLength < freqAllCombinations.length; keyLength++) {
             let diffFreqDecryptedTexts = [];
@@ -131,13 +137,14 @@ export class PolyalphCipher implements OnInit {
             minForKeyLength = 1000;
             console.log('Decrypted all combinations ');
         }
-        minimDiffFreqAllCombinations.push({
-            index: 28,
-            value: diffFreqAllCombinations[2][28], decryptedText: decryptedAllCombinations[2][28]
-        });
+        // minimDiffFreqAllCombinations.push({
+        //     index: 28,
+        //     value: diffFreqAllCombinations[2][28], decryptedText: decryptedAllCombinations[2][28]
+        // });
 
         console.log('All Minimum', minimDiffFreqAllCombinations);
         console.log('All Diff', diffFreqAllCombinations);
+
         const sortedDiff = diffFreqAllCombinations[2].sort((a, b) => a.sum - b.sum);
 
         console.log('Sorted Diff', sortedDiff);
@@ -158,24 +165,29 @@ export class PolyalphCipher implements OnInit {
         // word and function will be executed for every match
         // Strip all whitespaces and toLowerCase
         this.formatedMessage = this.message.replace(/\s/g, '').toLowerCase();
+        // Encrypt message
         this.encryptedText = this.encrypt(this.formatedMessage, this.key);
+        // Decrypt message
         this.decryptedText = this.decrypt(this.encryptedText, this.key);
+
         if (this.formatedMessage.length < this.maxSelectedValue - 2) {
             this.toggleOptions = Array.from({ length: this.formatedMessage.length - 2 }, (x, i) => (i + 2).toString());
             this.selectedValue = '2';
         }
-        
+
+        // Split message to Boxes 
+        // For Example max is 3. We start from 2, we will be 2 boxex, text abcd produce 1: ac and box2: bd
         this.encMessageSplitted = this.encryptedText.split('');
         this.allBoxes = this.calculateBoxes(this.encMessageSplitted);
         let counterBoxes = 2;
         console.log('Boxes');
         console.log(this.allBoxes);
 
+        // For every box calculate IC and Frequency
         this.allBoxes.forEach(boxes => {
             const boxesFrequency: number[][] = [];
             const boxesIc: number[] = [];
             boxes.forEach(box => {
-                // const boxFreq: number[] = this.calculateFreqPerc(box);
                 const boxFreq: number[] = AnalysisText.getFrequencyOfText(box);
                 boxesFrequency.push(boxFreq);
                 boxesIc.push(AnalysisText.getIC(boxFreq, box.length));
@@ -184,6 +196,8 @@ export class PolyalphCipher implements OnInit {
             this.allBoxesFrequency.push(boxesFrequency);
             this.allBoxesIc.push(boxesIc);
             console.log('Boxes IC ', boxesIc);
+
+            //  Compute sum and avg
             const sum = boxesIc.reduce((a, b) => a + b, 0);
             const avg = (sum / boxesIc.length) || 0;
             const tmp = { 'box': 0, 'value': 0 };
@@ -197,6 +211,7 @@ export class PolyalphCipher implements OnInit {
         console.log(this.allBoxesIc);
         console.log('All Boxes Avg IC', this.allBoxesAvgIc);
 
+        // Create copy and sort by ic (asc)
         const copy = Object.assign([], this.allBoxesAvgIc);
         const sortedIC = copy.sort((a, b) => b.value - a.value).slice();
         console.log('Sorted IC', sortedIC);
@@ -214,6 +229,7 @@ export class PolyalphCipher implements OnInit {
         return Object.keys(object).find(key => object[key] === value);
     }
 
+    // Split message to boxes, number of boxes is defined by maxSelectedValue
     public calculateBoxes(message: string[]): string[][] {
         const boxes: string[][] = [];
 
@@ -262,6 +278,7 @@ export class PolyalphCipher implements OnInit {
         return decText;
     }
 
+    // Generate all combination of letters. It is Bbrute force attack with all words of length
     public computeCombinationKeyLength(maxGuessKeyLength: number): string[] {
         const allCombinations = [];
         allCombinations[0] = ALPHABET;

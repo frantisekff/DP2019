@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PolyalphCipher } from './polyalphabetic-cipher-enc-dec/polyalphCipherEncDec.component';
+import { PolyalphCipher } from './polyalphabetic-cipher/polyalphCipher.component';
 import { Routes, RouterModule } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -13,8 +13,8 @@ import {MatIconModule} from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import {MatStepperModule} from '@angular/material/stepper';
-import { TableComponent } from '../components/table/table.component';
-import { SharedModule } from '../shared/shared.module';
+import { TableComponent } from '../../components/table/table.component';
+import { SharedModule } from '../../shared/shared.module';
 
 const polyalphRoutes: Routes = [
   { path: '', component: PolyalphCipher},

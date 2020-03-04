@@ -13,17 +13,25 @@ import { SharedModule } from './shared/shared.module';
 const appRoutes: Routes = [
   { path: '', component: Home },
   { path: 'home/:id', component: Home },
-  { path: 'caesarcipher', loadChildren: './caesar-cipher/caesar-cipher.module#CaesarCipherModule' },
-  { path: 'transpositioncipher', loadChildren: './transposition-cipher/transposition-cipher.module#TranspositionCipherModule' },
-  { path: 'polyalphcipher', loadChildren: './polyalphabetic-cipher/polyalphabeticCipher.module#PolyalphCipherModule' }
+  {
+    path: 'caesarcipher',
+    loadChildren:
+      './pages/caesar-cipher-module/caesar-cipher.module#CaesarCipherModule'
+  },
+  {
+    path: 'transpositioncipher',
+    loadChildren:
+      './pages/transposition-cipher-module/transposition-cipher.module#TranspositionCipherModule'
+  },
+  {
+    path: 'polyalphcipher',
+    loadChildren:
+      './pages/polyalphabetic-cipher-module/polyalphabeticCipher.module#PolyalphCipherModule'
+  }
 ];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    Home
-  ],
+  declarations: [AppComponent, HeaderComponent, Home],
   imports: [
     BrowserModule,
     MatInputModule,
@@ -36,4 +44,4 @@ const appRoutes: Routes = [
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

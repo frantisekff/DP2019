@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CaesarCipher } from './caesar-cipher-enc-dec/caesarCipher.component';
+import { CaesarCipher } from './caesar-cipher/caesarCipher.component';
 import { Routes, RouterModule } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import {MatStepperModule} from '@angular/material/stepper';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 const caesarRoutes: Routes = [
   { path: '', component: CaesarCipher },
