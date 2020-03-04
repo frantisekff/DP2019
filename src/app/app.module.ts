@@ -26,7 +26,7 @@ const appRoutes: Routes = [
   {
     path: 'polyalphcipher',
     loadChildren:
-      './pages/polyalphabetic-cipher-module/polyalphabeticCipher.module#PolyalphCipherModule'
+      './pages/polyalphabetic-cipher-module/polyalphabetic-cipher.module#PolyalphCipherModule'
   }
 ];
 

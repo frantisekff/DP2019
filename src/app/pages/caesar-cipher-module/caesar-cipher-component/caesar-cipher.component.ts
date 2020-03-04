@@ -14,8 +14,8 @@ let DIFFFREQ_DATA: AlphabetElement[] = [];
 
 @Component({
     selector: 'app-caesarcipher',
-    styleUrls: ['./caesarCipher.component.scss'],
-    templateUrl: './caesarCipher.component.html'
+    styleUrls: ['./caesar-cipher.component.scss'],
+    templateUrl: './caesar-cipher.component.html'
 })
 export class CaesarCipher implements OnInit {
 

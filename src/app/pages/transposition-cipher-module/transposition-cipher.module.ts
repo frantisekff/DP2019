@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
-import { TranspositioncipherComponent} from './transposition-cipher/transpositionCipher.component';
+import { TranspositioncipherComponent} from './transposition-cipher-component/transposition-cipher.component';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 const transpRoutes: Routes = [

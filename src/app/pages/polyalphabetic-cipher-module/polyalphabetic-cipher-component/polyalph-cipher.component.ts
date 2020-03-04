@@ -14,8 +14,8 @@ const DIFFFREQ_DATA: AlphabetElement[] = [];
 
 @Component({
     selector: 'app-polyalphcipher',
-    styleUrls: ['./polyalphCipher.component.scss'],
-    templateUrl: './polyalphCipher.component.html'
+    styleUrls: ['./polyalph-cipher.component.scss'],
+    templateUrl: './polyalph-cipher.component.html'
 })
 export class PolyalphCipher implements OnInit {
     colors = COLORS;
