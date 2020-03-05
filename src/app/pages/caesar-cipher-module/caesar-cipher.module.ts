@@ -14,6 +14,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import {MatStepperModule} from '@angular/material/stepper';
 import { SharedModule } from '../../shared/shared.module';
+import { CaesarCipherService } from './caesar-cipher.service';
 
 const caesarRoutes: Routes = [
   { path: '', component: CaesarCipher },
@@ -36,6 +37,8 @@ const caesarRoutes: Routes = [
     MatStepperModule,
     ReactiveFormsModule,
     SharedModule
-  ]
+  ],
+  providers: [CaesarCipherService]
+
 })
 export class CaesarCipherModule { }

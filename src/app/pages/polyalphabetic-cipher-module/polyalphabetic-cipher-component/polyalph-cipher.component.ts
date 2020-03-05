@@ -225,10 +225,6 @@ export class PolyalphCipher implements OnInit {
 
     }
 
-    public getKeyByValue(object, value) {
-        return Object.keys(object).find(key => object[key] === value);
-    }
-
     // Split message to boxes, number of boxes is defined by maxSelectedValue
     public calculateBoxes(message: string[]): string[][] {
         const boxes: string[][] = [];

@@ -1,349 +1,268 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlphabetElement, SortTable, Ordering } from '../../../models/common.model';
-import { LANGUAGEIC_DATA, EN_ALPHABET_FREQUENCY, ALPHABET, A_ASCII } from '../../../constants/language.constants';
-import AnalysisText from '../../../analysis-text';
-import Utils from 'src/app/utils';
-import { GraphComponent } from 'src/app/components/graph/graph.component';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl
+} from "@angular/forms";
+import {
+  AlphabetElement,
+  SortTable,
+  Ordering
+} from "../../../models/common.model";
+import {
+  LANGUAGEIC_DATA,
+  EN_ALPHABET_FREQUENCY,
+  ALPHABET,
+  A_ASCII,
+  EN_ALPHABET_FREQUENCY_PERC
+} from "../../../constants/language.constants";
+import AnalysisText from "../../../analysis-text";
+import Utils from "src/app/utils";
+import { GraphComponent } from "src/app/components/graph/graph.component";
+import { MatButtonToggleChange } from "@angular/material/button-toggle";
+import { CaesarCipherService } from "../caesar-cipher.service";
+import {
+  CHART_OPTIONS_FREQ_GRAPH,
+  CHART_OPTIONS_COMPARE_FREQ,
+  COLUMNS_REFFREQ_LANGUAGE,
+  COLUMN_CALC_FREQ_LANGUAGE,
+  MESSAGE,
+  EQUATION
+} from "../caesar-cipher.constant";
+import { Subscribable, Subscription } from "rxjs";
 
-let DIFFFREQ_DATA: AlphabetElement[] = [];
-
+let DIFF_FREQ_DATA: AlphabetElement[] = [];
 
 @Component({
-    selector: 'app-caesarcipher',
-    styleUrls: ['./caesar-cipher.component.scss'],
-    templateUrl: './caesar-cipher.component.html'
+  selector: "app-caesarcipher",
+  styleUrls: ["./caesar-cipher.component.scss"],
+  templateUrl: "./caesar-cipher.component.html"
 })
-export class CaesarCipher implements OnInit {
+export class CaesarCipher implements OnInit, OnDestroy {
+  private enAlphabetFrequency = EN_ALPHABET_FREQUENCY;
+  private alphabet = ALPHABET;
+  private key = 4;
+  private subscrKey: Subscription;
+  private message = MESSAGE;
+  private subscrMessage: Subscription;
+  private frequencyInPercentage = [];
+  private formatedMessage;
+  private decryptedTexts = [];
+  private freqDecryptedTexts = [];
+  private diffFreqDecryptedTexts = [];
 
-    private enAlphabetFrequency = EN_ALPHABET_FREQUENCY;
-    private alphabet = ALPHABET;
-    private key = 4;
-    private message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
-        'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Neque gravida in fermentum et sollicitudin.' +
-        ' Libero nunc consequat interdum varius sit. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Rhoncus est' +
-        'pellentesque elit ullamcorper dignissim cras tincidunt. Posuere urna nec tincidunt praesent semper feugiat. Ridiculus mus' +
-        'mauris vitae ultricies leo integer malesuada nunc vel. Varius vel pharetra vel turpis nunc eget lorem. Lacinia at quis risus sed' +
-        'vulputate odio ut enim blandit. Vitae suscipit tellus mauris a diam maecenas sed enim. Malesuada fames ac turpis egestas sed ' +
-        ' et pharetra. Elit sed vulputate mi sit amet mauris commodo. Sapien pellentesque habitant morbi tristique senectus et netus et' +
-        ' malesuada. Aliquam etiam erat velit scelerisque. Proin fermentum leo vel orci porta non pulvinar neque.fffffffffffff';
+  // Variables for Tables
+  sortRefFreqLang: SortTable = {
+    sortByColumn: "value",
+    order: Ordering.asc
+  } as SortTable;
+  sortCalcFreqLang: SortTable = {
+    sortByColumn: "sum",
+    order: Ordering.asc
+  } as SortTable;
+  columnsRefFreqLanguage = COLUMNS_REFFREQ_LANGUAGE;
+  columnsCalcFreqLanguage = COLUMN_CALC_FREQ_LANGUAGE;
 
-    // Variables for Tables
-    columnsRefFreqLanguage: string[] = ['name', 'value'];
-    sortRefFreqLang: SortTable = { sortByColumn: 'value', order: Ordering.asc } as SortTable;
-    sortCalcFreqLang: SortTable = { sortByColumn: 'sum', order: Ordering.asc } as SortTable;
+  dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
+  dataSourceCalcFreqLang = new MatTableDataSource();
 
-    columnsCalcFreqLanguage = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-        'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
+  // Options for Graph - Encrypted text graph
+  updateFlagFreqGraph = false;
+  chartOptionsFreqGraph = CHART_OPTIONS_FREQ_GRAPH;
 
-    dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
-    dataSourceCalcFreqLang = new MatTableDataSource();
+  // Options for Graph - Compare letter accuracy with language data values
+  updateFlagCompareFreq = false;
+  chartOptionsCompareFreq = CHART_OPTIONS_COMPARE_FREQ;
+  frequency = [];
+  encryptedText = "";
+  decryptedText = "";
+  ic = -1;
+  passedMinIc = false;
+  nearestLanguage: string;
+  selectedValue = "15";
+  toggleOptions: string[] = Utils.createArrayOfLength(26);
+  minDisctanceLength = "";
+  isLinear = false;
+  inputsFormGroup: FormGroup;
+  secondFormGroup: FormGroup;
+  thirdFormGroup: FormGroup;
+  fourthFormGroup: FormGroup;
 
-    // Options for Graph - Encrypted text graph
-    updateFlagFreqGraph = false;
-    chartOptionsFreqGraph = {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Frequency for encrypted text'
-        },
-        subtitle: {
-            text: ''
-        },
-        xAxis: {
-            type: 'category',
-            title: {
-                text: 'Letters in encrypted text'
-            },
-            labels: {
-                rotation: -45,
-                style: {
-                    fontSize: '13px',
-                    fontFamily: 'Verdana, sans-serif'
-                }
-            }
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Frequency'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            pointFormat: 'Population {point.y:.1f} %</b>'
-        },
-        series: [{
-            name: 'Population',
-            data: [],
-            dataLabels: {
-                enabled: true,
-                rotation: -90,
-                color: '#FFFFFF',
-                align: 'right',
-                format: '{point.y:.1f} %', // one decimal
-                y: 10, // 10 pixels down from the top
-                style: {
-                    fontSize: '13px',
-                    fontFamily: 'Verdana, sans-serif'
-                }
-            }
-        }]
-    };
+  @ViewChild("comparefreqGraph", { static: true })
+  comparefreqGraph: GraphComponent;
+  @ViewChild("freqGraph", { static: true }) freqGraph: GraphComponent;
 
-    // Options for Graph - Compare letter accuracy with language data values
-    updateFlagCompareFreq = false;
-    chartOptionsCompareFreq = {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Compare letter accuracy with language data values'
-        },
-        // subtitle: {
-        //     text: 'Source: WorldClimate.com'
-        // },
-        xAxis: {
-            categories: this.alphabet,
-            crosshair: true
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Frequency'
-            }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-            }
-        },
-        series: [{
-            name: 'Frequencies for decrypted text',
-            data: []
-        }, {
-            name: 'Reference frequencies for language',
-            data: this.enAlphabetFrequency
-        }]
-    };
+  @ViewChild("sortCalcFreq", { static: true }) sortCalcFreq: MatSort;
+  @ViewChild("sortRefFreq", { static: true }) sortRefFreq: MatSort;
 
-    private enAlphabetFreqPerc = [];
-    frequency = [];
-    private frequencyInPercentage = [];
-    private formatedMessage;
-    encryptedText = '';
-    decryptedText = '';
-    ic = -1;
-    passedMinIc = false;
-    nearestLanguage: string;
-    private decryptedTexts = [];
-    private freqDecryptedTexts = [];
-    private actualDataInCompareGraph = [];
-    private diffFreqDecryptedTexts = [];
-    selectedValue = '15';
-    toggleOptions: string[] = [];
-    minDisctanceLength = '';
-  
-    isLinear = false;
-    inputsFormGroup: FormGroup;
-    secondFormGroup: FormGroup;
-    thirdFormGroup: FormGroup;
-    fourthFormGroup: FormGroup;
+  dataSourceCompareFreqGraph;
+  dataSourceFreqGraph;
 
-    @ViewChild('comparefreqGraph', {static: true}) comparefreqGraph: GraphComponent;
-    @ViewChild('freqGraph', {static: true}) freqGraph: GraphComponent;
-    dataSourceCompareFreqGraph;
-    dataSourceFreqGraph;
-    @ViewChild('sortCalcFreq', { static: true }) sortCalcFreq: MatSort;
-    @ViewChild('sortRefFreq', { static: true }) sortRefFreq: MatSort;
-    equation = '\\sum_{i=A}^{i=Z}\\frac {n_i (n_i - 1)} {N (N - 1)}  ';
+  equation = EQUATION;
 
-    ngOnInit(): void {
+  constructor(
+    private _formBuilder: FormBuilder,
+    private caesarCipherService: CaesarCipherService
+  ) {}
 
-        this.inputsFormGroup = this._formBuilder.group({
-            key: [this.key, Validators.required],
-            message: [this.message, Validators.required]
-        });
+  ngOnInit(): void {
+    this.inputsFormGroup = this._formBuilder.group({
+      key: [this.key, Validators.required],
+      message: [MESSAGE, Validators.required]
+    });
 
-        this.dataSourceRefFreqLang.sort = this.sortRefFreq;
-        this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
-        //  ---------------   Ceaser Cipher  -------------
-        console.log(" ------------ Ceaser Cipher ------------");
-        console.log('For testing: aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz');
-        this.toggleOptions = Array.from(Array(26), (x, index) => (index + 1).toString());
+    this.subscrMessage = this.inputsFormGroup.controls.message.valueChanges.subscribe(
+      newMessage => {
+        this.message = newMessage;
+      }
+    );
 
-        //Freq na percenta
-        this.enAlphabetFrequency.forEach(element => {
-            this.enAlphabetFreqPerc.push(Math.round(element * 100) / 10000);
-        });
+    this.subscrKey = this.inputsFormGroup.controls.key.valueChanges.subscribe(
+      newKey => {
+        this.key = newKey;
+      }
+    );
 
-        this.enDeCryptMessage();
+    // Setting sorting for table
+    this.dataSourceRefFreqLang.sort = this.sortRefFreq;
+    this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
+
+    this.enDeCryptMessage();
+  }
+
+  public enDeCryptMessage() {
+    DIFF_FREQ_DATA = [];
+    // word and function will be executed for every match
+
+    const formatedMessage = Utils.stripWhiteSpToLowerCase(this.message);
+    this.encryptedText = this.caesarCipherService.encrypt(
+      formatedMessage,
+      this.key
+    );
+    this.decryptedText = this.caesarCipherService.decrypt(
+      this.key,
+      this.encryptedText
+    );
+    this.calculateFrequencyGraph();
+
+    // TO DO
+    this.getIC();
+
+    this.nearestLanguage = AnalysisText.findNearestLanguage(
+      this.ic,
+      LANGUAGEIC_DATA
+    );
+
+    if (this.nearestLanguage === "Min IC") {
+      this.passedMinIc = true;
     }
 
-    constructor(private _formBuilder: FormBuilder) { }
+    // desifrovanie pre kazdy kluc <1-26>
+    this.decryptedTexts = this.caesarCipherService.decryptForEveryKey(this.encryptedText);
 
+    // Calculate frequency for all decrypted options. Shift 1-26
+    this.freqDecryptedTexts = AnalysisText.computeFreqForArray(
+      this.decryptedTexts
+    );
 
-    public enDeCryptMessage() {
-        DIFFFREQ_DATA = [];
-        // word and function will be executed for every match
-        // Strip all whitespaces and toLowerCase
-        this.formatedMessage = this.inputsFormGroup.controls.message.value.replace(/\s/g, '').toLowerCase();
-        this.encrypt();
-        this.decryptedText = this.decrypt();
-        this.calculateFrequencyGraph();
+    this.calculateDiffFreqGraphTable(this.freqDecryptedTexts);
 
-        // TO DO 
-        this.getIC();
+  }
 
+  // Change data for CompareFreq based of selection <1-26>
+  selectionOfGraphChanged(item: MatButtonToggleChange) {
+    this.dataSourceCompareFreqGraph = Array.from(
+      this.freqDecryptedTexts[item.value - 1]
+    );
+    this.comparefreqGraph.updateGraph();
+    console.log("Selected value: ", item.value);
+    console.log(this.dataSourceCompareFreqGraph);
+  }
 
-        this.nearestLanguage = AnalysisText.findNearestLanguage(this.ic, LANGUAGEIC_DATA);
-        if (this.nearestLanguage === 'Min IC') {
-            this.passedMinIc = true;
-        }
-        console.log('Frequency in %', this.frequencyInPercentage);
+  public calculateDiffFreqGraphTable(freqDecryptedTexts: Array<string>) {
 
-        // desifrovanie pre kazdy kluc <1-26>
-        this.decryptedTexts = this.decryptForEveryKey();
+    // Calculate differecnies between frequancies of input text and referal values for language
+    // for every letter
+    let minDistance = 100;
+    this.minDisctanceLength = '';
+    const bestDisLength = {};
 
-        // Calculate frequency for all decrypted options. Shift 1-26
-        this.freqDecryptedTexts = AnalysisText.computeFreqForArray(this.decryptedTexts);
-        console.log(this.freqDecryptedTexts);
+    for (let currentText = 0; currentText < freqDecryptedTexts.length; currentText++) {
+      const freqForOneShift = freqDecryptedTexts[currentText];
+      const diffFreqForOneShift = [];
+      const lang = {} as AlphabetElement;
 
-        // Calculate differecnies between frequancies of input text and referal values for language 
-        // for every letter
-        let minDistance = 100;
-        this.minDisctanceLength = '';
-        const approximatedDisLength = {};
+      for (let letter = 0; letter < freqForOneShift.length; letter++) {
+        const freqDiff =
+          Math.round(
+            Math.abs(
+              +freqForOneShift[letter] - EN_ALPHABET_FREQUENCY[letter]
+            ) * 100
+          ) / 100;
+        diffFreqForOneShift.push(freqDiff);
+        lang[this.alphabet[letter]] = freqDiff;
+      }
+      this.diffFreqDecryptedTexts[currentText] = diffFreqForOneShift;
+      lang.shift = (currentText + 1).toString();
 
-        for (let row = 0; row < this.freqDecryptedTexts.length; row++) {
-            const freqForOneShift = this.freqDecryptedTexts[row];
-            const diffFreqForOneShift = [];
-            const lang = {} as AlphabetElement;
+      lang.sum =
+        Math.round(
+          this.diffFreqDecryptedTexts[currentText].reduce(Utils.sumFunc) * 100
+        ) / 100;
 
-            for (let letter = 0; letter < freqForOneShift.length; letter++) {
-                const freqDiff = Math.round(Math.abs(freqForOneShift[letter] - this.enAlphabetFrequency[letter]) * 100) / 100;
-                diffFreqForOneShift.push(freqDiff);
-                lang[this.alphabet[letter]] = freqDiff;
-            }
-            this.diffFreqDecryptedTexts[row] = diffFreqForOneShift;
-            lang.shift = (row + 1).toString();
+      DIFF_FREQ_DATA.push(lang);
 
-            lang.sum = Math.round(this.diffFreqDecryptedTexts[row].reduce(Utils.sumFunc) * 100) / 100;
-            DIFFFREQ_DATA.push(lang);
-            console.log(lang.shift);
-            console.log(lang.sum);
-            if (lang.sum <= minDistance) {
-                minDistance = lang.sum;
-                approximatedDisLength[lang.shift] = lang.sum;
-            }
-        }
-        this.dataSourceCalcFreqLang.data = DIFFFREQ_DATA;
-        console.log('Data Calc', this.dataSourceCalcFreqLang);
-        console.log('Data Ref', this.dataSourceRefFreqLang);
-        console.log('approximatedDisLength', approximatedDisLength);
-
-        // sortovanie od najmensieh po najvacsie a vybratie najmensieho
-        this.minDisctanceLength = Object.keys(approximatedDisLength).sort( (a, b) => {
-            return approximatedDisLength[a] - approximatedDisLength[b];
-        })[0];
-        this.selectedValue = this.minDisctanceLength;
-
-        this.dataSourceCompareFreqGraph =  Array.from(this.freqDecryptedTexts[+this.minDisctanceLength - 1 ]);
-        this.comparefreqGraph.updateGraph();
-
-        console.log('Min Distance Length', this.minDisctanceLength);
-
+      if (lang.sum <= minDistance) {
+        minDistance = lang.sum;
+        bestDisLength[lang.shift] = lang.sum;
+      }
     }
+    this.dataSourceCalcFreqLang.data = DIFF_FREQ_DATA;
 
-    // Change data for CompareFreq based of selection <1-26>
-    selectionOfGraphChanged(item: MatButtonToggleChange) {
-        this.dataSourceCompareFreqGraph = Array.from(this.freqDecryptedTexts[item.value - 1]);
-        this.comparefreqGraph.updateGraph();
-        console.log('Selected value: ', item.value);
-        console.log(this.dataSourceCompareFreqGraph);
-    }
+    // console.log("Data Calc", this.dataSourceCalcFreqLang);
+    // console.log("Data Ref", this.dataSourceRefFreqLang);
+    // console.log("approximatedDisLength", bestDisLength);
 
-    public encrypt() {
-        this.encryptedText = '';
-        for (const letter of this.formatedMessage) {
-            const letterAscii = letter.charCodeAt(0);
+    // sortovanie od najmensieh po najvacsie a vybratie najmensieho
+    this.minDisctanceLength = Utils.sortAsc(bestDisLength)[0];
+    this.selectedValue = this.minDisctanceLength;
 
-            const encryptedLetter: number = (((letterAscii - A_ASCII) +
-                this.inputsFormGroup.controls.key.value + 26) % 26) + A_ASCII;
+    this.dataSourceCompareFreqGraph = Array.from(
+      this.freqDecryptedTexts[+this.minDisctanceLength - 1]
+    );
+    this.comparefreqGraph.updateGraph();
 
-            this.encryptedText += String.fromCharCode(encryptedLetter);
-        }
-    }
+    console.log("Min Distance Length", this.minDisctanceLength);
 
-    public decryptForEveryKey(): Array<string> {
-        const decryptedTexts = [];
-        for (let key = 1; key <= this.alphabet.length; key++) {
-            decryptedTexts.push(this.decrypt(key));
-        }
-        return decryptedTexts;
-    }
+  }
 
-    public decrypt(inputKey?: number): string {
-        let key: number;
-        let decryptedText = '';
+  // Calculate frequencies for FreqGraph and update data in Graph
+  public calculateFrequencyGraph() {
+    this.frequency = AnalysisText.getFrequencyOfText(this.encryptedText);
+    const encryptedTextLength = this.encryptedText.length;
+    this.frequencyInPercentage = AnalysisText.freqToPerc(
+        this.frequency,
+        encryptedTextLength
+      );
+    this.dataSourceFreqGraph = AnalysisText.mapLetterToFreqPerc(this.frequency, this.frequencyInPercentage);
+    this.freqGraph.updateGraph();
+  }
 
-        if (typeof inputKey === 'undefined') {
-            key = this.inputsFormGroup.controls.key.value;
-        } else {
-            key = inputKey;
-        }
-        for (const letter of this.encryptedText) {
-            const letterAscii = letter.charCodeAt(0);
-            const decryptedLetter: number = ((letterAscii - A_ASCII - key + 26) % 26) + A_ASCII;
-            decryptedText += String.fromCharCode(decryptedLetter);
-        }
-        return decryptedText;
-    }
+  // Calculate Index of coincidence and find nearest Language
+  public getIC() {
+    let ic = 0;
+    this.frequencyInPercentage.forEach(element => {
+      element = element / 100;
+      ic += element * element;
+    });
+    this.ic = ic;
+  }
 
-    // Calculate frequencies for FreqGraph
-    public calculateFrequencyGraph() {
-        this.frequency = AnalysisText.getFrequencyOfText(this.encryptedText);
-        this.frequencyInPercentage = [];
-        const encryptedTextLength = this.encryptedText.length;
-
-        console.log(this.frequency);
-        const tmpData = [];
-        for (let index = 0; index < this.frequency.length; index++) {
-            let inPercentage = this.frequency[index] / encryptedTextLength * 100;
-            inPercentage = Math.round(inPercentage * 100) / 100;
-            this.frequencyInPercentage.push(inPercentage);
-            tmpData.push([this.alphabet[index], inPercentage]);
-        }
-        this.chartOptionsFreqGraph.series[0].data = tmpData;
-        this.dataSourceFreqGraph = tmpData;
-        this.freqGraph.updateGraph();
-        console.log(this.chartOptionsFreqGraph.series[0].data);
-    }
-
-
-    // Calculate Index of coincidence and find nearest Language
-    public getIC() {
-        let ic = 0;
-        this.frequencyInPercentage.forEach(element => {
-            element = element / 100;
-            ic += element * element;
-        });
-        this.ic = ic;
-    }
-
+  ngOnDestroy() {
+    this.subscrMessage.unsubscribe();
+    this.subscrKey.unsubscribe();
+  }
 }
