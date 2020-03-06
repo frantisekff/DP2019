@@ -79,16 +79,8 @@ export default class AnalysisText {
   static computeFreqForArray(texts: string[]) {
     const freqForTexts = [];
     texts.forEach(text => {
-      const length = text.length;
-      const compFreq = AnalysisText.getFrequencyOfText(text);
-      const compFreqInPerc = [];
-
-      compFreq.forEach(alphabet => {
-        let inPercentage = (alphabet / length) * 100;
-        inPercentage = Math.round(inPercentage * 100) / 100;
-        compFreqInPerc.push(inPercentage);
-      });
-      freqForTexts.push(compFreqInPerc);
+      const freqInPerc = AnalysisText.getFrequencyOfTextPerc(text);
+      freqForTexts.push(freqInPerc);
     });
     return freqForTexts;
   }
