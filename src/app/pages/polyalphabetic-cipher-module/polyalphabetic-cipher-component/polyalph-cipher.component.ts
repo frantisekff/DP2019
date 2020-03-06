@@ -22,10 +22,7 @@ export class PolyalphCipher implements OnInit {
 
     private key = 'abc';
     // Array to length of key for iterate to length of key
-    private message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
-        'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Neque gravida in fermentum et sollicitudin.' +
-        ' Libero nunc consequat interdum varius sit. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Rhoncus est' +
-        'pellentesque elit ullamcorper dignissim cras tincidunt. Posuere urna nec tincidunt praesent semper feugiat. Ridiculus mus';
+    private message = 'theenglishwikipediawasthefirstwikipediaeditionandhasremainedthelargestithaspioneeredmanyideasasconventionspoliciesorfeatureswhichwerelateradoptedbywikipediaeditionsinsomeoftheotherlanguagestheseideasincludefeaturedarticlestheneutralpointofviewpolicynavigationtemplatesthesortingofshortstubarticlesintosubcategoriesdisputeresolutionmechanismssuchasmediationandarbitrationandweeklycollaborationstheenglishwikipediahasadoptedfeaturesfromwikipediasinotherlanguagesthesefeaturesincludeverifiedrevisionsfromthegermanwikipediadewikiandtownpopulationlookuptemplatesfromthedutchwikipedianlwikialthoughtheenglishwikipediastoresimagesandaudiofilesaswellastextfilesmanyoftheimageshavebeenmovedtowikimediacommonswiththesamenameaspassedthroughfileshowevertheenglishwikipediaalsohasfairuseimagesandaudiovideofileswithcopyrightrestrictionsmostofwhicharenotallowedoncommonsmanyofthemostactiveparticipantsinthewikimediafoundationandthedevelopersofthemediawikisoftwarethatpowerswikipediaareenglishusers';
 
     private encMessageSplitted: string[];
 

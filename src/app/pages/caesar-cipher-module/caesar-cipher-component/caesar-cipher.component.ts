@@ -149,7 +149,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
     this.calculateFrequencyGraph();
 
     // TO DO
-    this.getIC();
+    this.ic = AnalysisText.getIC( this.frequency, this.encryptedText.length);
 
     this.nearestLanguage = AnalysisText.findNearestLanguage(
       this.ic,
@@ -249,16 +249,6 @@ export class CaesarCipher implements OnInit, OnDestroy {
       );
     this.dataSourceFreqGraph = AnalysisText.mapLetterToFreqPerc(this.frequency, this.frequencyInPercentage);
     this.freqGraph.updateGraph();
-  }
-
-  // Calculate Index of coincidence and find nearest Language
-  public getIC() {
-    let ic = 0;
-    this.frequencyInPercentage.forEach(element => {
-      element = element / 100;
-      ic += element * element;
-    });
-    this.ic = ic;
   }
 
   ngOnDestroy() {

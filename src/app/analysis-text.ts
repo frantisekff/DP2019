@@ -67,9 +67,9 @@ export default class AnalysisText {
   }
 
   // Calculate Index of coincidence
-  static getIC(frequencyInPercentage: number[], length: number): number {
+  static getIC(absoluteFreq: number[], length: number): number {
     let ic = 0;
-    frequencyInPercentage.forEach(element => {
+    absoluteFreq.forEach(element => {
       ic += element * (element - 1);
     });
     ic /= length * (length - 1);
