@@ -7,8 +7,9 @@ export default class Utils {
     return Object.keys(object).find(key => object[key] === value);
   }
 
-  static createArrayOfLength(num: number): string[] {
-    return Array.from(Array(num), (x, index) => (index + 1).toString());
+  static createArrayOfLength(num: number, from?: number): string[] {
+    const fromNumber = from ?  from : 0;
+    return Array.from(Array(num), (x, index) => (index + fromNumber).toString());
   }
 
   // Strip all whitespaces and toLowerCase
@@ -16,7 +17,7 @@ export default class Utils {
     return text.replace(/\s/g, '').toLowerCase();
   }
 
-  static sortAsc(data: {}): string[]{
+  static sortObjectAsc(data: {}): string[]{
     const sorted = Object.keys(data).sort(
         (a, b) => {
           return data[a] - data[b];
