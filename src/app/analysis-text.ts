@@ -35,7 +35,6 @@ export default class AnalysisText {
   ): [string, number][] {
     const data = [];
 
-
     for (let index = 0; index < frequency.length; index++) {
       data.push([ALPHABET[index], frequencyInPercentage[index]]);
     }
@@ -76,7 +75,7 @@ export default class AnalysisText {
     return ic;
   }
 
-  static computeFreqForArray(texts: string[]) {
+  static computeFreqForArray(texts: string[]): number[][] {
     const freqForTexts = [];
     texts.forEach(text => {
       const freqInPerc = AnalysisText.getFrequencyOfTextPerc(text);
