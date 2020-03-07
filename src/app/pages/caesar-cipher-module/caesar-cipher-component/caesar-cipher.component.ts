@@ -1,29 +1,29 @@
-import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
-import { MatSort } from "@angular/material/sort";
-import { MatTableDataSource } from "@angular/material/table";
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   AbstractControl
-} from "@angular/forms";
+} from '@angular/forms';
 import {
   AlphabetElement,
   SortTable,
   Ordering
-} from "../../../models/common.model";
+} from '../../../models/common.model';
 import {
   LANGUAGEIC_DATA,
   EN_ALPHABET_FREQUENCY,
   ALPHABET,
   A_ASCII,
   EN_ALPHABET_FREQUENCY_PERC
-} from "../../../constants/language.constants";
-import AnalysisText from "../../../analysis-text";
-import Utils from "src/app/utils";
-import { GraphComponent } from "src/app/components/graph/graph.component";
-import { MatButtonToggleChange } from "@angular/material/button-toggle";
-import { CaesarCipherService } from "../caesar-cipher.service";
+} from '../../../constants/language.constants';
+import AnalysisText from '../../../analysis-text';
+import Utils from 'src/app/utils';
+import { GraphComponent } from 'src/app/components/graph/graph.component';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { CaesarCipherService } from '../caesar-cipher.service';
 import {
   CHART_OPTIONS_FREQ_GRAPH,
   CHART_OPTIONS_COMPARE_FREQ,
@@ -31,15 +31,15 @@ import {
   COLUMN_CALC_FREQ_LANGUAGE,
   MESSAGE,
   EQUATION
-} from "../caesar-cipher.constant";
-import { Subscribable, Subscription } from "rxjs";
+} from '../caesar-cipher.constant';
+import { Subscribable, Subscription, Subject } from 'rxjs';
 
 let DIFF_FREQ_DATA: AlphabetElement[] = [];
 
 @Component({
-  selector: "app-caesarcipher",
-  styleUrls: ["./caesar-cipher.component.scss"],
-  templateUrl: "./caesar-cipher.component.html"
+  selector: 'app-caesarcipher',
+  styleUrls: ['./caesar-cipher.component.scss'],
+  templateUrl: './caesar-cipher.component.html'
 })
 export class CaesarCipher implements OnInit, OnDestroy {
   private enAlphabetFrequency = EN_ALPHABET_FREQUENCY;
@@ -56,11 +56,11 @@ export class CaesarCipher implements OnInit, OnDestroy {
 
   // Variables for Tables
   sortRefFreqLang: SortTable = {
-    sortByColumn: "value",
+    sortByColumn: 'value',
     order: Ordering.asc
   } as SortTable;
   sortCalcFreqLang: SortTable = {
-    sortByColumn: "sum",
+    sortByColumn: 'sum',
     order: Ordering.asc
   } as SortTable;
   columnsRefFreqLanguage = COLUMNS_REFFREQ_LANGUAGE;
@@ -68,6 +68,10 @@ export class CaesarCipher implements OnInit, OnDestroy {
 
   dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
   dataSourceCalcFreqLang = new MatTableDataSource();
+
+  dataSourceRefFreqLangReady = new Subject<boolean>();
+  dataSourceCalcFreqLangReady = new Subject<boolean>();
+
 
   // Options for Graph - Encrypted text graph
   updateFlagFreqGraph = false;
@@ -77,26 +81,26 @@ export class CaesarCipher implements OnInit, OnDestroy {
   updateFlagCompareFreq = false;
   chartOptionsCompareFreq = CHART_OPTIONS_COMPARE_FREQ;
   frequency = [];
-  encryptedText = "";
-  decryptedText = "";
+  encryptedText = '';
+  decryptedText = '';
   ic = -1;
   passedMinIc = false;
   nearestLanguage: string;
-  selectedValue = "15";
-  toggleOptions: string[] = Utils.createArrayOfLength(26);
-  minDisctanceLength = "";
+  selectedValue = '15';
+  toggleOptions: string[] = Utils.createArrayOfLength(26, 1);
+  minDisctanceLength = '';
   isLinear = false;
   inputsFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
   fourthFormGroup: FormGroup;
 
-  @ViewChild("comparefreqGraph", { static: true })
+  @ViewChild('comparefreqGraph', { static: true })
   comparefreqGraph: GraphComponent;
-  @ViewChild("freqGraph", { static: true }) freqGraph: GraphComponent;
+  @ViewChild('freqGraph', { static: true }) freqGraph: GraphComponent;
 
-  @ViewChild("sortCalcFreq", { static: true }) sortCalcFreq: MatSort;
-  @ViewChild("sortRefFreq", { static: true }) sortRefFreq: MatSort;
+  @ViewChild('sortCalcFreq', { static: true }) sortCalcFreq: MatSort;
+  @ViewChild('sortRefFreq', { static: true }) sortRefFreq: MatSort;
 
   dataSourceCompareFreqGraph;
   dataSourceFreqGraph;
@@ -109,6 +113,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.dataSourceRefFreqLangReady.next(true);
     this.inputsFormGroup = this._formBuilder.group({
       key: [this.key, Validators.required],
       message: [MESSAGE, Validators.required]
@@ -125,10 +130,6 @@ export class CaesarCipher implements OnInit, OnDestroy {
         this.key = newKey;
       }
     );
-
-    // Setting sorting for table
-    this.dataSourceRefFreqLang.sort = this.sortRefFreq;
-    this.dataSourceCalcFreqLang.sort = this.sortCalcFreq;
 
     this.enDeCryptMessage();
   }
@@ -156,7 +157,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
       LANGUAGEIC_DATA
     );
 
-    if (this.nearestLanguage === "Min IC") {
+    if (this.nearestLanguage === 'Min IC') {
       this.passedMinIc = true;
     }
 
@@ -178,7 +179,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
       this.freqDecryptedTexts[item.value - 1]
     );
     this.comparefreqGraph.updateGraph();
-    console.log("Selected value: ", item.value);
+    console.log('Selected value: ', item.value);
     console.log(this.dataSourceCompareFreqGraph);
   }
 
@@ -221,13 +222,16 @@ export class CaesarCipher implements OnInit, OnDestroy {
       }
     }
     this.dataSourceCalcFreqLang.data = DIFF_FREQ_DATA;
+    this.dataSourceCalcFreqLang._updateChangeSubscription();
+
+    this.dataSourceCalcFreqLangReady.next(true);
 
     // console.log("Data Calc", this.dataSourceCalcFreqLang);
     // console.log("Data Ref", this.dataSourceRefFreqLang);
     // console.log("approximatedDisLength", bestDisLength);
 
     // sortovanie od najmensieh po najvacsie a vybratie najmensieho
-    this.minDisctanceLength = Utils.sortAsc(bestDisLength)[0];
+    this.minDisctanceLength = Utils.sortObjectAsc(bestDisLength)[0];
     this.selectedValue = this.minDisctanceLength;
 
     this.dataSourceCompareFreqGraph = Array.from(
@@ -235,7 +239,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
     );
     this.comparefreqGraph.updateGraph();
 
-    console.log("Min Distance Length", this.minDisctanceLength);
+    console.log('Min Distance Length', this.minDisctanceLength);
 
   }
 
