@@ -16,6 +16,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { TableComponent } from '../../components/table/table.component';
 import { SharedModule } from '../../shared/shared.module';
 import { PolyalphCipherService } from './polyalphabetic-cipher.service';
+import { PolyalphBoxesComponentComponent } from './polyalphabetic-cipher-component/polyalph-boxes-component/polyalph-boxes-component.component';
 
 const polyalphRoutes: Routes = [
   { path: '', component: PolyalphCipher},
@@ -23,7 +24,8 @@ const polyalphRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    PolyalphCipher
+    PolyalphCipher,
+    PolyalphBoxesComponentComponent
   ],
   imports: [
     CommonModule,
