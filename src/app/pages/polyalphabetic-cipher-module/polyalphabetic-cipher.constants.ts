@@ -1,0 +1,13 @@
+export const COLUMNS_REFFREQ_LANGUAGE: string[] = ['name', 'value'];
+
+export const MESSAGE =
+    'theenglishwikipediawasthefirstwikipediaeditionandhasremainedthelargestithaspioneeredmanyi' +
+    'deasasconventionspoliciesorfeatureswhichwerelateradoptedbywikipediaeditionsinsomeoftheother' +
+    'languagestheseideasincludefeaturedarticlestheneutralpointofviewpolicynavigationtemplatesthesor' +
+    'tingofshortstubarticlesintosubcategoriesdisputeresolutionmechanismssuchasmediationandarbitration' +
+    'andweeklycollaborationstheenglishwikipediahasadoptedfeaturesfromwikipediasinotherlanguagesthesefeatures' +
+    'includeverifiedrevisionsfromthegermanwikipediadewikiandtownpopulationlookuptemplatesfromthedutchwikipedianlwikial' +
+    'thoughtheenglishwikipediastoresimagesandaudiofilesaswellastextfilesmanyoftheimageshavebeenmovedtowikimediacommonswiththe' +
+    'samenameaspassedthroughfileshowevertheenglishwikipediaalsohasfairuseimagesandaudiovideofileswithcopyrightrestrictionsmostof' +
+    'whicharenotallowedoncommonsmanyofthemostactiveparticipantsinthewikimediafoundationandthedevelopersofthemediawikisoftwarethat' +
+    'powerswikipediaareenglishusers';

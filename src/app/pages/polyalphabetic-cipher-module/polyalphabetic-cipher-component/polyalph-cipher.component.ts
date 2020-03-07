@@ -1,79 +1,69 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import * as Highcharts from 'highcharts';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, filter } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
 
 import {
   AlphabetElement,
   SortTable,
   Ordering
-} from '../../../models/common.model';
+} from "../../../models/common.model";
 import {
   LANGUAGEIC_DATA,
   EN_ALPHABET_FREQUENCY,
   ALPHABET,
   COLORS,
-  A_ASCII
-} from '../../../constants/language.constants';
-import Utils from 'src/app/utils';
-import AnalysisText from 'src/app/analysis-text';
-
-const DIFFFREQ_DATA: AlphabetElement[] = [];
+  A_ASCII,
+  EN_ALPHABET_FREQUENCY_PERC
+} from "../../../constants/language.constants";
+import Utils from "src/app/utils";
+import AnalysisText from "src/app/analysis-text";
+import { Subject } from "rxjs";
+import { MESSAGE } from "../polyalphabetic-cipher.constants";
+import { PolyalphCipherService } from "../polyalphabetic-cipher.service";
 
 @Component({
-  selector: 'app-polyalphcipher',
-  styleUrls: ['./polyalph-cipher.component.scss'],
-  templateUrl: './polyalph-cipher.component.html'
+  selector: "app-polyalphcipher",
+  styleUrls: ["./polyalph-cipher.component.scss"],
+  templateUrl: "./polyalph-cipher.component.html"
 })
 export class PolyalphCipher implements OnInit {
   colors = COLORS;
-
-  private key = 'abc';
-  // Array to length of key for iterate to length of key
-  private message = `theenglishwikipediawasthefirstwikipediaeditionandhasremainedthelargestithaspioneeredmanyi
-    deasasconventionspoliciesorfeatureswhichwerelateradoptedbywikipediaeditionsinsomeoftheotherl
-    anguagestheseideasincludefeaturedarticlestheneutralpointofviewpolicynavigationtemplatesthesortin
-    gofshortstubarticlesintosubcategoriesdisputeresolutionmechanismssuchasmediationandarbitrationandweeklyco
-    llaborationstheenglishwikipediahasadoptedfeaturesfromwikipediasinotherlanguagesthesefeaturesincludeverifiedr
-    evisionsfromthegermanwikipediadewikiandtownpopulationlookuptemplatesfromthedutchwikipedianlwikialthoughtheenglishwi
-    kipediastoresimagesandaudiofilesaswellastextfilesmanyoftheimageshavebeenmovedtowikimediacommonswiththesamenameaspassedth
-    roughfileshowevertheenglishwikipediaalsohasfairuseimagesandaudiovideofileswithcopyrightrestrictionsmostofwhicharenotallowedonc
-    ommonsmanyofthemostactiveparticipantsinthewikimediafoundationandthedeveloperso
-    fthemediawikisoftwarethatpowerswikipediaareenglishusers`;
-
+  private key = "abc";
+  private message = MESSAGE;
   private encMessageSplitted: string[];
-
-  private enAlphabetFreqPerc = [];
+  private enAlphabetFreqPerc = EN_ALPHABET_FREQUENCY_PERC;
   private formatedMessage;
-  private encryptedText = '';
-  decryptedText = '';
+  private encryptedText = "";
+  private nearestLanguage: string;
+  private maxSelectedValue = 17;
+  private allBoxesFrequency: number[][][] = [];
+  private allBoxesAvgIc = [];
+  private webWorker: Worker;
+  private maxGuessKeyLength = 3;
+
+  decryptedText = "";
   ic = -1;
   passedMinIc = false;
-  private nearestLanguage: string;
-  selectedValue = '2';
-  private maxSelectedValue = 17;
+  selectedValue = "2";
   toggleOptions: string[] = [];
-  private allBoxesFrequency: number[][][] = [];
   allBoxesIc: number[][] = [];
-  private allBoxesAvgIc = [];
   allBoxes;
   highestIC;
   bestKeyLength;
   best10Results = [];
-  columnsBestResults: string[] = ['key', 'sum', 'decryptedText'];
+  columnsBestResults: string[] = ["key", "sum", "decryptedText"];
   sortBestResults: SortTable = {
-    sortByColumn: 'sum',
-    order: Ordering.desc
+    sortByColumn: "sum",
+    order: Ordering.asc
   } as SortTable;
-  dataSourceBestResults: MatTableDataSource<any>;
-  private webWorker: Worker;
-  private output;
+  dataSourceBestResults = new MatTableDataSource<any>();
+  dataSourceBestResultsReady = new Subject<boolean>();
+  allCombinations = [];
+
+  constructor(private polyalphCipherService: PolyalphCipherService) {}
 
   ngOnInit(): void {
-    if (typeof Worker !== 'undefined') {
-      this.webWorker = new Worker('./polyalphabetic-cipher-webworker.worker', {
+    if (typeof Worker !== "undefined") {
+      this.webWorker = new Worker("./polyalphabetic-cipher-webworker.worker", {
         type: `module`
       });
 
@@ -81,188 +71,80 @@ export class PolyalphCipher implements OnInit {
         const freqAllCombinations = event.data.freqAllCombinations;
         const decryptedAllCombinations = event.data.decryptedAllCombinations;
 
-        const result = this.calcDiffEnAlphAndAllDecTexts(
+        const result = this.polyalphCipherService.calcDiffEnAlphAndAllDecTexts(
           freqAllCombinations,
-          allCombinations,
+          this.allCombinations,
           decryptedAllCombinations
         );
-
-        console.log('All Minimum', result.minimDiffFreqAllCombinations);
-        console.log('All Diff', result.diffFreqAllCombinations);
-
-        const sortedDiff = result.diffFreqAllCombinations[2].sort(
-          (a, b) => a.sum - b.sum
+        const sortedDiff = this.polyalphCipherService.choose10bestResults(
+          result.diffFreqAllCombinations
         );
-
-        console.log('Sorted Diff', sortedDiff);
-        this.best10Results = sortedDiff.slice(0, 9).map(data => {
-          data['decryptedText'] = data['decryptedText'].substring(0, 30);
-          return data;
-        });
-        this.dataSourceBestResults = new MatTableDataSource(this.best10Results);
-
-        console.log('From Web Worker:', event.data);
+        this.remapDataTableBestResult(sortedDiff);
+        console.log("From Web Worker:", event.data);
       };
     }
-
-    //  ---------------   Polyalphabetic Cipher  -------------
-    console.log(' ------------ Polyalphabetic Cipher ------------');
-
-    // Frequency to percentage
-    EN_ALPHABET_FREQUENCY.forEach(element => {
-      this.enAlphabetFreqPerc.push(Math.round(element * 100) / 10000);
-    });
     // generate array <2-16>
-    this.toggleOptions = Array.from(
-      { length: this.maxSelectedValue - 2 },
-      (x, i) => (i + 2).toString()
+    this.toggleOptions = Utils.createArrayOfLength(
+      this.maxSelectedValue - 2,
+      2
     );
 
-    this.enDeCryptMessage();
-    this.selectionOfGraphChanged({ value: this.selectedValue });
-
-    const maxGuessKeyLength = 3;
-    const allCombinations = this.computeCombinationKeyLength(maxGuessKeyLength);
-    console.log('All Combinations', allCombinations);
-
-  
-
-    // console.log(
-    //   "Decrypted Texts for All Combinations",
-    //   decryptedAllCombinations
-    // );
-    // this.webWorker.postMessage(decryptedAllCombinations[0]);
-
-    // Calculate frequency for all decrypted options.
-    // const freqAllCombinations = this.calcFreqForTexts(decryptedAllCombinations);
-    // console.log("Freq for All Combinations", freqAllCombinations);
-    this.webWorker.postMessage([allCombinations, this.encryptedText]);
-
-    // Calculate differencies between en alphabet freq and all decrypted options.
-    // Find minimum differences from all decrypted texts
-    // const result = this.calcDiffEnAlphAndAllDecTexts(
-    //   freqAllCombinations,
-    //   allCombinations,
-    //   decryptedAllCombinations
-    // );
-
-    // console.log("All Minimum", result.minimDiffFreqAllCombinations);
-    // console.log("All Diff", result.diffFreqAllCombinations);
-
-    // const sortedDiff = result.diffFreqAllCombinations[2].sort(
-    //   (a, b) => a.sum - b.sum
-    // );
-
-    // console.log("Sorted Diff", sortedDiff);
-    // this.best10Results = sortedDiff.slice(0, 9).map(data => {
-    //   data["decryptedText"] = data["decryptedText"].substring(0, 30);
-    //   return data;
-    // });
-    // this.dataSourceBestResults = new MatTableDataSource(this.best10Results);
+    this.calcDataForPage();
   }
 
-
-
-  calcFreqForTexts(decryptedAllCombinations): number[][][] {
-    const freqAllCombinations: number[][][] = [];
-    for (const allMessagesOfLength of decryptedAllCombinations) {
-      const forArray = AnalysisText.computeFreqForArray(allMessagesOfLength);
-      freqAllCombinations.push(forArray);
-    }
-    return freqAllCombinations;
-  }
-
-  // Calculate differencies between en alphabet freq and all decrypted options.
-  private calcDiffEnAlphAndAllDecTexts(
-    freqAllCombinations: number[][][],
-    allCombinations,
-    decryptedAllCombinations
-  ) {
-    const diffFreqAllCombinations = [];
-    const minimDiffFreqAllCombinations = [];
-    for (
-      let keyLength = 0;
-      keyLength < freqAllCombinations.length;
-      keyLength++
-    ) {
-      let diffFreqDecryptedTexts = [];
-      let minForKeyLength = 1000;
-      let minForKeyLengthIndex = 0;
-
-      for (let row = 0; row < freqAllCombinations[keyLength].length; row++) {
-        const freqForKeyLength = freqAllCombinations[keyLength][row];
-        const diffFreqForKeyLength = [];
-        const lang = {} as AlphabetElement;
-
-        for (let letter = 0; letter < freqForKeyLength.length; letter++) {
-          const freqDiff =
-            Math.round(
-              Math.abs(
-                freqForKeyLength[letter] - EN_ALPHABET_FREQUENCY[letter]
-              ) * 100
-            ) / 100;
-          diffFreqForKeyLength.push(freqDiff);
-          lang[ALPHABET[letter]] = freqDiff;
-        }
-
-        lang.sum =
-          Math.round(diffFreqForKeyLength.reduce(Utils.sumFunc) * 100) / 100;
-        lang.key = allCombinations[keyLength][row];
-        lang.decryptedText = decryptedAllCombinations[keyLength][row];
-        // Find min sum for KeyLength
-        if (minForKeyLength > lang.sum) {
-          minForKeyLength = lang.sum;
-          minForKeyLengthIndex = row;
-        }
-
-        diffFreqDecryptedTexts[row] = lang;
-      }
-      // console.log('Diff Freq for All Combinations', diffFreqDecryptedTexts);
-      diffFreqAllCombinations.push(diffFreqDecryptedTexts);
-      diffFreqDecryptedTexts = [];
-      // console.log('Minimum', minForKeyLength);
-      minimDiffFreqAllCombinations.push({
-        index: minForKeyLengthIndex,
-        value: minForKeyLength,
-        decryptedText: decryptedAllCombinations[keyLength][minForKeyLengthIndex]
-      });
-      minForKeyLength = 1000;
-      console.log('Decrypted all combinations ');
-    }
-
-    return { diffFreqAllCombinations, minimDiffFreqAllCombinations };
-  }
-
-  public enDeCryptMessage() {
-    this.allBoxesFrequency = [];
-    this.allBoxesIc = [];
-    this.allBoxesAvgIc = [];
-
-    // word and function will be executed for every match
-    // Strip all whitespaces and toLowerCase
-    this.formatedMessage = this.message.replace(/\s/g, '').toLowerCase();
+  public calcDataForPage() {
+    this.formatedMessage = Utils.stripWhiteSpToLowerCase(this.message);
     // Encrypt message
     this.encryptedText = this.encrypt(this.formatedMessage, this.key);
     // Decrypt message
     this.decryptedText = this.decrypt(this.encryptedText, this.key);
 
     if (this.formatedMessage.length < this.maxSelectedValue - 2) {
-      this.toggleOptions = Array.from(
-        { length: this.formatedMessage.length - 2 },
-        (x, i) => (i + 2).toString()
+      this.toggleOptions = Utils.createArrayOfLength(
+        this.formatedMessage.length - 2,
+        2
       );
-      this.selectedValue = '2';
+      this.selectedValue = "2";
     }
 
     // Split message to Boxes
     // For Example max is 3. We start from 2, we will be 2 boxex, text abcd produce 1: ac and box2: bd
-    this.encMessageSplitted = this.encryptedText.split('');
+    this.encMessageSplitted = this.encryptedText.split("");
     this.allBoxes = this.calculateBoxes(this.encMessageSplitted);
-    let counterBoxes = 2;
-    console.log('Boxes');
+    console.log("Boxes");
     console.log(this.allBoxes);
 
-    // For every box calculate IC and Frequency
+    this.calcFreqAndICForAllBoxes();
+    console.log(this.allBoxesFrequency);
+    console.log(this.allBoxesIc);
+    console.log("All Boxes Avg IC", this.allBoxesAvgIc);
+
+    // Create copy and sort by ic (asc)
+    const copy = Object.assign([], this.allBoxesAvgIc);
+    const sortedIC = copy.sort((a, b) => b.value - a.value).slice();
+    console.log("Sorted IC", sortedIC);
+
+    // with smallest IC
+    this.bestKeyLength = sortedIC[0];
+    console.log("Best Key length ", this.bestKeyLength);
+
+    this.highestIC = this.allBoxesAvgIc.filter(
+      item => sortedIC[0].value - item.value <= 0.015
+    );
+    console.log("Highest IC after filter ", this.highestIC);
+
+    this.selectionOfGraphChanged({ value: this.selectedValue });
+
+    this.allCombinations = this.polyalphCipherService.computeCombinationKeyLength(
+      this.maxGuessKeyLength
+    );
+    this.webWorker.postMessage([this.allCombinations, this.encryptedText]);
+  }
+
+  // For every box calculate IC and Frequency
+  private calcFreqAndICForAllBoxes() {
+    let counterBoxes = 2;
+
     this.allBoxes.forEach(boxes => {
       const boxesFrequency: number[][] = [];
       const boxesIc: number[] = [];
@@ -274,7 +156,7 @@ export class PolyalphCipher implements OnInit {
 
       this.allBoxesFrequency.push(boxesFrequency);
       this.allBoxesIc.push(boxesIc);
-      console.log('Boxes IC ', boxesIc);
+      console.log("Boxes IC ", boxesIc);
 
       //  Compute sum and avg
       const sum = boxesIc.reduce((a, b) => a + b, 0);
@@ -286,23 +168,18 @@ export class PolyalphCipher implements OnInit {
       counterBoxes += 1;
       console.log(`The sum is: ${sum}. The average is: ${avg}.`);
     });
-    console.log(this.allBoxesFrequency);
-    console.log(this.allBoxesIc);
-    console.log('All Boxes Avg IC', this.allBoxesAvgIc);
+  }
 
-    // Create copy and sort by ic (asc)
-    const copy = Object.assign([], this.allBoxesAvgIc);
-    const sortedIC = copy.sort((a, b) => b.value - a.value).slice();
-    console.log('Sorted IC', sortedIC);
+  // remap data for Table
+  private remapDataTableBestResult(sortedDiff) {
+    this.best10Results = sortedDiff.slice(0, 15).map(data => {
+      data["decryptedText"] = data["decryptedText"].substring(0, 30);
+      return data;
+    });
 
-    // with smallest IC
-    this.bestKeyLength = sortedIC[0];
-    console.log('Best Key length ', this.bestKeyLength);
-
-    this.highestIC = this.allBoxesAvgIc.filter(
-      item => sortedIC[0].value - item.value <= 0.015
-    );
-    console.log('Highest IC after filter ', this.highestIC);
+    // update data in table
+    this.dataSourceBestResults.data = this.best10Results;
+    this.dataSourceBestResultsReady.next(true);
   }
 
   // Split message to boxes, number of boxes is defined by maxSelectedValue
@@ -324,7 +201,7 @@ export class PolyalphCipher implements OnInit {
       }
       const boxToString: string[] = [];
       box.forEach(element => {
-        boxToString.push(element.join(''));
+        boxToString.push(element.join(""));
       });
       boxes.push(boxToString);
     }
@@ -332,8 +209,8 @@ export class PolyalphCipher implements OnInit {
     return boxes;
   }
 
-  public encrypt(plainText: string, keys: string): string {
-    let encText = '';
+  private encrypt(plainText: string, keys: string): string {
+    let encText = "";
     for (let i = 0; i < plainText.length; i++) {
       const letterAscii = plainText[i].charCodeAt(0);
       const key = keys[i % keys.length].charCodeAt(0) - A_ASCII;
@@ -344,8 +221,8 @@ export class PolyalphCipher implements OnInit {
     return encText;
   }
 
-  public decrypt(encryptedText: string, keys: string): string {
-    let decText = '';
+  private decrypt(encryptedText: string, keys: string): string {
+    let decText = "";
     for (let i = 0; i < encryptedText.length; i++) {
       const letterAscii = encryptedText[i].charCodeAt(0);
       const key = keys[i % keys.length].charCodeAt(0) - A_ASCII;
@@ -356,41 +233,18 @@ export class PolyalphCipher implements OnInit {
     return decText;
   }
 
-  // Generate all combination of letters. It is Bbrute force attack with all words of length
-  public computeCombinationKeyLength(maxGuessKeyLength: number): string[] {
-    const allCombinations = [];
-    allCombinations[0] = ALPHABET;
-    for (let index = 1; index < maxGuessKeyLength; index++) {
-      const result = this.addAllCombinationForArray(allCombinations[index - 1]);
-      console.log('All Combinations for KeyLength ', index, 'Result', result);
-      allCombinations.push(result);
-    }
-    return allCombinations;
-  }
-
-  public addAllCombinationForArray(inputArray: string[]): string[] {
-    const allCombinations = [];
-    for (const input of inputArray) {
-      for (const letter1 of ALPHABET) {
-        const word = input + letter1;
-        allCombinations.push(word);
-      }
-    }
-    return allCombinations;
-  }
-
   // Change data for updateFlagCompareFreq based of selection <1-26>
   public selectionOfGraphChanged(item) {
     this.ic = this.allBoxesAvgIc[item.value - 2];
-    console.log('All Boxes Avg IC: ', this.allBoxesAvgIc);
+    console.log("All Boxes Avg IC: ", this.allBoxesAvgIc);
 
     this.nearestLanguage = AnalysisText.findNearestLanguage(
       this.ic,
       LANGUAGEIC_DATA
     );
-    if (this.nearestLanguage === 'Min IC') {
+    if (this.nearestLanguage === "Min IC") {
       this.passedMinIc = true;
     }
-    console.log('Selected value: ' + item.value);
+    console.log("Selected value: " + item.value);
   }
 }

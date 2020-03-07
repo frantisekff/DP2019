@@ -36,7 +36,7 @@
             <button
               mat-stroked-button
               color="primary"
-              (click)="enDeCryptMessage()"
+              (click)="calcDataForPage()"
             >
               En/Decrypt Text
             </button>
@@ -177,6 +177,7 @@
                 [columnNames]="columnsBestResults"
                 [dataSource]="dataSourceBestResults"
                 [defaultSort]="sortBestResults"
+                [ready]="dataSourceBestResultsReady"
               >
               </app-table>
             </div>

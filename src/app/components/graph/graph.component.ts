@@ -9,7 +9,7 @@ import * as Highcharts from 'highcharts';
 export class GraphComponent implements OnInit {
   
   updateState = false;
-  private Highcharts = Highcharts;
+  Highcharts = Highcharts;
   
   @Input() chartOptionsFreqGraph: any = {};
   @Input() set data(data: any) {

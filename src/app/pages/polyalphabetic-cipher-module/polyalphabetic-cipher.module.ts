@@ -15,6 +15,7 @@ import { CdkStepperModule } from '@angular/cdk/stepper';
 import {MatStepperModule} from '@angular/material/stepper';
 import { TableComponent } from '../../components/table/table.component';
 import { SharedModule } from '../../shared/shared.module';
+import { PolyalphCipherService } from './polyalphabetic-cipher.service';
 
 const polyalphRoutes: Routes = [
   { path: '', component: PolyalphCipher},
@@ -38,6 +39,7 @@ const polyalphRoutes: Routes = [
     MatStepperModule,
     ReactiveFormsModule,
     SharedModule
-  ]
+  ],
+  providers: [PolyalphCipherService]
 })
 export class PolyalphCipherModule { }
