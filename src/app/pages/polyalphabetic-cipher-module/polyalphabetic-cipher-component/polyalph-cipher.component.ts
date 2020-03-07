@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
+import  *  as  data  from  '../../../constants/allCombinations1_3.json';
+
 
 import {
   AlphabetElement,
@@ -38,7 +40,7 @@ export class PolyalphCipher implements OnInit {
   private allBoxesFrequency: number[][][] = [];
   allBoxesAvgIc = [];
   private webWorker: Worker;
-  private maxGuessKeyLength = 6;
+  private maxGuessKeyLength = 3;
 
   decryptedText = "";
   ic = -1;
@@ -58,10 +60,13 @@ export class PolyalphCipher implements OnInit {
   dataSourceBestResults = new MatTableDataSource<any>();
   dataSourceBestResultsReady = new Subject<boolean>();
   allCombinations = [];
+  products: any  = (data  as  any).default;
 
   constructor(private polyalphCipherService: PolyalphCipherService) {}
 
   ngOnInit(): void {
+    console.log(this.products);
+
     if (typeof Worker !== "undefined") {
       this.webWorker = new Worker("./polyalphabetic-cipher-webworker.worker", {
         type: `module`
@@ -235,18 +240,4 @@ export class PolyalphCipher implements OnInit {
     return decText;
   }
 
-  // Change data for updateFlagCompareFreq based of selection <1-26>
-  // public selectionOfGraphChanged(item) {
-  //   this.ic = this.allBoxesAvgIc[item.value - 2];
-  //   console.log("All Boxes Avg IC: ", this.allBoxesAvgIc);
-
-  //   this.nearestLanguage = AnalysisText.findNearestLanguage(
-  //     this.ic,
-  //     LANGUAGEIC_DATA
-  //   );
-  //   if (this.nearestLanguage === "Min IC") {
-  //     this.passedMinIc = true;
-  //   }
-  //   console.log("Selected value: " + item.value);
-  // }
 }
