@@ -5,8 +5,11 @@ import {
   A_ASCII
 } from "src/app/constants/language.constants";
 import Utils from "src/app/utils";
+import { EventEmitter } from "@angular/core";
 
 export class PolyalphCipherService {
+  selectedValue = new EventEmitter<string>();
+
   // Calculate differencies between en alphabet freq and all decrypted options.
   calcDiffEnAlphAndAllDecTexts(
     freqAllCombinations: number[][][],
@@ -78,6 +81,19 @@ export class PolyalphCipherService {
       );
     }
     return sortedDiff;
+  }
+
+  findBestResultLength(diffFreqAllCombinations): number {
+    let minSum = diffFreqAllCombinations[0][0] ;
+    minSum.sum = 1000;
+    for (const combinationOfLength of diffFreqAllCombinations) {
+      const minForNcombination = combinationOfLength
+        .sort((a, b) => a.sum - b.sum)
+        .slice(0, 3)[0];
+      minSum = minForNcombination.sum < minSum.sum ? minForNcombination : minSum;
+    }
+    const lengthOfBestKey = minSum.key.length;
+    return lengthOfBestKey;
   }
 
   // Generate all combination of letters. It is Bbrute force attack with all words of length

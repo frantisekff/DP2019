@@ -36,9 +36,9 @@ export class PolyalphCipher implements OnInit {
   private nearestLanguage: string;
   private maxSelectedValue = 17;
   private allBoxesFrequency: number[][][] = [];
-  private allBoxesAvgIc = [];
+  allBoxesAvgIc = [];
   private webWorker: Worker;
-  private maxGuessKeyLength = 3;
+  private maxGuessKeyLength = 6;
 
   decryptedText = "";
   ic = -1;
@@ -79,6 +79,8 @@ export class PolyalphCipher implements OnInit {
         const sortedDiff = this.polyalphCipherService.choose10bestResults(
           result.diffFreqAllCombinations
         );
+        const minSum = this.polyalphCipherService.findBestResultLength(result.diffFreqAllCombinations);
+        this.polyalphCipherService.selectedValue.emit(minSum.toString());
         this.remapDataTableBestResult(sortedDiff);
         console.log("From Web Worker:", event.data);
       };
@@ -104,7 +106,7 @@ export class PolyalphCipher implements OnInit {
         this.formatedMessage.length - 2,
         2
       );
-      this.selectedValue = "2";
+      this.polyalphCipherService.selectedValue.emit('2');
     }
 
     // Split message to Boxes
@@ -133,7 +135,7 @@ export class PolyalphCipher implements OnInit {
     );
     console.log("Highest IC after filter ", this.highestIC);
 
-    this.selectionOfGraphChanged({ value: this.selectedValue });
+    this.polyalphCipherService.selectedValue.emit(this.selectedValue);
 
     this.allCombinations = this.polyalphCipherService.computeCombinationKeyLength(
       this.maxGuessKeyLength
@@ -234,17 +236,17 @@ export class PolyalphCipher implements OnInit {
   }
 
   // Change data for updateFlagCompareFreq based of selection <1-26>
-  public selectionOfGraphChanged(item) {
-    this.ic = this.allBoxesAvgIc[item.value - 2];
-    console.log("All Boxes Avg IC: ", this.allBoxesAvgIc);
+  // public selectionOfGraphChanged(item) {
+  //   this.ic = this.allBoxesAvgIc[item.value - 2];
+  //   console.log("All Boxes Avg IC: ", this.allBoxesAvgIc);
 
-    this.nearestLanguage = AnalysisText.findNearestLanguage(
-      this.ic,
-      LANGUAGEIC_DATA
-    );
-    if (this.nearestLanguage === "Min IC") {
-      this.passedMinIc = true;
-    }
-    console.log("Selected value: " + item.value);
-  }
+  //   this.nearestLanguage = AnalysisText.findNearestLanguage(
+  //     this.ic,
+  //     LANGUAGEIC_DATA
+  //   );
+  //   if (this.nearestLanguage === "Min IC") {
+  //     this.passedMinIc = true;
+  //   }
+  //   console.log("Selected value: " + item.value);
+  // }
 }
