@@ -1,93 +1,89 @@
-import { Component, OnInit } from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table";
-import  *  as  data  from  '../../../constants/allCombinations1_3.json';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import  *  as  ALL_COMBINATIONS_KEY  from  '../../../constants/allCombinations1_3.json';
 
 
 import {
-  AlphabetElement,
   SortTable,
   Ordering
-} from "../../../models/common.model";
+} from '../../../models/common.model';
 import {
-  LANGUAGEIC_DATA,
-  EN_ALPHABET_FREQUENCY,
-  ALPHABET,
   COLORS,
   A_ASCII,
-  EN_ALPHABET_FREQUENCY_PERC
-} from "../../../constants/language.constants";
-import Utils from "src/app/utils";
-import AnalysisText from "src/app/analysis-text";
-import { Subject } from "rxjs";
-import { MESSAGE } from "../polyalphabetic-cipher.constants";
-import { PolyalphCipherService } from "../polyalphabetic-cipher.service";
+} from '../../../constants/language.constants';
+import Utils from 'src/app/utils';
+import AnalysisText from 'src/app/analysis-text';
+import { Subject } from 'rxjs';
+import { MESSAGE } from '../polyalphabetic-cipher.constants';
+import { PolyalphCipherService } from '../polyalphabetic-cipher.service';
+
+
 
 @Component({
-  selector: "app-polyalphcipher",
-  styleUrls: ["./polyalph-cipher.component.scss"],
-  templateUrl: "./polyalph-cipher.component.html"
+  selector: 'app-polyalphcipher',
+  styleUrls: ['./polyalph-cipher.component.scss'],
+  templateUrl: './polyalph-cipher.component.html'
 })
-export class PolyalphCipher implements OnInit {
+export class PolyalphCipher implements OnInit, OnDestroy {
   colors = COLORS;
-  private key = "abc";
+  private key = 'abc';
+  keyLength = this.key.length;
   private message = MESSAGE;
   private encMessageSplitted: string[];
-  private enAlphabetFreqPerc = EN_ALPHABET_FREQUENCY_PERC;
   private formatedMessage;
-  private encryptedText = "";
-  private nearestLanguage: string;
+  private encryptedText = '';
   private maxSelectedValue = 17;
   private allBoxesFrequency: number[][][] = [];
   allBoxesAvgIc = [];
   private webWorker: Worker;
-  private maxGuessKeyLength = 3;
+  private maxGuessKeyLength = 2;
 
-  decryptedText = "";
+  decryptedText = '';
   ic = -1;
   passedMinIc = false;
-  selectedValue = "2";
+  selectedValue = '2';
   toggleOptions: string[] = [];
   allBoxesIc: number[][] = [];
   allBoxes;
   highestIC;
   bestKeyLength;
   best10Results = [];
-  columnsBestResults: string[] = ["key", "sum", "decryptedText"];
+  columnsBestResults: string[] = ['key', 'sum', 'decryptedText'];
   sortBestResults: SortTable = {
-    sortByColumn: "sum",
+    sortByColumn: 'sum',
     order: Ordering.asc
   } as SortTable;
   dataSourceBestResults = new MatTableDataSource<any>();
   dataSourceBestResultsReady = new Subject<boolean>();
-  allCombinations = [];
-  products: any  = (data  as  any).default;
+  // allCombinations = [];
+  allCombinations: any  = (ALL_COMBINATIONS_KEY  as  any).default;
 
   constructor(private polyalphCipherService: PolyalphCipherService) {}
 
   ngOnInit(): void {
-    console.log(this.products);
+    console.log(this.allCombinations);
 
-    if (typeof Worker !== "undefined") {
-      this.webWorker = new Worker("./polyalphabetic-cipher-webworker.worker", {
+    if (typeof Worker !== 'undefined') {
+      this.webWorker = new Worker('./polyalphabetic-cipher-webworker.worker', {
         type: `module`
       });
 
       this.webWorker.onmessage = event => {
-        const freqAllCombinations = event.data.freqAllCombinations;
+        const freqAllCombinationsOfDecMessage = event.data.freqAllCombinations;
         const decryptedAllCombinations = event.data.decryptedAllCombinations;
 
         const result = this.polyalphCipherService.calcDiffEnAlphAndAllDecTexts(
-          freqAllCombinations,
+          freqAllCombinationsOfDecMessage,
           this.allCombinations,
           decryptedAllCombinations
         );
-        const sortedDiff = this.polyalphCipherService.choose10bestResults(
+        const sortedDiff = this.polyalphCipherService.chooseBestResults(
           result.diffFreqAllCombinations
         );
         const minSum = this.polyalphCipherService.findBestResultLength(result.diffFreqAllCombinations);
         this.polyalphCipherService.selectedValue.emit(minSum.toString());
         this.remapDataTableBestResult(sortedDiff);
-        console.log("From Web Worker:", event.data);
+        console.log('From Web Worker:', event.data);
       };
     }
     // generate array <2-16>
@@ -100,7 +96,9 @@ export class PolyalphCipher implements OnInit {
   }
 
   public calcDataForPage() {
+    const minDiffBetweenEnFreqAndText = 0.015;
     this.formatedMessage = Utils.stripWhiteSpToLowerCase(this.message);
+    this.keyLength = this.key.length;
     // Encrypt message
     this.encryptedText = this.encrypt(this.formatedMessage, this.key);
     // Decrypt message
@@ -116,35 +114,36 @@ export class PolyalphCipher implements OnInit {
 
     // Split message to Boxes
     // For Example max is 3. We start from 2, we will be 2 boxex, text abcd produce 1: ac and box2: bd
-    this.encMessageSplitted = this.encryptedText.split("");
+    this.encMessageSplitted = this.encryptedText.split('');
     this.allBoxes = this.calculateBoxes(this.encMessageSplitted);
-    console.log("Boxes");
+    console.log('Boxes');
     console.log(this.allBoxes);
 
     this.calcFreqAndICForAllBoxes();
     console.log(this.allBoxesFrequency);
     console.log(this.allBoxesIc);
-    console.log("All Boxes Avg IC", this.allBoxesAvgIc);
+    console.log('All Boxes Avg IC', this.allBoxesAvgIc);
 
     // Create copy and sort by ic (asc)
     const copy = Object.assign([], this.allBoxesAvgIc);
     const sortedIC = copy.sort((a, b) => b.value - a.value).slice();
-    console.log("Sorted IC", sortedIC);
+    console.log('Sorted IC', sortedIC);
 
     // with smallest IC
     this.bestKeyLength = sortedIC[0];
-    console.log("Best Key length ", this.bestKeyLength);
+    console.log('Best Key length ', this.bestKeyLength);
 
     this.highestIC = this.allBoxesAvgIc.filter(
-      item => sortedIC[0].value - item.value <= 0.015
+      item => sortedIC[0].value - item.value <= minDiffBetweenEnFreqAndText 
     );
-    console.log("Highest IC after filter ", this.highestIC);
+    console.log('Highest IC after filter ', this.highestIC);
 
     this.polyalphCipherService.selectedValue.emit(this.selectedValue);
 
-    this.allCombinations = this.polyalphCipherService.computeCombinationKeyLength(
-      this.maxGuessKeyLength
-    );
+    // this.allCombinations = this.polyalphCipherService.computeCombinationKeyLength(
+    //   this.maxGuessKeyLength
+    // );
+
     this.webWorker.postMessage([this.allCombinations, this.encryptedText]);
   }
 
@@ -163,7 +162,7 @@ export class PolyalphCipher implements OnInit {
 
       this.allBoxesFrequency.push(boxesFrequency);
       this.allBoxesIc.push(boxesIc);
-      console.log("Boxes IC ", boxesIc);
+      console.log('Boxes IC ', boxesIc);
 
       //  Compute sum and avg
       const sum = boxesIc.reduce((a, b) => a + b, 0);
@@ -179,8 +178,8 @@ export class PolyalphCipher implements OnInit {
 
   // remap data for Table
   private remapDataTableBestResult(sortedDiff) {
-    this.best10Results = sortedDiff.slice(0, 15).map(data => {
-      data["decryptedText"] = data["decryptedText"].substring(0, 30);
+    this.best10Results = sortedDiff.slice(0, 10).map(data => {
+      data['decryptedText'] = data['decryptedText'].substring(0, 30);
       return data;
     });
 
@@ -208,7 +207,7 @@ export class PolyalphCipher implements OnInit {
       }
       const boxToString: string[] = [];
       box.forEach(element => {
-        boxToString.push(element.join(""));
+        boxToString.push(element.join(''));
       });
       boxes.push(boxToString);
     }
@@ -217,7 +216,7 @@ export class PolyalphCipher implements OnInit {
   }
 
   private encrypt(plainText: string, keys: string): string {
-    let encText = "";
+    let encText = '';
     for (let i = 0; i < plainText.length; i++) {
       const letterAscii = plainText[i].charCodeAt(0);
       const key = keys[i % keys.length].charCodeAt(0) - A_ASCII;
@@ -229,7 +228,7 @@ export class PolyalphCipher implements OnInit {
   }
 
   private decrypt(encryptedText: string, keys: string): string {
-    let decText = "";
+    let decText = '';
     for (let i = 0; i < encryptedText.length; i++) {
       const letterAscii = encryptedText[i].charCodeAt(0);
       const key = keys[i % keys.length].charCodeAt(0) - A_ASCII;
@@ -239,5 +238,9 @@ export class PolyalphCipher implements OnInit {
     }
     return decText;
   }
+
+  ngOnDestroy() {
+    this.webWorker.terminate();
+}
 
 }
