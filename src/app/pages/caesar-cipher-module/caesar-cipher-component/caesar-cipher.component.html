@@ -18,8 +18,8 @@
   <div class="col-md-12">
     <mat-card>
       <mat-vertical-stepper [linear]="isLinear" #stepper>
-        <mat-step [stepControl]="inputsFormGroup">
-          <form [formGroup]="inputsFormGroup">
+        <mat-step [stepControl]="cipherInputsForm">
+          <form [formGroup]="cipherInputsForm">
             <ng-template matStepLabel>Fill out Key and Message</ng-template>
 
             <mat-form-field>
@@ -30,8 +30,14 @@
                 name="keyInput"
                 formControlName="key"
               />
+              <mat-hint>Please, enter key from 1 to 26. </mat-hint>
+              <mat-error *ngIf="cipherInputsForm.get('key').hasError('max') || cipherInputsForm.get('key').hasError('min')">
+                Please, enter key from 1 to 26. 
+              </mat-error>
             </mat-form-field>
             <br />
+            <br />
+
             <mat-form-field style="width:50vw">
               <textarea
                 matInput
@@ -43,6 +49,16 @@
                 name="messageInput"
                 formControlName="message"
               ></textarea>
+              <mat-hint>Please, enter message longer than 20 letters and  text must include letters a-z or A-Z. </mat-hint>
+              <mat-error *ngIf="cipherInputsForm.get('message').hasError('minlength')">
+                Please, enter message longer than 20 letters.
+              </mat-error>
+              <mat-error *ngIf="cipherInputsForm.get('message').hasError('maxlength')">
+                Please, enter message shorter than 2000 letters.
+              </mat-error>
+              <mat-error *ngIf="cipherInputsForm.get('message').hasError('pattern')">
+                Please, text must include letters a-z or A-Z.
+              </mat-error>
             </mat-form-field>
             <br />
             <br />

@@ -5,7 +5,8 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
-  AbstractControl
+  AbstractControl,
+  FormControl
 } from '@angular/forms';
 import {
   AlphabetElement,
@@ -90,7 +91,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
   toggleOptions: string[] = Utils.createArrayOfLength(26, 1);
   minDisctanceLength = '';
   isLinear = false;
-  inputsFormGroup: FormGroup;
+  cipherInputsForm: FormGroup;
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
   fourthFormGroup: FormGroup;
@@ -108,24 +109,32 @@ export class CaesarCipher implements OnInit, OnDestroy {
   equation = EQUATION;
 
   constructor(
-    private _formBuilder: FormBuilder,
     private caesarCipherService: CaesarCipherService
   ) {}
 
   ngOnInit(): void {
     this.dataSourceRefFreqLangReady.next(true);
-    this.inputsFormGroup = this._formBuilder.group({
-      key: [this.key, Validators.required],
-      message: [MESSAGE, Validators.required]
+    this.cipherInputsForm = new FormGroup({
+      key: new FormControl(this.key, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(26)
+      ]),
+      message: new FormControl(MESSAGE, [
+        Validators.required,
+        Validators.pattern("^[a-zA-Z]+$"),
+        Validators.minLength(20),
+        Validators.maxLength(2000)
+      ])
     });
 
-    this.subscrMessage = this.inputsFormGroup.controls.message.valueChanges.subscribe(
+    this.subscrMessage = this.cipherInputsForm.controls.message.valueChanges.subscribe(
       newMessage => {
         this.message = newMessage;
       }
     );
 
-    this.subscrKey = this.inputsFormGroup.controls.key.valueChanges.subscribe(
+    this.subscrKey = this.cipherInputsForm.controls.key.valueChanges.subscribe(
       newKey => {
         this.key = newKey;
       }
