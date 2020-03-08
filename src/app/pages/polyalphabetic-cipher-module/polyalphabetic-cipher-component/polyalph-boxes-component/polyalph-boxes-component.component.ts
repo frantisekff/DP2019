@@ -11,11 +11,11 @@ import { PolyalphCipherService } from "../../polyalphabetic-cipher.service";
 })
 export class PolyalphBoxesComponentComponent implements OnInit {
   @Input() allBoxesAvgIc = [];
-  @Input() ic = -1;
+  @Input() ic;
   @Input() allBoxes;
   @Input() allBoxesIc: number[][] = [];
 
-  selectedValue = "2";
+  selectedValue = 2;
   @Input() toggleOptions: string[] = [];
 
   private nearestLanguage: string;

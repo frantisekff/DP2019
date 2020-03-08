@@ -23,7 +23,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   keyLength = this.key.length;
   private message = MESSAGE;
   private subscrMessage: Subscription;
-  private encMessageSplitted: string[];
+  encMessageSplitted: string[];
   private formatedMessage;
   private encryptedText = "";
   private maxSelectedValue = 17;
