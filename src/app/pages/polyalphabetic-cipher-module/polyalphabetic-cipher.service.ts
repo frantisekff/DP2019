@@ -2,7 +2,6 @@ import { AlphabetElement } from "src/app/models/common.model";
 import {
   EN_ALPHABET_FREQUENCY,
   ALPHABET,
-  A_ASCII
 } from "src/app/constants/language.constants";
 import Utils from "src/app/utils";
 import { EventEmitter } from "@angular/core";
@@ -73,14 +72,14 @@ export class PolyalphCipherService {
 
   // choose the best 10 result
   // <1 - maxGuessLength> do: sort asc combination of n length, then get first 3
-  choose10bestResults(diffFreqAllCombinations) {
+  chooseBestResults(diffFreqAllCombinations) {
     const sortedDiff = [];
     for (const combinationOfLength of diffFreqAllCombinations) {
       sortedDiff.push(
-        ...combinationOfLength.sort((a, b) => a.sum - b.sum).slice(0, 3)
+        ...combinationOfLength.sort((a, b) => a.sum - b.sum).slice(0, 15)
       );
     }
-    return sortedDiff;
+    return sortedDiff.sort((a, b) => a.sum - b.sum);
   }
 
   findBestResultLength(diffFreqAllCombinations): number {
@@ -100,7 +99,7 @@ export class PolyalphCipherService {
   computeCombinationKeyLength(maxGuessKeyLength: number): string[] {
     const allCombinations = [];
     allCombinations[0] = ALPHABET;
-    for (let index = 1; index < maxGuessKeyLength; index++) {
+    for (let index = 1; index <= maxGuessKeyLength; index++) {
       const result = this.addAllCombinationForArray(allCombinations[index - 1]);
       console.log("All Combinations for KeyLength ", index, "Result", result);
       allCombinations.push(result);
