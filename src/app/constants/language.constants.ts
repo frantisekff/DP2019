@@ -20,8 +20,8 @@ export const EN_ALPHABET_FREQUENCY_PERC = [0.0812, 0.0149, 0.0271, 0.0432, 0.120
 export const ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
     'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
-export const COLORS = ['#7B241C', '#E74C3C', '#9B59B6', '#2980B9', '#85C1E9', '#148F77', '#16A085',
-    '#27AE60', '#2ECC71', '#F1C40F', '#F39C12', '#E67E22', '#D35400', '#95A5A6', '#7F8C8D'];
+export const COLORS = ['#2980B9', '#F1C40F', '#E74C3C', '#7B241C', '#9B59B6', '#85C1E9', '#148F77', '#16A085',
+    '#27AE60', '#2ECC71', '#F39C12', '#E67E22', '#D35400', '#95A5A6', '#7F8C8D'];
 
 export const MIN_IC = 0.0384;
 export const A_ASCII: number = 'a'.charCodeAt(0);
