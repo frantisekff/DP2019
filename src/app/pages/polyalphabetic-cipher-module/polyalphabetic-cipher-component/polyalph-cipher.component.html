@@ -7,39 +7,60 @@
         <mat-vertical-stepper #stepper>
           <mat-step>
             <ng-template matStepLabel>Fill out Key and Message</ng-template>
-            <mat-form-field>
-              <input
-                matInput
-                type="text"
-                placeholder="Set key"
-                name="keyInput"
-                [(ngModel)]="key"
-                maxlength="15"
-              />
-            </mat-form-field>
-            <br />
-            <mat-form-field style="width:50vw">
-              <textarea
-                matInput
-                cdkTextareaAutosize
-                #autosize="cdkTextareaAutosize"
-                cdkAutosizeMinRows="2"
-                cdkAutosizeMaxRows="9"
-                placeholder="Type message to encrypt"
-                name="messageInput"
-                minlength="6"
-                [(ngModel)]="message"
-              ></textarea>
-            </mat-form-field>
-            <br />
+            <form [formGroup]="cipherInputsForm" (ngSubmit)="calcDataForPage()">
+              <mat-form-field>
+                <input
+                  matInput
+                  type="text"
+                  placeholder="Set key"
+                  name="keyInput"
+                  formControlName="key"
+                  maxlength="3"
+                />
+                <mat-hint>Please, enter key of length 2 or 3 and key must include letters a-z or A-Z. </mat-hint>
+                <mat-error *ngIf="cipherInputsForm.get('key').hasError('maxlength') || cipherInputsForm.get('key').hasError('minlength')">
+                  Please, enter key of length 2 or 3.
+                </mat-error>
+                <mat-error *ngIf="cipherInputsForm.get('key').hasError('pattern')">
+                  Please, text must include letters a-z or A-Z.
+                </mat-error>
+              </mat-form-field>
 
-            <button
-              mat-stroked-button
-              color="primary"
-              (click)="calcDataForPage()"
-            >
-              En/Decrypt Text
-            </button>
+              <br />
+              <br />
+              <br />
+              <mat-form-field style="width:50vw">
+                <textarea
+                  matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="2"
+                  cdkAutosizeMaxRows="9"
+                  placeholder="Type message to encrypt"
+                  name="messageInput"
+                  formControlName="message"
+                  maxlength="2000"
+                ></textarea>
+                <mat-hint>Please, enter message longer than 20 letters and  text must include letters a-z or A-Z. </mat-hint>
+                <mat-error *ngIf="cipherInputsForm.get('message').hasError('minlength')">
+                  Please, enter message longer than 20 letters.
+                </mat-error>
+                <mat-error *ngIf="cipherInputsForm.get('message').hasError('maxlength')">
+                  Please, enter message shorter than 2000 letters.
+                </mat-error>
+                <mat-error *ngIf="cipherInputsForm.get('message').hasError('pattern')">
+                  Please, text must include letters a-z or A-Z.
+                </mat-error>
+              </mat-form-field>
+             
+              <br />
+              <br />
+            
+
+              <button [disabled]="!cipherInputsForm.valid" mat-stroked-button color="primary" type="submit">
+                En/Decrypt Text
+              </button>
+            </form>
           </mat-step>
           <mat-step>
             <ng-template matStepLabel
