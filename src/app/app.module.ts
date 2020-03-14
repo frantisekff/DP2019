@@ -27,6 +27,11 @@ const appRoutes: Routes = [
     path: 'polyalphcipher',
     loadChildren:
       './pages/polyalphabetic-cipher-module/polyalphabetic-cipher.module#PolyalphCipherModule'
+  },
+  {
+    path: 'monoalphcipher',
+    loadChildren:
+      './pages/monoalphabetic-cipher-module/monoalphabetic-cipher.module#MonoalphCipherModule'
   }
 ];
 

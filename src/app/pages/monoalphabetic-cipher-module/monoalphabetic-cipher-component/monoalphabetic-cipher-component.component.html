@@ -1,0 +1,111 @@
+<div class="container">
+  <div class="row text-center">
+    <div class="col-md-12">
+      <h2>Monoalphabetic Cipher</h2>
+    </div>
+  </div>
+  <br />
+  <div class="col-md-8 col-md-offset-2">
+    The main function of Monoalphabetic Cipher is ...
+  </div>
+  <br />
+
+  <br />
+  <br />
+
+  <div class="col-md-12">
+    <div class="row">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Key for encryption</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            {{ rndKey }}
+            
+            <button mat-button (click)="generateRndKey()">
+              Generate key
+            </button>
+          </mat-card-content>
+        </mat-card>
+        <br />
+        <br />
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Message</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            <form [formGroup]="cipherInputsForm">
+              <mat-form-field style="width:50vw">
+                <textarea
+                  matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="2"
+                  cdkAutosizeMaxRows="9"
+                  placeholder="Type message to encrypt"
+                  name="messageInput"
+                  formControlName="message"
+                ></textarea>
+                <mat-hint
+                  >Please, enter message longer than 20 letters and text must
+                  include letters a-z or A-Z.
+                </mat-hint>
+                <mat-error
+                  *ngIf="cipherInputsForm.get('message').hasError('minlength')"
+                >
+                  Please, enter message longer than 20 letters.
+                </mat-error>
+                <mat-error
+                  *ngIf="cipherInputsForm.get('message').hasError('maxlength')"
+                >
+                  Please, enter message shorter than 2000 letters.
+                </mat-error>
+                <mat-error
+                  *ngIf="cipherInputsForm.get('message').hasError('pattern')"
+                >
+                  Please, text must include letters a-z or A-Z.
+                </mat-error>
+              </mat-form-field>
+              <div>
+                <button mat-button (click)="calcDataForPage()">
+                  Analyse
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+      <div class="col-md-6">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Encrypted Text</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            {{ encryptedText }}
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-md-6">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Dencrypted Text</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            <p>
+              {{ decryptedText }}
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {{ bestGuess.sum }} {{bestGuess.key}}
+        <p>{{ bestGuess.decryptedText}}</p>
+      </div>
+    </div>
+  </div>
+</div>
