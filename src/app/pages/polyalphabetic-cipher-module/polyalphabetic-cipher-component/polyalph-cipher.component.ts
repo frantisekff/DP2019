@@ -165,7 +165,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
 
     this.highestIC = this.allBoxesAvgIc.filter(
       item => sortedIC[0].value - item.value <= minDiffBetweenEnFreqAndText
-    );
+    ).slice(0,5);
     console.log("Highest IC after filter ", this.highestIC);
 
     this.polyalphCipherService.selectedValue.emit(this.selectedValue);
