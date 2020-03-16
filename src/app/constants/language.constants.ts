@@ -1,4 +1,7 @@
 import { LanguageIcElement } from '../models/common.model';
+import * as BIGRAMS from './refBigramsArray.json';
+
+export const REF_BIGRAMS = BIGRAMS;
 
 export const LANGUAGEIC_DATA: LanguageIcElement[] = [
     { name: 'English', value: 0.0667 },

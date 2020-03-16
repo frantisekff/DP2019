@@ -6,7 +6,10 @@
   </div>
   <br />
   <div class="col-md-8 col-md-offset-2">
-    The main function of Monoalphabetic Cipher is ...
+    Monoalphabetic cipher is a substitution cipher in which for a given key, the
+    cipher alphabet for each plain alphabet is fixed. For example, if 'B' is
+    encrypted as 'L', for any number of occurrence in that plaintext, 'B' will
+    always get encrypted to 'L'.
   </div>
   <br />
 
@@ -15,65 +18,65 @@
 
   <div class="col-md-12">
     <div class="row">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Key for encryption</mat-card-title>
-          </mat-card-header>
-          <mat-card-content style="word-wrap: break-word;">
-            {{ rndKey }}
-            
-            <button mat-button (click)="generateRndKey()">
-              Generate key
-            </button>
-          </mat-card-content>
-        </mat-card>
-        <br />
-        <br />
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Message</mat-card-title>
-          </mat-card-header>
-          <mat-card-content style="word-wrap: break-word;">
-            <form [formGroup]="cipherInputsForm">
-              <mat-form-field style="width:50vw">
-                <textarea
-                  matInput
-                  cdkTextareaAutosize
-                  #autosize="cdkTextareaAutosize"
-                  cdkAutosizeMinRows="2"
-                  cdkAutosizeMaxRows="9"
-                  placeholder="Type message to encrypt"
-                  name="messageInput"
-                  formControlName="message"
-                ></textarea>
-                <mat-hint
-                  >Please, enter message longer than 20 letters and text must
-                  include letters a-z or A-Z.
-                </mat-hint>
-                <mat-error
-                  *ngIf="cipherInputsForm.get('message').hasError('minlength')"
-                >
-                  Please, enter message longer than 20 letters.
-                </mat-error>
-                <mat-error
-                  *ngIf="cipherInputsForm.get('message').hasError('maxlength')"
-                >
-                  Please, enter message shorter than 2000 letters.
-                </mat-error>
-                <mat-error
-                  *ngIf="cipherInputsForm.get('message').hasError('pattern')"
-                >
-                  Please, text must include letters a-z or A-Z.
-                </mat-error>
-              </mat-form-field>
-              <div>
-                <button mat-button (click)="calcDataForPage()">
-                  Analyse
-                </button>
-              </div>
-            </form>
-          </mat-card-content>
-        </mat-card>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Key for encryption</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="word-wrap: break-word;">
+          {{ rndKey }}
+
+          <button mat-button (click)="generateRndKey()">
+            Generate key
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <br />
+      <br />
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Message</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="word-wrap: break-word;">
+          <form [formGroup]="cipherInputsForm">
+            <mat-form-field style="width:50vw">
+              <textarea
+                matInput
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="2"
+                cdkAutosizeMaxRows="9"
+                placeholder="Type message to encrypt"
+                name="messageInput"
+                formControlName="message"
+              ></textarea>
+              <mat-hint
+                >Please, enter message longer than 20 letters and text must
+                include letters a-z or A-Z.
+              </mat-hint>
+              <mat-error
+                *ngIf="cipherInputsForm.get('message').hasError('minlength')"
+              >
+                Please, enter message longer than 20 letters.
+              </mat-error>
+              <mat-error
+                *ngIf="cipherInputsForm.get('message').hasError('maxlength')"
+              >
+                Please, enter message shorter than 2000 letters.
+              </mat-error>
+              <mat-error
+                *ngIf="cipherInputsForm.get('message').hasError('pattern')"
+              >
+                Please, text must include letters a-z or A-Z.
+              </mat-error>
+            </mat-form-field>
+            <div>
+              <button mat-button (click)="calcDataForPage()">
+                Analyse
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
     </div>
     <br />
     <br />
@@ -101,11 +104,100 @@
         </mat-card>
       </div>
     </div>
+    <br />
     <div class="row">
-      <div class="col-md-12">
-        {{ bestGuess.sum }} {{bestGuess.key}}
-        <p>{{ bestGuess.decryptedText}}</p>
-      </div>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Generated random key</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="word-wrap: break-word;">
+          For finding key we use Hill Climbing alghorithm.
+
+          <h5>We generate random key {{ iterStartKey }}</h5>
+          For start we swap only 4 letters of dec key
+          <h5>We try to find key {{ keys.decKey }}</h5>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <br />
+    <div class="row">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Find decryption key</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="word-wrap: break-word;">
+          To find key we will be repeat next steps:
+          <ul style="list-style-type:disc;">
+            <li>swap 2 letters of key - we compute freguencies of bigrams</li>
+            <li>
+              calculate difference between calculated frequencies and referal
+              values for English alphabet
+            </li>
+            <li>save only better result</li>
+            <li>
+              if we got worse result than we throw away current key and next we
+              use key from previus step
+            </li>
+            <li>save only better result</li>
+          </ul>
+          These steps we repeat for n times
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <br />
+    <br />
+
+    <div class="row">
+      <ng-container *ngFor="let guess of guessedKey.allBetterGuess">
+        <div class="col-md-4">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Finded key</mat-card-title>
+              <mat-card-subtitle> {{ guess.key }} </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content style="word-wrap: break-word;">
+              <p>{{ guess.decryptedText | slice: 0:150 }}</p>
+              <h5>Sum {{ guess.sum }}</h5>
+              <p>
+                <small>
+                  *difference between calculated frequencies and referal values
+                  for English alphabet)
+                </small>
+              </p>
+            </mat-card-content>
+            <mat-card-actions> </mat-card-actions>
+          </mat-card>
+          <br />
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 col-xs-12">
+      <app-graph
+        #comparefreqBigramsGraph
+        [chartOptionsFreqGraph]="chartOptionsFreqGraph"
+        [data]="dataSourceCompareFreqGraph"
+      ></app-graph>
+
+      <mat-button-toggle-group
+      class="btn-group"
+      [(ngModel)]="selectedValue"
+      #group="matButtonToggleGroup"
+    >
+      <mat-button-toggle
+        *ngFor="let item of toggleOptions"
+        (change)="selectionOfGraphChanged($event)"
+        [value]="item"
+      >
+        {{ item }}</mat-button-toggle
+      >
+    </mat-button-toggle-group>
     </div>
   </div>
 </div>

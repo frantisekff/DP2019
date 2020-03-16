@@ -1,5 +1,6 @@
-import { ALPHABET } from "./constants/language.constants";
+import { ALPHABET, A_ASCII } from "./constants/language.constants";
 import { LanguageIcElement } from "./models/common.model";
+import * as BIGRAMS from "./constants/refBigramsArray.json";
 
 export default class AnalysisText {
   // Calculate Frequency and convert it to percentage
@@ -39,6 +40,53 @@ export default class AnalysisText {
       data.push([ALPHABET[index], frequencyInPercentage[index]]);
     }
     return data;
+  }
+
+  static getFreqOfBigramsPerc(
+    textLength: number,
+    freqBigrams: Map<string, number>, outputBigrams: Map<string, number>
+  ) {
+    for (const iterator of freqBigrams) {
+      console.log(iterator);
+      outputBigrams.set(iterator[0], iterator[1] / textLength);
+    }
+  }
+
+  static getFreqOfBigrams(text: string): [number[][], Map<string, number>] {
+    const freqOfBigrams = new Array(26)
+      .fill(0)
+      .map(() => new Array(26).fill(0));
+    const freqOfBigramsNames = new Map();
+
+    for (let index = 0; index < text.length - 1; index++) {
+      const a: number = text.charCodeAt(index) - A_ASCII;
+      const b: number = text.charCodeAt(index + 1) - A_ASCII;
+      freqOfBigrams[a][b] += 1;
+      const key = text.charAt(index) + text.charAt(index + 1);
+      if (freqOfBigramsNames.has(key)) {
+        freqOfBigramsNames.set(key, freqOfBigramsNames.get(key) + 1);
+      } else {
+        freqOfBigramsNames.set(key, 1);
+      }
+    }
+    return [freqOfBigrams, freqOfBigramsNames];
+  }
+
+  // Method compute difference freq between bigrams and sum result
+  // Freq is transformed to percentage
+  static getSumOfDiffBigramsFromRef(
+    freqOfBigrams: number[][],
+    textLength: number,
+    refBigrams: number[][]
+  ) {
+    let sum = 0;
+    for (let i = 0; i < 26; i++) {
+      for (let j = 0; j < 26; j++) {
+        const diff = refBigrams[i][j] - freqOfBigrams[i][j] / textLength;
+        sum += Math.abs(Math.round(diff * 100) / 100);
+      }
+      return sum;
+    }
   }
 
   static getFrequencyOfText(message: string): number[] {
@@ -82,5 +130,26 @@ export default class AnalysisText {
       freqForTexts.push(freqInPerc);
     });
     return freqForTexts;
+  }
+
+  static getArrayFromMapping(ref) {
+    const ref2 = new Array(26).fill(0).map(() => new Array(26).fill(0));
+    ref.forEach(element => {
+      const a = element[0][0].charCodeAt(0) - A_ASCII;
+      const b = element[0][1].charCodeAt(0) - A_ASCII;
+      const refFreq = element[1];
+      ref2[a][b] = refFreq;
+    });
+  }
+
+  static getMapFromMapping(ref): Map<string, number>{
+    const ref2 = new Map<string, number>();
+    ref.forEach(element => {
+      const bigram_name = element[0][0];
+      const refFreq = element[1];
+      ref2.set(bigram_name, refFreq);
+    });
+
+    return ref2;
   }
 }
