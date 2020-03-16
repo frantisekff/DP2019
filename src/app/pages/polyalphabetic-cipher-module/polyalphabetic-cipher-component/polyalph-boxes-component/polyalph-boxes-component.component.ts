@@ -31,10 +31,11 @@ export class PolyalphBoxesComponentComponent implements OnInit {
       this.maxSelectedValue - 2,
       2
     );
+    
+    this.ic = this.allBoxesAvgIc[this.selectedValue - 2];
 
     this.polyalphCipherService.selectedValue.subscribe(newSelectedValue => {
       this.selectedValue = newSelectedValue;
-      // this.selectionOfGraphChanged(this.selectedValue);
     });
   }
 
