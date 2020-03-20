@@ -1,0 +1,20 @@
+body {
+  padding-top: 70px;
+}
+.bg-navbar-blue {
+  background-color: #255E69 !important;
+}
+
+.navbar-brand {
+    color: white !important;
+}
+
+.cipher-name {
+    color: white;
+}
+.cipher-type {
+    color: #6A959D;
+
+}
+
+
