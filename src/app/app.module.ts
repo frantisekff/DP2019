@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { SharedModule } from './shared/shared.module';
+import { HeaderService } from './components/header/header.service';
 
 const appRoutes: Routes = [
   { path: '', component: Home },
@@ -46,7 +47,7 @@ const appRoutes: Routes = [
     HighchartsChartModule,
     SharedModule
   ],
-  providers: [],
+  providers: [HeaderService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

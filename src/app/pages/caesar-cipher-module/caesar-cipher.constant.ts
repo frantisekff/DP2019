@@ -1,5 +1,8 @@
 import { EN_ALPHABET_FREQUENCY, ALPHABET } from 'src/app/constants/language.constants';
 
+export const NAME_CIPHER = 'Caesar Cipher';
+export const TYPE_CIPHER = 'Monoalphabetic';
+
 export const COLUMN_CALC_FREQ_LANGUAGE = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
 
