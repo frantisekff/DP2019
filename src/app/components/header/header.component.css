@@ -17,4 +17,45 @@ body {
 
 }
 
+.btn-outline-secondary {
+  margin: 0 1.5rem;
+  color: white;
+  border-color: white;
+}
+
+
+.btn-outline-secondary:hover, .show>.btn-outline-secondary.dropdown-toggle {
+ background-color: #801D15;
+}
+
+.main-navbar {
+  padding: 1rem 0;
+  margin-bottom: 0.2rem;
+}
+
+.cipher-navbar {
+  padding: 1.5rem 0;
+}
+
+.navbar-sticky > p {
+  text-align: left;
+  display: inline-block;
+}
+
+
+.navbar-sticky {
+  color: white;
+  font-size: larger;
+  background-color: #255E69;
+  padding: 1rem;
+  text-align: center;
+}
+
+.hide-cipher-navbar {
+  display: none;
+}
+
+.show-cipher-navbar {
+  display: block;
+}
 

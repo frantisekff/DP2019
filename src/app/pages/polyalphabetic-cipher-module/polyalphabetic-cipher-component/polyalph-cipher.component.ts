@@ -7,9 +7,10 @@ import { COLORS, A_ASCII } from "../../../constants/language.constants";
 import Utils from "src/app/utils";
 import AnalysisText from "src/app/analysis-text";
 import { Subject, Subscription } from "rxjs";
-import { MESSAGE } from "../polyalphabetic-cipher.constants";
+import { MESSAGE, TYPE_CIPHER, NAME_CIPHER } from "../polyalphabetic-cipher.constants";
 import { PolyalphCipherService } from "../polyalphabetic-cipher.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { HeaderService } from 'src/app/components/header/header.service';
 
 @Component({
   selector: "app-polyalphcipher",
@@ -53,7 +54,10 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   allCombinations: any = (ALL_COMBINATIONS_KEY as any).default;
   cipherInputsForm: FormGroup;
 
-  constructor(private polyalphCipherService: PolyalphCipherService) {}
+  constructor(private polyalphCipherService: PolyalphCipherService, headerService: HeaderService) {
+    headerService.cipherName.next(NAME_CIPHER);
+    headerService.cipherType.next(TYPE_CIPHER);
+  }
 
   ngOnInit(): void {
     this.cipherInputsForm = new FormGroup({
