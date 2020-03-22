@@ -1,3 +1,6 @@
+export const NAME_CIPHER = 'Vigenere Cipher';
+export const TYPE_CIPHER = 'Polyalphabetic';
+
 export const COLUMNS_REFFREQ_LANGUAGE: string[] = ['name', 'value'];
 
 export const MESSAGE =

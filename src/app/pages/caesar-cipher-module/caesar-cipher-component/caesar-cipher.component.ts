@@ -31,9 +31,12 @@ import {
   COLUMNS_REFFREQ_LANGUAGE,
   COLUMN_CALC_FREQ_LANGUAGE,
   MESSAGE,
-  EQUATION
+  EQUATION,
+  NAME_CIPHER,
+  TYPE_CIPHER
 } from '../caesar-cipher.constant';
 import { Subscribable, Subscription, Subject } from 'rxjs';
+import { HeaderService } from 'src/app/components/header/header.service';
 
 let DIFF_FREQ_DATA: AlphabetElement[] = [];
 
@@ -109,8 +112,11 @@ export class CaesarCipher implements OnInit, OnDestroy {
   equation = EQUATION;
 
   constructor(
-    private caesarCipherService: CaesarCipherService
-  ) {}
+    private caesarCipherService: CaesarCipherService, headerService: HeaderService
+  ) {
+    headerService.cipherName.next(NAME_CIPHER);
+    headerService.cipherType.next(TYPE_CIPHER);
+  }
 
   ngOnInit(): void {
     this.dataSourceRefFreqLangReady.next(true);

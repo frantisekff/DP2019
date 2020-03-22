@@ -8,7 +8,9 @@ import {
 import {
   MESSAGE,
   EXAMPLE_RND_ALPHABET,
-  CHART_OPTIONS_COMPARE_BIGRAMS
+  CHART_OPTIONS_COMPARE_BIGRAMS,
+  NAME_CIPHER,
+  TYPE_CIPHER
 } from "../monoalphabetic-cipher.constant";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
@@ -18,6 +20,7 @@ import { GraphComponent } from "src/app/components/graph/graph.component";
 import * as BIGRAMS from "../../../constants/refBigrams.json";
 import * as BIGRAMS_IN_MAP from "../../../constants/bigramsInMap.json";
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { HeaderService } from 'src/app/components/header/header.service';
 
 const iterations = 1000;
 
@@ -70,7 +73,10 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   toggleOptions: string[];
 
 
-  constructor() {}
+  constructor(headerService: HeaderService) {
+    headerService.cipherName.next(NAME_CIPHER);
+    headerService.cipherType.next(TYPE_CIPHER);
+  }
 
   ngOnInit() {
     this.refBigrams = JSON.parse((REF_BIGRAMS as any).default);

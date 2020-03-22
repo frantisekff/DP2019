@@ -1,5 +1,8 @@
 import { EN_ALPHABET_FREQUENCY, ALPHABET } from 'src/app/constants/language.constants';
 
+export const NAME_CIPHER = 'Simple Substitution Cipher';
+export const TYPE_CIPHER = 'Monoalphabetic';
+
 export const EXAMPLE_RND_ALPHABET = [
   'v',
   'b',
