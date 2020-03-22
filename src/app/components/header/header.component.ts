@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {}
 
-  @HostListener("window:scroll", ["$event"])
+  @HostListener("window:scroll")
   checkScroll() {
     this.isSticky = window.pageYOffset >= 50;
   }
