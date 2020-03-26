@@ -15,7 +15,7 @@ export class PolyalphBoxesComponentComponent implements OnInit {
   @Input() allBoxes;
   @Input() allBoxesIc: number[][] = [];
 
-  selectedValue = 2;
+  selectedValue = '4';
   @Input() toggleOptions: string[] = [];
 
   private nearestLanguage: string;
@@ -23,7 +23,12 @@ export class PolyalphBoxesComponentComponent implements OnInit {
   passedMinIc = false;
   colors = COLORS;
 
-  constructor(private polyalphCipherService: PolyalphCipherService) {}
+  constructor(private polyalphCipherService: PolyalphCipherService) {
+    this.polyalphCipherService.selectedValue.subscribe(newSelectedValue => {
+      console.log(newSelectedValue);
+      this.selectedValue = newSelectedValue.toString();
+    });
+  }
 
   ngOnInit() {
     // generate array <2-16>
@@ -31,12 +36,8 @@ export class PolyalphBoxesComponentComponent implements OnInit {
       this.maxSelectedValue - 2,
       2
     );
-    
-    this.ic = this.allBoxesAvgIc[this.selectedValue - 2];
 
-    this.polyalphCipherService.selectedValue.subscribe(newSelectedValue => {
-      this.selectedValue = newSelectedValue;
-    });
+    this.ic = this.allBoxesAvgIc[+this.selectedValue - 2];
   }
 
   // Change data for updateFlagCompareFreq based of selection <1-26>

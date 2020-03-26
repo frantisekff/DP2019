@@ -82,7 +82,7 @@ export default class AnalysisText {
     let sum = 0;
     for (let i = 0; i < 26; i++) {
       for (let j = 0; j < 26; j++) {
-        const diff = refBigrams[i][j] - freqOfBigrams[i][j] / textLength;
+        const diff = refBigrams[i][j] - (freqOfBigrams[i][j] / textLength);
         sum += Math.abs(Math.round(diff * 100) / 100);
       }
       return sum;

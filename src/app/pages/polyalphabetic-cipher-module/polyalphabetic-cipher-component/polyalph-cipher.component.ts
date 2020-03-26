@@ -7,10 +7,14 @@ import { COLORS, A_ASCII } from "../../../constants/language.constants";
 import Utils from "src/app/utils";
 import AnalysisText from "src/app/analysis-text";
 import { Subject, Subscription } from "rxjs";
-import { MESSAGE, TYPE_CIPHER, NAME_CIPHER } from "../polyalphabetic-cipher.constants";
+import {
+  MESSAGE,
+  TYPE_CIPHER,
+  NAME_CIPHER
+} from "../polyalphabetic-cipher.constants";
 import { PolyalphCipherService } from "../polyalphabetic-cipher.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { HeaderService } from 'src/app/components/header/header.service';
+import { HeaderService } from "src/app/components/header/header.service";
 
 @Component({
   selector: "app-polyalphcipher",
@@ -19,7 +23,7 @@ import { HeaderService } from 'src/app/components/header/header.service';
 })
 export class PolyalphCipher implements OnInit, OnDestroy {
   colors = COLORS;
-  private key = "abc";
+  private key = "abr";
   private subscrKey: Subscription;
   keyLength = this.key.length;
   private message = MESSAGE;
@@ -54,7 +58,10 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   allCombinations: any = (ALL_COMBINATIONS_KEY as any).default;
   cipherInputsForm: FormGroup;
 
-  constructor(private polyalphCipherService: PolyalphCipherService, headerService: HeaderService) {
+  constructor(
+    private polyalphCipherService: PolyalphCipherService,
+    headerService: HeaderService
+  ) {
     headerService.cipherName.next(NAME_CIPHER);
     headerService.cipherType.next(TYPE_CIPHER);
   }
@@ -63,10 +70,9 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     this.cipherInputsForm = new FormGroup({
       key: new FormControl(this.key, [
         Validators.required,
-        Validators.pattern("^[a-zA-Z]{2,3}$"),
-        Validators.maxLength(3),
+        Validators.pattern("^[a-zA-Z]{2,4}$"),
+        Validators.maxLength(4),
         Validators.minLength(2)
-
       ]),
       message: new FormControl(this.message, [
         Validators.required,
@@ -74,7 +80,6 @@ export class PolyalphCipher implements OnInit, OnDestroy {
         Validators.minLength(20),
         Validators.maxLength(2000)
       ])
-
     });
 
     this.subscrMessage = this.cipherInputsForm.controls.message.valueChanges.subscribe(
@@ -106,15 +111,18 @@ export class PolyalphCipher implements OnInit, OnDestroy {
         const result = this.polyalphCipherService.calcDiffEnAlphAndAllDecTexts(
           freqAllCombinationsOfDecMessage,
           this.allCombinations,
-          decryptedAllCombinations
+          decryptedAllCombinations,
+          this.highestIC[0].box
         );
         const sortedDiff = this.polyalphCipherService.chooseBestResults(
           result.diffFreqAllCombinations
         );
-        const minSum = this.polyalphCipherService.findBestResultLength(
-          result.diffFreqAllCombinations
-        );
-        this.polyalphCipherService.selectedValue.emit(minSum.toString());
+        // const minSum = this.polyalphCipherService.findBestResultLength(
+        //   result.diffFreqAllCombinations
+        // );
+        // this.polyalphCipherService.selectedValue.emit(
+        //   result.minimDiffFreqAllCombinations.toString()
+        // );
         this.remapDataTableBestResult(sortedDiff);
         console.log("From Web Worker:", event.data);
       };
@@ -130,7 +138,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
 
   public calcDataForPage() {
     console.log(this.cipherInputsForm);
-    const minDiffBetweenEnFreqAndText = 0.015;
+    const minDiffBetweenEnFreqAndText = 0.01;
     this.formatedMessage = Utils.stripWhiteSpToLowerCase(this.message);
     this.keyLength = this.key.length;
     // Encrypt message
@@ -138,12 +146,13 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     // Decrypt message
     this.decryptedText = this.decrypt(this.encryptedText, this.key);
 
+    // recalculate toggle options when formated messasge is to small
     if (this.formatedMessage.length < this.maxSelectedValue - 2) {
       this.toggleOptions = Utils.createArrayOfLength(
         this.formatedMessage.length - 2,
         2
       );
-      this.polyalphCipherService.selectedValue.emit("2");
+      this.polyalphCipherService.selectedValue.next(2);
     }
 
     // Split message to Boxes
@@ -153,39 +162,58 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     console.log("Boxes");
     console.log(this.allBoxes);
 
-    this.calcFreqAndICForAllBoxes();
+    // we claculate Freq and IC for All Boxes
+    const result = this.calcFreqAndICForAllBoxes(this.allBoxes);
+    this.allBoxesFrequency = result.allBoxesFrequency;
+    this.allBoxesIc = result.allBoxesIc;
+    this.allBoxesAvgIc = result.allBoxesAvgIc;
     console.log(this.allBoxesFrequency);
     console.log(this.allBoxesIc);
     console.log("All Boxes Avg IC", this.allBoxesAvgIc);
 
-    // Create copy and sort by ic (asc)
-    const copy = Object.assign([], this.allBoxesAvgIc);
-    const sortedIC = copy.sort((a, b) => b.value - a.value).slice();
+    // Create copy and sort by ic (desc)
+    const copyAllBoxesAvgIc = Object.assign([], this.allBoxesAvgIc);
+    const sortedIC = copyAllBoxesAvgIc
+      .sort((a, b) => b.value - a.value)
+      .slice();
     console.log("Sorted IC", sortedIC);
 
-    // with smallest IC
+    // with highest IC
     this.bestKeyLength = sortedIC[0];
     console.log("Best Key length ", this.bestKeyLength);
 
-    this.highestIC = this.allBoxesAvgIc.filter(
-      item => sortedIC[0].value - item.value <= minDiffBetweenEnFreqAndText
-    ).slice(0,5);
+    // Filter only values which are near to Best Key Length
+    this.highestIC = this.allBoxesAvgIc
+      .filter(
+        item => sortedIC[0].value - item.value <= minDiffBetweenEnFreqAndText
+      )
+      .slice(0, 5);
     console.log("Highest IC after filter ", this.highestIC);
 
-    this.polyalphCipherService.selectedValue.emit(this.selectedValue);
+    this.highestIC = this.highestIC
+    .filter(
+      item => 0.0667 - item.value <= minDiffBetweenEnFreqAndText
+    )
+    
+
+    this.polyalphCipherService.selectedValue.next(this.highestIC[0].box);
 
     // this.allCombinations = this.polyalphCipherService.computeCombinationKeyLength(
     //   this.maxGuessKeyLength
     // );
-
-    this.webWorker.postMessage([this.allCombinations, this.encryptedText]);
+    this.webWorker.postMessage([
+      this.allCombinations[this.highestIC[0].box - 1],
+      this.encryptedText
+    ]);
   }
 
   // For every box calculate IC and Frequency
-  private calcFreqAndICForAllBoxes() {
+  private calcFreqAndICForAllBoxes(allBoxes) {
     let counterBoxes = 2;
-
-    this.allBoxes.forEach(boxes => {
+    const allBoxesFrequency = [];
+    const allBoxesIc = [];
+    const allBoxesAvgIc = [];
+    allBoxes.forEach(boxes => {
       const boxesFrequency: number[][] = [];
       const boxesIc: number[] = [];
       boxes.forEach(box => {
@@ -194,8 +222,8 @@ export class PolyalphCipher implements OnInit, OnDestroy {
         boxesIc.push(AnalysisText.getIC(boxFreq, box.length));
       });
 
-      this.allBoxesFrequency.push(boxesFrequency);
-      this.allBoxesIc.push(boxesIc);
+      allBoxesFrequency.push(boxesFrequency);
+      allBoxesIc.push(boxesIc);
       console.log("Boxes IC ", boxesIc);
 
       //  Compute sum and avg
@@ -204,10 +232,11 @@ export class PolyalphCipher implements OnInit, OnDestroy {
       const tmp = { box: 0, value: 0 };
       tmp.box = counterBoxes;
       tmp.value = avg;
-      this.allBoxesAvgIc.push(tmp);
+      allBoxesAvgIc.push(tmp);
       counterBoxes += 1;
       console.log(`The sum is: ${sum}. The average is: ${avg}.`);
     });
+    return { allBoxesFrequency, allBoxesIc, allBoxesAvgIc };
   }
 
   // remap data for Table
