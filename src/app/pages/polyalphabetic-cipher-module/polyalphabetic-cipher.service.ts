@@ -1,71 +1,65 @@
 import { AlphabetElement } from "src/app/models/common.model";
 import {
   EN_ALPHABET_FREQUENCY,
-  ALPHABET,
+  ALPHABET
 } from "src/app/constants/language.constants";
 import Utils from "src/app/utils";
 import { EventEmitter } from "@angular/core";
+import { Subject } from 'rxjs';
 
 export class PolyalphCipherService {
-  selectedValue = new EventEmitter<string>();
+  selectedValue = new Subject<number>();
 
   // Calculate differencies between en alphabet freq and all decrypted options.
   calcDiffEnAlphAndAllDecTexts(
     freqAllCombinations: number[][][],
     allCombinations,
-    decryptedAllCombinations
+    decryptedAllCombinations,
+    keyLength
   ) {
     const diffFreqAllCombinations = [];
     const minimDiffFreqAllCombinations = [];
-    for (
-      let keyLength = 0;
-      keyLength < freqAllCombinations.length;
-      keyLength++
-    ) {
-      let diffFreqDecryptedTexts = [];
-      let minForKeyLength = 1000;
-      let minForKeyLengthIndex = 0;
 
-      for (let row = 0; row < freqAllCombinations[keyLength].length; row++) {
-        const freqForKeyLength = freqAllCombinations[keyLength][row];
-        const diffFreqForKeyLength = [];
-        const lang = {} as AlphabetElement;
+    let diffFreqDecryptedTexts = [];
+    let minForKeyLength = 1000;
+    let minForKeyLengthIndex = 0;
 
-        for (let letter = 0; letter < freqForKeyLength.length; letter++) {
-          const freqDiff =
-            Math.round(
-              Math.abs(
-                freqForKeyLength[letter] - EN_ALPHABET_FREQUENCY[letter]
-              ) * 100
-            ) / 100;
-          diffFreqForKeyLength.push(freqDiff);
-          lang[ALPHABET[letter]] = freqDiff;
-        }
+    for (let row = 0; row < freqAllCombinations[0].length; row++) {
+      const freqForKeyLength = freqAllCombinations[0][row];
+      const diffFreqForKeyLength = [];
+      const lang = {} as AlphabetElement;
 
-        lang.sum =
-          Math.round(diffFreqForKeyLength.reduce(Utils.sumFunc) * 100) / 100;
-        lang.key = allCombinations[keyLength][row];
-        lang.decryptedText = decryptedAllCombinations[keyLength][row];
-        // Find min sum for KeyLength
-        if (minForKeyLength > lang.sum) {
-          minForKeyLength = lang.sum;
-          minForKeyLengthIndex = row;
-        }
-
-        diffFreqDecryptedTexts[row] = lang;
+      for (let letter = 0; letter < freqForKeyLength.length; letter++) {
+        const freqDiff =
+          Math.round(
+            Math.abs(freqForKeyLength[letter] - EN_ALPHABET_FREQUENCY[letter]) *
+              100
+          ) / 100;
+        diffFreqForKeyLength.push(freqDiff);
+        lang[ALPHABET[letter]] = freqDiff;
       }
-      // console.log('Diff Freq for All Combinations', diffFreqDecryptedTexts);
-      diffFreqAllCombinations.push(diffFreqDecryptedTexts);
-      diffFreqDecryptedTexts = [];
-      // console.log('Minimum', minForKeyLength);
-      minimDiffFreqAllCombinations.push({
-        index: minForKeyLengthIndex,
-        value: minForKeyLength,
-        decryptedText: decryptedAllCombinations[keyLength][minForKeyLengthIndex]
-      });
-      minForKeyLength = 1000;
-      console.log("Decrypted all combinations ");
+
+      lang.sum =
+        Math.round(diffFreqForKeyLength.reduce(Utils.sumFunc) * 100) / 100;
+      lang.key = allCombinations[keyLength - 1][row];
+      lang.decryptedText = decryptedAllCombinations[0][row];
+      // Find min sum for KeyLength
+      if (minForKeyLength > lang.sum) {
+        minForKeyLength = lang.sum;
+        minForKeyLengthIndex = row;
+      }
+
+      diffFreqDecryptedTexts[row] = lang;
     }
+    // console.log('Diff Freq for All Combinations', diffFreqDecryptedTexts);
+    diffFreqAllCombinations.push(diffFreqDecryptedTexts);
+    // console.log('Minimum', minForKeyLength);
+    minimDiffFreqAllCombinations.push({
+      index: minForKeyLengthIndex,
+      value: minForKeyLength,
+      decryptedText: decryptedAllCombinations[0][minForKeyLengthIndex]
+    });
+    console.log("Decrypted all combinations ");
 
     return { diffFreqAllCombinations, minimDiffFreqAllCombinations };
   }
@@ -83,13 +77,14 @@ export class PolyalphCipherService {
   }
 
   findBestResultLength(diffFreqAllCombinations): number {
-    let minSum = diffFreqAllCombinations[0][0] ;
+    let minSum = {...diffFreqAllCombinations[0][0]};
     minSum.sum = 1000;
     for (const combinationOfLength of diffFreqAllCombinations) {
       const minForNcombination = combinationOfLength
         .sort((a, b) => a.sum - b.sum)
         .slice(0, 3)[0];
-      minSum = minForNcombination.sum < minSum.sum ? minForNcombination : minSum;
+      minSum =
+        minForNcombination.sum < minSum.sum ? minForNcombination : minSum;
     }
     const lengthOfBestKey = minSum.key.length;
     return lengthOfBestKey;

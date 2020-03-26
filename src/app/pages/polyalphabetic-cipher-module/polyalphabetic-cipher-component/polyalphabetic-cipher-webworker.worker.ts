@@ -1,9 +1,12 @@
 /// <reference lib="webworker" />
 import AnalysisText from "src/app/analysis-text";
-import { A_ASCII } from 'src/app/constants/language.constants';
+import { A_ASCII } from "src/app/constants/language.constants";
 
 function calcFreqForTexts(allCombinations, encryptedText) {
-  const decryptedAllCombinations = decryptForAllCombinations(allCombinations, encryptedText);
+  const decryptedAllCombinations = decryptForAllCombinations(
+    allCombinations,
+    encryptedText
+  );
   const freqAllCombinations: number[][][] = [];
   for (const allMessagesOfLength of decryptedAllCombinations) {
     const forArray = AnalysisText.computeFreqForArray(allMessagesOfLength);
@@ -16,14 +19,13 @@ function calcFreqForTexts(allCombinations, encryptedText) {
 function decryptForAllCombinations(allCombinations, encryptedText) {
   const decryptedAllCombinations = [];
 
-  for (const allKeysOfLength of allCombinations) {
-    const decryptedForLength = [];
-    for (const key of allKeysOfLength) {
-      const decryptedText = decrypt(encryptedText, key);
-      decryptedForLength.push(decryptedText);
-    }
-    decryptedAllCombinations.push(decryptedForLength);
+  const decryptedForLength = [];
+  for (const key of allCombinations) {
+    const decryptedText = decrypt(encryptedText, key);
+    decryptedForLength.push(decryptedText);
   }
+  decryptedAllCombinations.push(decryptedForLength);
+
   return decryptedAllCombinations;
 }
 
