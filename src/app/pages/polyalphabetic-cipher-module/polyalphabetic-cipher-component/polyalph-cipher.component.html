@@ -22,11 +22,11 @@
                   placeholder="Set key"
                   name="keyInput"
                   formControlName="key"
-                  maxlength="4"
+                  maxlength="3"
                 />
-                <mat-hint>Please, enter key of length 2 to 4 and key must include letters a-z or A-Z. </mat-hint>
+                <mat-hint>Please, enter key of length 2 to 3 and key must include letters a-z or A-Z. </mat-hint>
                 <mat-error *ngIf="cipherInputsForm.get('key').hasError('maxlength') || cipherInputsForm.get('key').hasError('minlength')">
-                  Please, enter key of length 2 to 4.
+                  Please, enter key of length 2 to 3.
                 </mat-error>
                 <mat-error *ngIf="cipherInputsForm.get('key').hasError('pattern')">
                   Please, text must include letters a-z or A-Z.
@@ -118,7 +118,8 @@
             <div class="col-md-12">
               <div class="col-md-8">
                 <span>We try find length of key. We separate text into boxes, number of boxes is length of key.
-                  For example when we have key of length 3 boxes. In first box will be first letter from encrypted text(CT), in second box second letter form CT, in third box third letter of CT.
+                  For example when we have key of length 3 boxe, in first box will be first letter from encrypted text(CT), 
+                  in second box second letter form CT, in third box third letter of CT. Then we repeat and in first box will be fourth letter of CT, in second box will be fifth letter and so on.
                   Then we compute frequency of every box and Index Coincidence(IC).
                   For boxes we compute average of ICs.
                   Then we repeat this steps and we compute average ICs for key of length <2,16>
@@ -152,7 +153,7 @@
             >
             <div class="col-md-12">
               We try decrypt message and find out key of encrypted message. We use guess of key length form previous step.
-We do it only for key of length <2,4> because we compute all possibilities on client computer.  Key of length has 26^3 = 17,576‬ possible keys, but key of length 4 has 26^4 has 456 976 keys. 
+We do it only for key of length <2,3> because we compute all possibilities on client computer.  Key of length has 26^3 = 17,576‬ possible keys, but key of length 4 has 26^4 has 456 976 keys. 
               <br>
               <app-table
                 [columnNames]="columnsBestResults"
