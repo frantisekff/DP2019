@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {
   A_ASCII,
   EN_ALPHABET_FREQUENCY,
   ALPHABET,
   REF_BIGRAMS
-} from "../../../constants/language.constants";
+} from '../../../constants/language.constants';
 import {
   MESSAGE,
   EXAMPLE_RND_ALPHABET,
@@ -12,21 +12,21 @@ import {
   NAME_CIPHER,
   TYPE_CIPHER,
   ITERATIONS
-} from "../monoalphabetic-cipher.constant";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { Subscription } from "rxjs";
-import AnalysisText from "src/app/analysis-text";
-import Utils from "src/app/utils";
-import { GraphComponent } from "src/app/components/graph/graph.component";
-import * as BIGRAMS_IN_MAP from "../../../constants/bigramsInMap.json";
+} from '../monoalphabetic-cipher.constant';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import AnalysisText from 'src/app/analysis-text';
+import Utils from 'src/app/utils';
+import { GraphComponent } from 'src/app/components/graph/graph.component';
+import * as BIGRAMS_IN_MAP from '../../../constants/bigramsInMap.json';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { HeaderService } from 'src/app/components/header/header.service';
 import { Keys, GuessKey } from 'src/app/models/common.model';
 
 @Component({
-  selector: "app-monoalphabetic-cipher-component",
-  templateUrl: "./monoalphabetic-cipher-component.component.html",
-  styleUrls: ["./monoalphabetic-cipher-component.component.css"]
+  selector: 'app-monoalphabetic-cipher-component',
+  templateUrl: './monoalphabetic-cipher-component.component.html',
+  styleUrls: ['./monoalphabetic-cipher-component.component.css']
 })
 export class MonoalphCipher implements OnInit, OnDestroy {
   rndKey = EXAMPLE_RND_ALPHABET;
@@ -39,7 +39,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   cipherInputsForm: FormGroup;
   // Options for Graph - Encrypted text graph
   chartOptionsFreqGraph = CHART_OPTIONS_COMPARE_BIGRAMS;
-  @ViewChild("comparefreqBigramsGraph", { static: true })
+  @ViewChild('comparefreqBigramsGraph', { static: true })
   comparefreqGraph: GraphComponent;
   dataSourceCompareFreqGraph;
 
@@ -61,7 +61,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     this.cipherInputsForm = new FormGroup({
       message: new FormControl(this.message, [
         Validators.required,
-        Validators.pattern("^[a-zA-Z]+$"),
+        Validators.pattern('^[a-zA-Z]+$'),
         Validators.minLength(20),
         Validators.maxLength(2000)
       ])
@@ -104,6 +104,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     // generate Random Key
     let rndKey = [...this.keys.decKey];
     rndKey = this.shuffleArray(rndKey);
+
     const decText = this.enDecrypt(encText, rndKey);
     const freqBigrams = AnalysisText.getFreqOfBigrams(decText);
     const sum: number = AnalysisText.getSumOfDiffBigramsFromRef(
@@ -114,37 +115,27 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     
     let bestGuess = {} as GuessKey;
     bestGuess.sum = sum;
-    bestGuess.key = rndKey.join("");
+    bestGuess.key = rndKey.join('');
 
     for (let index = 0; index < interations; index++) {
-      // swap in key
-      const iterationKey = this.swapTwoLetters([...bestGuess.key.split("")]);
-      // desifrovat
+      const iterationKey = this.swapTwoLetters([...bestGuess.key.split('')]);
       const decTextIteration = this.enDecrypt(encText, iterationKey);
       // vypocitat freq pre desifrovany text
-      // const freqOfTextIteration = AnalysisText.getFrequencyOfTextPerc(decTextIteration);
       const freqBigramsIteration = AnalysisText.getFreqOfBigrams(decTextIteration);
-
+      // Get diff of Referal values (EN) and decrypted text
+      // that is fitnes finc for evaluate of decrypted text
       const sumIteration: number = AnalysisText.getSumOfDiffBigramsFromRef(
         freqBigramsIteration[0],
         decTextIteration.length - 1,
         this.refBigrams
       );
-     
-
-      // desifrovany text treba ohodnotit
-      // rozdiely medzi refer. hodnotami jazyka
-      // const result: AlphabetElement = this.getDiffFreqFromEnAlph(
-      //   freqOfTextIteration,
-      //   decTextIteration,
-      //   iterationKey
-      // );
-
+      // save only bertter result
       if (sumIteration < bestGuess.sum) {
         const result: GuessKey = {} as GuessKey;
         result.sum = sumIteration;
         result.decryptedText = decTextIteration;
-        result.key = iterationKey.join("");
+        result.key = iterationKey.join('');
+        // sort freq for graph
         result.bigramsFreq = new Map([...freqBigrams[1].entries()].sort());
 
         const initBigramsMap = new Map(
@@ -159,13 +150,14 @@ export class MonoalphCipher implements OnInit, OnDestroy {
         result.bigramsFreqInPerc = initBigramsMap;
 
         bestGuess = result;
-        rndKey = result.key.split("");
+        rndKey = result.key.split('');
 
       }
     }
     return bestGuess;
   }
-  generateRndKey() {
+
+  shuffleRndKey() {
     this.rndKey = [...this.shuffleArray(this.rndKey)];
   }
 
@@ -188,7 +180,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
 
     lang.sum =
       Math.round(diffFreqForKeyLength.reduce(Utils.sumFunc) * 100) / 100;
-    lang.key = key.join("");
+    lang.key = key.join('');
     lang.decryptedText = decText;
 
     return lang;
@@ -230,7 +222,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
 
   // Method for En/Decrypion based on inverse key
   private enDecrypt(encryptedText: string, keys: Array<string>) {
-    let text = "";
+    let text = '';
     for (const letter of encryptedText) {
       // let decryptedLetter = (keys.indexOf(letter) + this.a_ascii);
       // this.decryptedText += String.fromCharCode(decryptedLetter);
@@ -241,7 +233,6 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     return text;
   }
 
-  
   // Change data for CompareFreq based of selection <1-26>
   selectionOfGraphChanged(item: MatButtonToggleChange) {
     this.dataSourceCompareFreqGraph = [...this.allGuess[item.value - 1].bigramsFreqInPerc.values()];
