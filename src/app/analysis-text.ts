@@ -47,7 +47,7 @@ export default class AnalysisText {
     freqBigrams: Map<string, number>, outputBigrams: Map<string, number>
   ) {
     for (const iterator of freqBigrams) {
-      console.log(iterator);
+      // console.log(iterator);
       outputBigrams.set(iterator[0], iterator[1] / textLength);
     }
   }
@@ -83,10 +83,10 @@ export default class AnalysisText {
     for (let i = 0; i < 26; i++) {
       for (let j = 0; j < 26; j++) {
         const diff = refBigrams[i][j] - (freqOfBigrams[i][j] / textLength);
-        sum += Math.abs(Math.round(diff * 100) / 100);
+        sum += Math.abs(diff);
       }
-      return sum;
     }
+    return sum;
   }
 
   static getFrequencyOfText(message: string): number[] {

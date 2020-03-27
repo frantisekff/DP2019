@@ -10,38 +10,18 @@ import {
   EXAMPLE_RND_ALPHABET,
   CHART_OPTIONS_COMPARE_BIGRAMS,
   NAME_CIPHER,
-  TYPE_CIPHER
+  TYPE_CIPHER,
+  ITERATIONS
 } from "../monoalphabetic-cipher.constant";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
 import AnalysisText from "src/app/analysis-text";
 import Utils from "src/app/utils";
 import { GraphComponent } from "src/app/components/graph/graph.component";
-import * as BIGRAMS from "../../../constants/refBigrams.json";
 import * as BIGRAMS_IN_MAP from "../../../constants/bigramsInMap.json";
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { HeaderService } from 'src/app/components/header/header.service';
-
-const iterations = 1000;
-
-export interface GuyessKey {
-  key: string;
-  decryptedText: string;
-  sum: number;
-  bigramsFreq: Map<string, number>;
-  bigramsFreqInPerc: Map<string, number>;
-
-}
-
-interface Keys {
-  encKey: Array<string>;
-  decKey: Array<string>;
-}
-
-interface Guess {
-  rndKey: string[];
-  allBetterGuess: Array<GuyessKey>;
-}
+import { Keys, GuessKey } from 'src/app/models/common.model';
 
 @Component({
   selector: "app-monoalphabetic-cipher-component",
@@ -57,21 +37,16 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   encryptedText: string;
   decryptedText: string;
   cipherInputsForm: FormGroup;
-  guessedKey: Guess;
-  iterStartKey: string[];
-
   // Options for Graph - Encrypted text graph
   chartOptionsFreqGraph = CHART_OPTIONS_COMPARE_BIGRAMS;
   @ViewChild("comparefreqBigramsGraph", { static: true })
   comparefreqGraph: GraphComponent;
   dataSourceCompareFreqGraph;
 
-
   initKeyPair: [string, number][];
-
   selectedValue = '1';
   toggleOptions: string[];
-
+  allGuess: GuessKey[] = [];
 
   constructor(headerService: HeaderService) {
     headerService.cipherName.next(NAME_CIPHER);
@@ -79,7 +54,10 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // referral values of Bigrams for EN language
     this.refBigrams = JSON.parse((REF_BIGRAMS as any).default);
+
+    // Reactive Form for input message
     this.cipherInputsForm = new FormGroup({
       message: new FormControl(this.message, [
         Validators.required,
@@ -95,23 +73,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
       }
     );
 
-    const bigrams = (BIGRAMS_IN_MAP as any).default;
-    const bigramsInMap: Map<string, number> = new Map(
-      [...bigrams.values()].sort()
-    );
-    const bigramsKeys = [...bigramsInMap.keys()];
-    const bigramsValues = [...bigramsInMap.values()];
-
-    this.initKeyPair = bigramsKeys.map((item) => {
-      return [item.toString(), 0];
-    });
-
-    // tslint:disable-next-line: no-unused-expression
-    // tslint:disable-next-line: one-variable-per-declaration
-    
-
-    this.chartOptionsFreqGraph.xAxis.categories = bigramsKeys;
-    this.chartOptionsFreqGraph.series[1].data = bigramsValues;
+    this.setUpReferalValuesForGraph();
 
     this.calcDataForPage();
   }
@@ -120,61 +82,55 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     this.keys = this.calcInverseKeyFromRndAlphabet(this.rndKey);
     this.encryptedText = this.enDecrypt(this.message, this.keys.encKey);
     this.decryptedText = this.enDecrypt(this.encryptedText, this.keys.decKey);
-    const ref = (BIGRAMS as any).default;
-    // const ref3 = (BIGRAMS_IN_MAP as any).default;
 
-    // const ref2 = AnalysisText.getMapFromMapping(ref);
-    // const stringify = JSON.stringify([...ref2]);
-    // const parse = new Map(JSON.parse(ref3));
-
-    this.guessedKey = this.guessKey(iterations, this.encryptedText);
-
-    this.toggleOptions = Utils.createArrayOfLength(this.guessedKey.allBetterGuess.length, 1);
-
-    this.dataSourceCompareFreqGraph = [...this.guessedKey.allBetterGuess[0].bigramsFreqInPerc.values()];
+    this.allGuess = [];
+    // number of attempts to find key
+    const numberOfAttempt = 5;
+    for (let i = 0; i < numberOfAttempt; i++ ){
+      const guessedKey: GuessKey = this.guessKey(ITERATIONS, this.encryptedText);
+      this.allGuess.push(guessedKey);
+      console.log('Guess Key', i);
+      console.log(guessedKey);
+    }
+    // Generate toogle button for graphs based on number of guessedKeys
+    this.toggleOptions = Utils.createArrayOfLength(this.allGuess.length, 1);
+    // Set up data to graph
+    this.dataSourceCompareFreqGraph = [...this.allGuess[0].bigramsFreqInPerc.values()];
     this.comparefreqGraph.updateGraph();
   }
 
   // Hill Climbing Alg.
-  private guessKey(interations: number, encText: string): Guess {
-    const guessed = {} as Guess;
+  private guessKey(interations: number, encText: string): GuessKey {
     // generate Random Key
-    this.iterStartKey = [...this.keys.decKey];
-    this.iterStartKey = [...this.swapTwoLetters(this.iterStartKey)];
-    this.iterStartKey = [...this.swapTwoLetters(this.iterStartKey)];
-    let rndKey = [...this.iterStartKey];
-
-    // rndKey = this.shuffleArray(rndKey);
-    guessed.rndKey = [...rndKey];
-
-    let bestGuess = {} as GuyessKey;
-    bestGuess.sum = 1000;
-    const allBetterGuess = [];
+    let rndKey = [...this.keys.decKey];
+    rndKey = this.shuffleArray(rndKey);
+    const decText = this.enDecrypt(encText, rndKey);
+    const freqBigrams = AnalysisText.getFreqOfBigrams(decText);
+    const sum: number = AnalysisText.getSumOfDiffBigramsFromRef(
+      freqBigrams[0],
+      decText.length - 1,
+      this.refBigrams
+    );
+    
+    let bestGuess = {} as GuessKey;
+    bestGuess.sum = sum;
+    bestGuess.key = rndKey.join("");
 
     for (let index = 0; index < interations; index++) {
-      // swap v kluci
-      let iterationKey = [...this.swapTwoLetters(rndKey)];
-      // iterationKey = [...this.swapTwoLetters(iterationKey)];
-
-      // iterationKey = [...rndKey];
-
+      // swap in key
+      const iterationKey = this.swapTwoLetters([...bestGuess.key.split("")]);
       // desifrovat
       const decTextIteration = this.enDecrypt(encText, iterationKey);
       // vypocitat freq pre desifrovany text
       // const freqOfTextIteration = AnalysisText.getFrequencyOfTextPerc(decTextIteration);
-      const freqBigrams = AnalysisText.getFreqOfBigrams(decTextIteration);
+      const freqBigramsIteration = AnalysisText.getFreqOfBigrams(decTextIteration);
 
-
-      const sum: number = AnalysisText.getSumOfDiffBigramsFromRef(
-        freqBigrams[0],
-        decTextIteration.length,
+      const sumIteration: number = AnalysisText.getSumOfDiffBigramsFromRef(
+        freqBigramsIteration[0],
+        decTextIteration.length - 1,
         this.refBigrams
       );
-      const result: GuyessKey = {} as GuyessKey;
-      result.sum = sum;
-      result.decryptedText = decTextIteration;
-      result.key = iterationKey.join("");
-      result.bigramsFreq = new Map([...freqBigrams[1].entries()].sort());
+     
 
       // desifrovany text treba ohodnotit
       // rozdiely medzi refer. hodnotami jazyka
@@ -184,14 +140,19 @@ export class MonoalphCipher implements OnInit, OnDestroy {
       //   iterationKey
       // );
 
-      if (result.sum < bestGuess.sum && result.sum < 0.06) {
+      if (sumIteration < bestGuess.sum) {
+        const result: GuessKey = {} as GuessKey;
+        result.sum = sumIteration;
+        result.decryptedText = decTextIteration;
+        result.key = iterationKey.join("");
+        result.bigramsFreq = new Map([...freqBigrams[1].entries()].sort());
 
         const initBigramsMap = new Map(
           [...this.initKeyPair.values()]
         );
 
         AnalysisText.getFreqOfBigramsPerc(
-          this.encryptedText.length,
+          this.encryptedText.length - 1,
           result.bigramsFreq, initBigramsMap
         );
 
@@ -199,13 +160,10 @@ export class MonoalphCipher implements OnInit, OnDestroy {
 
         bestGuess = result;
         rndKey = result.key.split("");
-        allBetterGuess.push(result);
 
       }
     }
-    guessed.allBetterGuess = allBetterGuess;
-    console.log(allBetterGuess);
-    return guessed;
+    return bestGuess;
   }
   generateRndKey() {
     this.rndKey = [...this.shuffleArray(this.rndKey)];
@@ -215,9 +173,9 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     freq: number[],
     decText: string,
     key: Array<string>
-  ): GuyessKey {
+  ): GuessKey {
     const diffFreqForKeyLength = [];
-    const lang = {} as GuyessKey;
+    const lang = {} as GuessKey;
 
     for (let letter = 0; letter < ALPHABET.length; letter++) {
       const freqDiff =
@@ -258,15 +216,15 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     const keys = {} as Keys;
     const mapping = rndAlphabet
       .map((item, i) => {
-        return [i, item.charCodeAt(0) - "a".charCodeAt(0)];
+        return [i, item.charCodeAt(0) - A_ASCII];
       })
       .sort((a, b) => (a[1] > b[1] ? 1 : -1));
     keys.decKey = mapping.map(item =>
-      String.fromCharCode(item[0] + "a".charCodeAt(0))
+      String.fromCharCode(item[0] + A_ASCII)
     );
     keys.encKey = mapping
       .sort((a, b) => (a[0] > b[0] ? 1 : -1))
-      .map(item => String.fromCharCode(item[1] + "a".charCodeAt(0)));
+      .map(item => String.fromCharCode(item[1] + A_ASCII));
     return keys;
   }
 
@@ -286,10 +244,26 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   
   // Change data for CompareFreq based of selection <1-26>
   selectionOfGraphChanged(item: MatButtonToggleChange) {
-    this.dataSourceCompareFreqGraph = [...this.guessedKey.allBetterGuess[item.value - 1].bigramsFreqInPerc.values()];
+    this.dataSourceCompareFreqGraph = [...this.allGuess[item.value - 1].bigramsFreqInPerc.values()];
     this.comparefreqGraph.updateGraph();
     console.log('Selected value: ', item.value);
     console.log(this.dataSourceCompareFreqGraph);
+  }
+
+  private setUpReferalValuesForGraph (){
+    const bigrams = (BIGRAMS_IN_MAP as any).default;
+    const bigramsInMap: Map<string, number> = new Map(
+      [...bigrams.values()].sort()
+    );
+    const bigramsKeys = [...bigramsInMap.keys()];
+    const bigramsValues = [...bigramsInMap.values()];
+
+    this.initKeyPair = bigramsKeys.map((item) => {
+      return [item.toString(), 0];
+    });
+
+    this.chartOptionsFreqGraph.xAxis.categories = bigramsKeys;
+    this.chartOptionsFreqGraph.series[1].data = bigramsValues;
   }
 
   ngOnDestroy() {
