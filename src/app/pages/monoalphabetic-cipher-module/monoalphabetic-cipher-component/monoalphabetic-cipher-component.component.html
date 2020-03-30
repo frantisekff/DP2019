@@ -1,201 +1,230 @@
-<div class="container">
-  <div class="row text-center">
+<app-side-navbar [topGap]="topGap" class="col-md-12">
+  <!-- <button mat-button (click)="sidenav.toggle()">Toggle</button> -->
+  <div class="container">
+    <mat-card id="inputs" class="col-md-12">
+      <mat-card-header>
+        <mat-card-title>Description</mat-card-title>
+      </mat-card-header>
+      <mat-card-content style="word-wrap: break-word;">
+        <div class="col-md-8 col-md-offset-2">
+          Monoalphabetic cipher is a substitution cipher in which for a given
+          key, the cipher alphabet for each plain alphabet is fixed. For
+          example, if 'B' is encrypted as 'L', for any number of occurrence in
+          that plaintext, 'B' will always get encrypted to 'L'.
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <br />
     <div class="col-md-12">
-      <h2>Monoalphabetic Cipher</h2>
-    </div>
-  </div>
-  <br />
-  <div class="col-md-8 col-md-offset-2">
-    Monoalphabetic cipher is a substitution cipher in which for a given key, the
-    cipher alphabet for each plain alphabet is fixed. For example, if 'B' is
-    encrypted as 'L', for any number of occurrence in that plaintext, 'B' will
-    always get encrypted to 'L'.
-  </div>
-  <br />
-
-  <br />
-  <br />
-
-  <div class="col-md-12">
-    <div class="row">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Key for encryption</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="word-wrap: break-word;">
-          {{ rndKey }}
-
-          <button mat-button (click)="shuffleRndKey()">
-            Generate key
-          </button>
-        </mat-card-content>
-      </mat-card>
-      <br />
-      <br />
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Message</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="word-wrap: break-word;">
-          <form [formGroup]="cipherInputsForm">
-            <mat-form-field style="width:50vw">
-              <textarea
-                matInput
-                cdkTextareaAutosize
-                #autosize="cdkTextareaAutosize"
-                cdkAutosizeMinRows="2"
-                cdkAutosizeMaxRows="9"
-                placeholder="Type message to encrypt"
-                name="messageInput"
-                formControlName="message"
-              ></textarea>
-              <mat-hint
-                >Please, enter message longer than 20 letters and text must
-                include letters a-z or A-Z.
-              </mat-hint>
-              <mat-error
-                *ngIf="cipherInputsForm.get('message').hasError('minlength')"
-              >
-                Please, enter message longer than 20 letters.
-              </mat-error>
-              <mat-error
-                *ngIf="cipherInputsForm.get('message').hasError('maxlength')"
-              >
-                Please, enter message shorter than 2000 letters.
-              </mat-error>
-              <mat-error
-                *ngIf="cipherInputsForm.get('message').hasError('pattern')"
-              >
-                Please, text must include letters a-z or A-Z.
-              </mat-error>
-            </mat-form-field>
-            <div>
-              <button mat-button (click)="calcDataForPage()">
-                Analyse
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <br />
-    <br />
-    <div class="row">
-      <div class="col-md-6">
-        <mat-card>
+      <div class="row">
+        <mat-card id="inputs" class="col-md-12">
           <mat-card-header>
-            <mat-card-title>Encrypted Text</mat-card-title>
+            <mat-card-title>Key for encryption</mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
-            {{ encryptedText }}
+            {{ rndKey }}
+
+            <button mat-button (click)="shuffleRndKey()">
+              Generate key
+            </button>
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="col-md-6">
-        <mat-card>
+      <br />
+      <div class="row">
+        <mat-card class="col-md-12">
           <mat-card-header>
-            <mat-card-title>Dencrypted Text</mat-card-title>
+            <mat-card-title>Message</mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
-            <p>
-              {{ decryptedText }}
-            </p>
+            <form [formGroup]="cipherInputsForm">
+              <mat-form-field style="width:50vw">
+                <textarea
+                  matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="2"
+                  cdkAutosizeMaxRows="9"
+                  placeholder="Type message to encrypt"
+                  name="messageInput"
+                  formControlName="message"
+                ></textarea>
+                <mat-hint
+                  >Please, enter message longer than 20 letters and text must
+                  include letters a-z or A-Z.
+                </mat-hint>
+                <mat-error
+                  *ngIf="cipherInputsForm.get('message').hasError('minlength')"
+                >
+                  Please, enter message longer than 20 letters.
+                </mat-error>
+                <mat-error
+                  *ngIf="cipherInputsForm.get('message').hasError('maxlength')"
+                >
+                  Please, enter message shorter than 2000 letters.
+                </mat-error>
+                <mat-error
+                  *ngIf="cipherInputsForm.get('message').hasError('pattern')"
+                >
+                  Please, text must include letters a-z or A-Z.
+                </mat-error>
+              </mat-form-field>
+              <div>
+                <button mat-button (click)="calcDataForPage()">
+                  Analyse
+                </button>
+              </div>
+            </form>
           </mat-card-content>
         </mat-card>
       </div>
-    </div>
-    <br />
-    <div class="row">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Generated random key</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="word-wrap: break-word;">
-          For finding key we use Hill Climbing alghorithm.
 
-          <h5>We generate random key {{ rndKey }}</h5>
-          <h5>We try to find key {{ keys.decKey }}</h5>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <br />
-    <div class="row">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Find decryption key</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="word-wrap: break-word;">
-          To find key we will be repeat next steps:
-          <ul style="list-style-type:disc;">
-            <li>swap 2 letters of key - we compute freguencies of bigrams</li>
-            <li>
-              calculate difference between calculated frequencies and referal
-              values for English alphabet
-            </li>
-            <li>save only better result</li>
-            <li>
-              if we got better result then in next step we use this key from better result.
-            </li>
-
-          </ul>
-          These steps we repeat for n times
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <br />
-    <br />
-
-    <div class="row">
-      <ng-container *ngFor="let guess of allGuess">
-        <div class="col-md-4">
+      <br />
+      <br />
+      <div class="row">
+        <div class="col-md-6 remove-left-marigns">
           <mat-card>
             <mat-card-header>
-              <mat-card-title>Finded key</mat-card-title>
-              <mat-card-subtitle> {{ guess.key }} </mat-card-subtitle>
+              <mat-card-title>Encrypted Text</mat-card-title>
             </mat-card-header>
             <mat-card-content style="word-wrap: break-word;">
-              <p>{{ guess.decryptedText | slice: 0:150 }}</p>
-              <h5>Sum {{ guess.sum | number:'1.0-3'}} *</h5>
+              {{ encryptedText }}
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div class="col-md-6 remove-right-marigns">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Dencrypted Text</mat-card-title>
+            </mat-card-header>
+            <mat-card-content style="word-wrap: break-word;">
               <p>
-                <small>
-                  *difference between calculated frequencies and referal values
-                  for English alphabet)
-                </small>
+                {{ decryptedText }}
               </p>
             </mat-card-content>
-            <mat-card-actions> </mat-card-actions>
           </mat-card>
-          <br />
         </div>
-      </ng-container>
+      </div>
+      <br />
+      <div class="row">
+        <mat-card class="col-md-12">
+          <mat-card-header>
+            <mat-card-title>Find decryption key</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            To find key we will be repeat next steps:
+            <ul style="list-style-type:disc;">
+              <li>
+                swap 2 letters of key - we compute freguencies of bigrams
+              </li>
+              <li>
+                calculate difference between calculated frequencies and referal
+                values for English alphabet
+              </li>
+              <li>save only better result</li>
+              <li>
+                if we got better result then in next step we use this key from
+                better result.
+              </li>
+            </ul>
+            These steps we repeat for n times
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <br />
+      <div class="row">
+        <mat-card class="col-md-12">
+          <mat-card-header>
+            <mat-card-title>Generated random key</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            For finding key we use Hill Climbing alghorithm.
+
+            <h5>We generate random key {{ rndKey }}</h5>
+            <h5>We try to find key {{ keys.decKey }}</h5>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <br />
+      <br />
     </div>
   </div>
-</div>
+  <div [ngClass]="{ hide: !calcDone, show: calcDone }">
+    <div class="container" id="findKey">
+      <div class="row col-md-12">
+        <ng-container *ngFor="let guess of allGuess">
+          <div class="col-md-4">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Finded key</mat-card-title>
+                <mat-card-subtitle> {{ guess.key }} </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content style="word-wrap: break-word;">
+                <p>{{ guess.decryptedText | slice: 0:150 }}</p>
+                <h5>Sum {{ guess.sum | number: "1.0-3" }} *</h5>
+                <p>
+                  <small>
+                    *difference between calculated frequencies and referal
+                    values for English alphabet)
+                  </small>
+                </p>
+              </mat-card-content>
+              <mat-card-actions> </mat-card-actions>
+            </mat-card>
+            <br />
+          </div>
+        </ng-container>
+      </div>
+    </div>
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-12 col-xs-12">
-      <app-graph
-        #comparefreqBigramsGraph
-        [chartOptionsFreqGraph]="chartOptionsFreqGraph"
-        [data]="dataSourceCompareFreqGraph"
-      ></app-graph>
-
-      <mat-button-toggle-group
-      class="btn-group"
-      [(ngModel)]="selectedValue"
-      #group="matButtonToggleGroup"
-    >
-      <mat-button-toggle
-        *ngFor="let item of toggleOptions"
-        (change)="selectionOfGraphChanged($event)"
-        [value]="item"
-      >
-        {{ item }}</mat-button-toggle
-      >
-    </mat-button-toggle-group>
+    <div class="container" id="compareBigrams">
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+          <mat-card>
+            <mat-card-content>
+              <app-graph
+                #comparefreqBigramsGraph
+                [chartOptionsFreqGraph]="chartOptionsFreqGraph"
+                [data]="dataSourceCompareFreqGraph"
+              ></app-graph>
+              <div class="col-md-12 text-center">
+                <mat-button-toggle-group
+                  class="btn-group"
+                  [(ngModel)]="selectedValue"
+                  #group="matButtonToggleGroup"
+                >
+                  <mat-button-toggle
+                    *ngFor="let item of toggleOptions"
+                    (change)="selectionOfGraphChanged($event)"
+                    [value]="item"
+                  >
+                    {{ item }}</mat-button-toggle
+                  >
+                </mat-button-toggle-group>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+  <div class="container">
+    <div class="row">
+      <mat-card
+        class="text-center col-md-12"
+        [ngClass]="{ hide: calcDone, show: !calcDone }"
+      >
+        <mat-card-content>
+          <h5>Please wait, after calculation ends</h5>
+          <br />
+          <mat-progress-spinner
+            class="spinner"
+            [mode]="'indeterminate'"
+          >
+          </mat-progress-spinner>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</app-side-navbar>
