@@ -15,7 +15,7 @@ export class PolyalphBoxesComponentComponent implements OnInit {
   @Input() allBoxes;
   @Input() allBoxesIc: number[][] = [];
 
-  selectedValue = '4';
+  selectedValue = 4;
   @Input() toggleOptions: string[] = [];
 
   private nearestLanguage: string;
@@ -26,7 +26,7 @@ export class PolyalphBoxesComponentComponent implements OnInit {
   constructor(private polyalphCipherService: PolyalphCipherService) {
     this.polyalphCipherService.selectedValue.subscribe(newSelectedValue => {
       console.log(newSelectedValue);
-      this.selectedValue = newSelectedValue.toString();
+      this.selectedValue = newSelectedValue;
     });
   }
 
