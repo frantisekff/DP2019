@@ -14,6 +14,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { SideNavbarComponent } from '../components/side-navbar/side-navbar.component';
 
 @NgModule({
   imports: [
@@ -30,14 +33,17 @@ import {MatStepperModule} from '@angular/material/stepper';
     CdkStepperModule,
     MatStepperModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule,
   ],
-  declarations: [TableComponent, GraphComponent],
+  declarations: [TableComponent, GraphComponent, SideNavbarComponent],
   exports: [
     MatTableModule,
     MatSortModule,
     TableComponent,
     GraphComponent,
+    SideNavbarComponent,
     HighchartsChartModule,
     KatexModule,
     MatInputModule,
@@ -48,7 +54,9 @@ import {MatStepperModule} from '@angular/material/stepper';
     CdkStepperModule,
     MatStepperModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule
   ]
 })
 export class SharedModule {}

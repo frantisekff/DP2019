@@ -2,19 +2,18 @@ body {
   padding-top: 70px;
 }
 .bg-navbar-blue {
-  background-color: #255E69 !important;
+  background-color: #255e69 !important;
 }
 
 .navbar-brand {
-    color: white !important;
+  color: white !important;
 }
 
 .cipher-name {
-    color: white;
+  color: white;
 }
 .cipher-type {
-    color: #6A959D;
-
+  color: #6a959d;
 }
 
 .btn-outline-secondary {
@@ -23,9 +22,9 @@ body {
   border-color: white;
 }
 
-
-.btn-outline-secondary:hover, .show>.btn-outline-secondary.dropdown-toggle {
- background-color: #801D15;
+.btn-outline-secondary:hover,
+.show > .btn-outline-secondary.dropdown-toggle {
+  background-color: #801d15;
 }
 
 .main-navbar {
@@ -42,11 +41,10 @@ body {
   display: inline-block;
 }
 
-
 .navbar-sticky {
   color: white;
   font-size: larger;
-  background-color: #255E69;
+  background-color: #255e69;
   padding: 1rem;
   text-align: center;
 }
@@ -59,3 +57,9 @@ body {
   display: block;
 }
 
+.static-top {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}

@@ -1,0 +1,29 @@
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+.mat-drawer-content {
+    overflow: unset !important;
+}
+
+.remove-left-marigns {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.remove-right-marigns {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.spinner {
+    display: inline-block;
+}

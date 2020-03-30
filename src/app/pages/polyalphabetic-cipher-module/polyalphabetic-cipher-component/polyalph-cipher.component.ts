@@ -70,8 +70,8 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     this.cipherInputsForm = new FormGroup({
       key: new FormControl(this.key, [
         Validators.required,
-        Validators.pattern("^[a-zA-Z]{2,4}$"),
-        Validators.maxLength(4),
+        Validators.pattern("^[a-zA-Z]{2,3}$"),
+        Validators.maxLength(3),
         Validators.minLength(2)
       ]),
       message: new FormControl(this.message, [

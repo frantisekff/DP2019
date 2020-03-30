@@ -1,5 +1,7 @@
 import { EN_ALPHABET_FREQUENCY, ALPHABET } from 'src/app/constants/language.constants';
 
+export const ITERATIONS = 10000;
+
 export const NAME_CIPHER = 'Simple Substitution Cipher';
 export const TYPE_CIPHER = 'Monoalphabetic';
 

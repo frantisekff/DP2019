@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { SharedModule } from './shared/shared.module';
 import { HeaderService } from './components/header/header.service';
+import { SideNavbarComponent } from './components/side-navbar/side-navbar.component';
 
 const appRoutes: Routes = [
   { path: '', component: Home },

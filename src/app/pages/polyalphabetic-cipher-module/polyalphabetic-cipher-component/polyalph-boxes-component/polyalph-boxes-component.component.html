@@ -46,11 +46,7 @@
       <div class="row">
         <div
           class="col-md-3 col-sm-3 box"
-          *ngFor="
-            let box of allBoxes[selectedValue - 2];
-            let j = index
-          "
-        >
+          *ngFor="let box of allBoxes[selectedValue - 2];let j = index">
           <mat-card>
             <mat-card-header>
               <mat-card-title>Box {{ j + 1 }}</mat-card-title>

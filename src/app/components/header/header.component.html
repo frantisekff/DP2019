@@ -32,12 +32,12 @@
       </li>
       <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <a class="dropdown-item" routerLink="/polyalphcipher"
-          >Polyalphabetic Cipher</a
+          >Vigenere Cipher</a
         >
       </li>
       <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <a class="dropdown-item" routerLink="/monoalphcipher"
-          >Monoalphabetic Cipher</a
+          >Simple Substitution Cipher</a
         >
       </li>
     </div>
@@ -56,7 +56,8 @@
   </div>
 </nav>
 
-<div class="navbar-sticky"  [ngClass]="{ 'hide-cipher-navbar': !isSticky, 'show-cipher-navbar sticky-top': isSticky  }">
+<div class="navbar-sticky"  [ngClass]="{ 'hide-cipher-navbar': !isSticky, 'show-cipher-navbar static-top': isSticky  }">
   <p>Up</p>
   {{cipherName}}
 </div>
+
