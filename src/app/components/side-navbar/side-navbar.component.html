@@ -1,0 +1,19 @@
+<mat-sidenav-container class="col-md-10 offset-md-1">
+    <mat-sidenav
+    #sidenav
+    mode="side"
+    opened
+    [fixedInViewport]="true"
+    [fixedTopGap]="topGap"
+    class="col-md-2 side-nav"
+    >
+    <button class="btn-side-navbar col-md-12" (click)="scroll('inputs')">Set inputs</button>
+    <button class="btn-side-navbar col-md-12" (click)="scroll('findKey')">Find decryption key</button>
+    <button class="btn-side-navbar col-md-12" (click)="scroll('compareBigrams')">Compare bigrams frequency</button>
+    </mat-sidenav>
+    <mat-sidenav-content class="col-md-10">
+      <ng-content>
+      </ng-content>
+     
+    </mat-sidenav-content>
+  </mat-sidenav-container>

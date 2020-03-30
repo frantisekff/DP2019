@@ -25,6 +25,6 @@ export class HeaderComponent implements OnInit {
 
   @HostListener("window:scroll")
   checkScroll() {
-    this.isSticky = window.pageYOffset >= 50;
+    this.isSticky = window.pageYOffset >= 70;
   }
 }

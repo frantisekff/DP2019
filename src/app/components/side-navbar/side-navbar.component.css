@@ -1,0 +1,21 @@
+.btn-side-navbar {
+    background-color: #fefefe;
+    transition: box-shadow 280ms cubic-bezier(.4,0,.2,1);
+    display: block;
+    position: relative;
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: smaller;
+}
+
+.mat-drawer-container {
+    background-color: transparent;
+}
+
+.side-nav {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    padding-left: 0;
+}

@@ -152,4 +152,7 @@ export default class AnalysisText {
 
     return ref2;
   }
+
 }
+
+
