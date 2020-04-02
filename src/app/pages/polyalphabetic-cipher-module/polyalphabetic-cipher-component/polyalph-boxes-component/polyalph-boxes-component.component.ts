@@ -15,7 +15,7 @@ export class PolyalphBoxesComponentComponent implements OnInit {
   @Input() allBoxes;
   @Input() allBoxesIc: number[][] = [];
 
-  selectedValue = 4;
+  selectedValue = "4";
   @Input() toggleOptions: string[] = [];
 
   private nearestLanguage: string;
@@ -26,7 +26,8 @@ export class PolyalphBoxesComponentComponent implements OnInit {
   constructor(private polyalphCipherService: PolyalphCipherService) {
     this.polyalphCipherService.selectedValue.subscribe(newSelectedValue => {
       console.log(newSelectedValue);
-      this.selectedValue = newSelectedValue;
+      this.selectedValue = newSelectedValue.toString();
+      // this.selectionOfGraphChanged(newSelectedValue);
     });
   }
 
@@ -37,12 +38,14 @@ export class PolyalphBoxesComponentComponent implements OnInit {
       2
     );
 
-    this.ic = this.allBoxesAvgIc[+this.selectedValue - 2];
+    this.ic = this.allBoxesAvgIc[parseInt(this.selectedValue) - 2];
   }
 
   // Change data for updateFlagCompareFreq based of selection <1-26>
-  public selectionOfGraphChanged(item) {
-    this.ic = this.allBoxesAvgIc[item.value - 2];
+  public selectionOfGraphChanged(item, numItem?: number) {
+    this.ic = numItem
+      ? this.allBoxesAvgIc[numItem - 2]
+      : this.allBoxesAvgIc[item.value - 2];
     console.log("All Boxes Avg IC: ", this.allBoxesAvgIc);
 
     this.nearestLanguage = AnalysisText.findNearestLanguage(
@@ -52,6 +55,5 @@ export class PolyalphBoxesComponentComponent implements OnInit {
     if (this.nearestLanguage === "Min IC") {
       this.passedMinIc = true;
     }
-    console.log("Selected value: " + item.value);
   }
 }

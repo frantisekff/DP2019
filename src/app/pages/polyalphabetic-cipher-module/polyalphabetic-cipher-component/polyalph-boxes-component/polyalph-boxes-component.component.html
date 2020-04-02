@@ -2,7 +2,7 @@
     <b>Choose length of key</b>
     <br /><br />
     <div class="row ">
-      <mat-button-toggle-group [(ngModel)]="selectedValue">
+      <mat-button-toggle-group [(ngModel)]="selectedValue" #group="matButtonToggleGroup" >
         <mat-button-toggle
           *ngFor="let item of toggleOptions"
           (change)="selectionOfGraphChanged($event)"
