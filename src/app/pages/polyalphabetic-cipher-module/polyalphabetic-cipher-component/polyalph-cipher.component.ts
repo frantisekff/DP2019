@@ -3,7 +3,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import * as ALL_COMBINATIONS_KEY from "../../../constants/allCombinations1_3.json";
 
 import { SortTable, Ordering } from "../../../models/common.model";
-import { COLORS, A_ASCII } from "../../../constants/language.constants";
+import { COLORS, A_ASCII, LANGUAGEIC_DATA } from "../../../constants/language.constants";
 import Utils from "src/app/utils";
 import AnalysisText from "src/app/analysis-text";
 import { Subject, Subscription } from "rxjs";
@@ -138,7 +138,6 @@ export class PolyalphCipher implements OnInit, OnDestroy {
 
   public calcDataForPage() {
     console.log(this.cipherInputsForm);
-    const minDiffBetweenEnFreqAndText = 0.01;
     this.formatedMessage = Utils.stripWhiteSpToLowerCase(this.message);
     this.keyLength = this.key.length;
     // Encrypt message
@@ -171,36 +170,38 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     console.log(this.allBoxesIc);
     console.log("All Boxes Avg IC", this.allBoxesAvgIc);
 
+    const refValueEn = LANGUAGEIC_DATA[0].value;
+
     // Create copy and sort by ic (desc)
     const copyAllBoxesAvgIc = Object.assign([], this.allBoxesAvgIc);
     const sortedIC = copyAllBoxesAvgIc
-      .sort((a, b) => b.value - a.value)
+      .sort((a) => refValueEn - a.value)
       .slice();
     console.log("Sorted IC", sortedIC);
-
+    this.highestIC = sortedIC;
     // with highest IC
     this.bestKeyLength = sortedIC[0];
     console.log("Best Key length ", this.bestKeyLength);
 
-    // Filter only values which are near to Best Key Length
+    const minDiffBetweenEnFreqAndText = 0.01;
+    // Filter only values which are near to Best Key Length and select only first 5 values
     this.highestIC = this.allBoxesAvgIc
       .filter(
-        item => sortedIC[0].value - item.value <= minDiffBetweenEnFreqAndText
+        item => this.bestKeyLength.value - item.value <= minDiffBetweenEnFreqAndText
       )
       .slice(0, 5);
     console.log("Highest IC after filter ", this.highestIC);
 
-    this.highestIC = this.highestIC
-    .filter(
-      item => 0.0667 - item.value <= minDiffBetweenEnFreqAndText
-    )
-    
+    // ref. IC for En alphabet
+    // I expect that language is English so
+    // I am looking for values that are near to ref. IC for english.
+    // this.highestIC = this.highestIC
+    // .filter(
+    //   item => refValueEn - item.value <= minDiffBetweenEnFreqAndText
+    // ).slice(0, 5);
 
     this.polyalphCipherService.selectedValue.next(this.highestIC[0].box);
 
-    // this.allCombinations = this.polyalphCipherService.computeCombinationKeyLength(
-    //   this.maxGuessKeyLength
-    // );
     this.webWorker.postMessage([
       this.allCombinations[this.highestIC[0].box - 1],
       this.encryptedText
@@ -242,7 +243,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   // remap data for Table
   private remapDataTableBestResult(sortedDiff) {
     this.best10Results = sortedDiff.slice(0, 10).map(data => {
-      data["decryptedText"] = data["decryptedText"].substring(0, 30);
+      data["decryptedText"] = data["decryptedText"];
       return data;
     });
 

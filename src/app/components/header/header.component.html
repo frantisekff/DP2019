@@ -45,9 +45,8 @@
   <button type="button" class="btn btn-sm btn-outline-secondary">About</button>
 </nav>
 <nav
-  class="cipher-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue"
-  [ngClass]="{ 'show-cipher-navbar': !isSticky, 'hide-cipher-navbar': isSticky  }"
->
+  class="cipher-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue " [@scrollAnimation]="isHeader1Visible"> 
+<!-- [ngClass]="{ 'show-cipher-navbar': !isSticky, 'hide-cipher-navbar': isSticky  }" -->
   <div class="d-flex flex-column  col-md-4 offset-md-1">
     <div class="cipher-type"><h5>{{cipherType}}</h5></div>
     <div class="cipher-name">
@@ -56,7 +55,7 @@
   </div>
 </nav>
 
-<div class="navbar-sticky"  [ngClass]="{ 'hide-cipher-navbar': !isSticky, 'show-cipher-navbar static-top': isSticky  }">
+<div class="navbar-sticky"  [@scrollAnimation]="isHeader2Visible">
   <p>Up</p>
   {{cipherName}}
 </div>
