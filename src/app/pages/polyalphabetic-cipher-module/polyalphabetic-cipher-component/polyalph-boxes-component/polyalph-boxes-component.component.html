@@ -46,19 +46,19 @@
       <div class="row">
         <div
           class="col-md-3 col-sm-3 box"
-          *ngFor="let box of allBoxes[selectedValue - 2];let j = index">
+          *ngFor="let box of allBoxes[selectedValueNum - 2];let j = index">
           <mat-card>
             <mat-card-header>
               <mat-card-title>Box {{ j + 1 }}</mat-card-title>
             </mat-card-header>
             <mat-card-content style="word-wrap: break-word;">
-              <span [style.color]="colors[j % selectedValue]">
+              <span [style.color]="colors[j % selectedValueNum]">
                 {{ box }}
               </span>
             </mat-card-content>
             <mat-card-actions>
               IC for box is:
-              {{ allBoxesIc[selectedValue - 2][j] | number: "1.0-4" }}
+              {{ allBoxesIc[selectedValueNum - 2][j] | number: "1.0-4" }}
             </mat-card-actions>
           </mat-card>
         </div>

@@ -15,18 +15,22 @@ export enum VisibilityState {
   animations: [
     trigger('scrollAnimation', [
       state(VisibilityState.Visible, style({
-        transform: 'translateY(0)'
+        // transform: 'translateY(0)'
       })),
       state(VisibilityState.Hidden, style({
-        transform: 'translateY(-164px)' // adjust this to the height of your header
+        // transform: 'translateY(-154px)',
+        'z-index': -100
+         // adjust this to the height of your header
       })),
-      transition(`${VisibilityState.Visible} => ${VisibilityState.Hidden}`, animate('350ms')),
-      transition(`${VisibilityState.Hidden} => ${VisibilityState.Visible}`, animate('350ms'))
+      transition(`${VisibilityState.Visible} => ${VisibilityState.Hidden}`, animate('1000ms')),
+      transition(`${VisibilityState.Hidden} => ${VisibilityState.Visible}`, animate('10ms'))
     ])
   ]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  isSticky: boolean = false;
+  bigNavbarCipherName: boolean = true;
+  smallNavbarCipherName: boolean = false;
+
   cipherName: string;
   cipherNameSubscription: Subscription;
   cipherType: string;
@@ -49,14 +53,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener("window:scroll")
   checkScroll() {
-    this.isSticky = window.pageYOffset >= 90;
-    if(this.isSticky){
-      this.isHeader1Visible = VisibilityState.Hidden;
-      this.isHeader2Visible = VisibilityState.Visible;
-    } else {
-      this.isHeader1Visible = VisibilityState.Visible;
-      this.isHeader2Visible = VisibilityState.Hidden;
-    }
+    // this.bigNavbarCipherName = window.pageYOffset >= 50;
+    // if(this.bigNavbarCipherName){
+    //   // this.isHeader1Visible = VisibilityState.Hidden;
+    //   this.isHeader2Visible = VisibilityState.Visible;
+    // } else {
+    //   // this.isHeader1Visible = VisibilityState.Visible;
+    //   this.isHeader2Visible = VisibilityState.Hidden;
+    // }
   }
 
   ngOnDestroy(){
