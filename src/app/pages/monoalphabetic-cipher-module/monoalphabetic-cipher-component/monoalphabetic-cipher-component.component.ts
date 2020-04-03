@@ -55,10 +55,14 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   allGuess: GuessKey[] = [];
   private webWorker: Worker;
   // number of attempts to find key
-  private numberOfAttempt = 2;
+  // numberOfAttempt = 2;
   // Show the data after calculation
   calcDone = false;
   topGap = 110;
+  cipherAttemptForm: FormGroup;
+  numberOfAttempt = 2;
+  private numIterations = 10000;
+  private numberOfAttemptSubscr: Subscription;
 
   constructor(headerService: HeaderService) {
     headerService.cipherName.next(NAME_CIPHER);
@@ -66,6 +70,21 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    this.cipherAttemptForm = new FormGroup({
+      numberOfAttempt: new FormControl(this.numberOfAttempt, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(10)
+      ])
+    });
+
+    this.numberOfAttemptSubscr = this.cipherAttemptForm.controls.numberOfAttempt.valueChanges.subscribe(
+      newValue => {
+        this.numberOfAttempt = newValue;
+      }
+    );
+
     // referral values of Bigrams for EN language
     this.refBigrams = JSON.parse((REF_BIGRAMS as any).default);
 
@@ -114,11 +133,18 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     this.calcDataForPage();
   }
 
-  calcDataForPage() {
+  encryptEndDecryptMessage(){
     this.keys = this.calcInverseKeyFromRndAlphabet(this.rndKey);
     this.encryptedText = this.enDecrypt(this.message, this.keys.encKey);
     this.decryptedText = this.enDecrypt(this.encryptedText, this.keys.decKey);
+  }
 
+  calcDataForPage() {
+    if (this.cipherAttemptForm.invalid || this.cipherInputsForm.invalid) {
+      return;
+    }
+    this.encryptEndDecryptMessage();
+    this.calcDone = false;
     this.allGuess = [];
 
     const initKeyPairValues = this.initKeyPair.values();
@@ -126,7 +152,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
       let rndKey = [...this.rndKey];
       rndKey = this.shuffleArray(rndKey);
       this.webWorker.postMessage([
-        10000,
+        this.numIterations,
         this.encryptedText,
         rndKey,
         [...this.refBigrams],
@@ -247,5 +273,6 @@ export class MonoalphCipher implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscrMessage.unsubscribe();
+    this.numberOfAttemptSubscr.unsubscribe();
   }
 }
