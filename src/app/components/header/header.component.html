@@ -10,53 +10,73 @@
       />
       Clasical Ciphers
     </a>
-  </div>
-  <div class="btn-group">
-    <button
-      type="button"
-      class="btn btn-sm btn-outline-secondary dropdown-toggle"
-      data-toggle="dropdown"
-      aria-haspopup="true"
-      aria-expanded="false"
-    >
-      Choose Cipher
-    </button>
-    <div class="dropdown-menu dropdown-menu-right">
-      <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <a class="dropdown-item" routerLink="/caesarcipher">Caesar Cipher</a>
-      </li>
-      <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <a class="dropdown-item" routerLink="/transpositioncipher"
-          >Transposition Cipher</a
+    <div class="right">
+
+    <div class="btn-group">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Choose Cipher
+      </button>
+      <div class="dropdown-menu dropdown-menu-right">
+        <li
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-      </li>
-      <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <a class="dropdown-item" routerLink="/polyalphcipher"
-          >Vigenere Cipher</a
+          <a class="dropdown-item" routerLink="/caesarcipher">Caesar Cipher</a>
+        </li>
+        <li
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-      </li>
-      <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <a class="dropdown-item" routerLink="/monoalphcipher"
-          >Simple Substitution Cipher</a
+          <a class="dropdown-item" routerLink="/transpositioncipher"
+            >Transposition Cipher</a
+          >
+        </li>
+        <li
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-      </li>
+          <a class="dropdown-item" routerLink="/polyalphcipher"
+            >Vigenere Cipher</a
+          >
+        </li>
+        <li
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <a class="dropdown-item" routerLink="/monoalphcipher"
+            >Simple Substitution Cipher</a
+          >
+        </li>
+      </div>
     </div>
+    <button type="button" class="btn btn-sm btn-outline-secondary">About</button>
   </div>
-  <button type="button" class="btn btn-sm btn-outline-secondary">About</button>
+
+  </div>
+
 </nav>
 <nav
-  class="cipher-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue " [@scrollAnimation]="isHeader1Visible"> 
-<!-- [ngClass]="{ 'show-cipher-navbar': !isSticky, 'hide-cipher-navbar': isSticky  }" -->
+  class="cipher-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue "
+  [@scrollAnimation]="isHeader1Visible"
+>
+  <!-- [ngClass]="{ 'show-cipher-navbar': !isSticky, 'hide-cipher-navbar': isSticky  }" -->
   <div class="d-flex flex-column  col-md-4 offset-md-1">
-    <div class="cipher-type"><h5>{{cipherType}}</h5></div>
+    <div class="cipher-type">
+      <h5>{{ cipherType }}</h5>
+    </div>
     <div class="cipher-name">
-      <h3>{{cipherName}}</h3>
+      <h3>{{ cipherName }}</h3>
     </div>
   </div>
 </nav>
 
-<div class="navbar-sticky"  [@scrollAnimation]="isHeader2Visible">
+<div class="navbar-sticky" [@scrollAnimation]="isHeader2Visible">
   <p>Up</p>
-  {{cipherName}}
+  {{ cipherName }}
 </div>
-

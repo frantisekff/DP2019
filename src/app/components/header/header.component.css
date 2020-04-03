@@ -32,9 +32,10 @@ body {
   margin-bottom: 1vh;
   position: fixed;
   width: 100%;
-  height: 7vh;
+  height: 9vh;
   z-index: 101;
   box-sizing: border-box;
+  border-bottom: 1px solid white;
 }
 
 .cipher-navbar {
@@ -43,7 +44,6 @@ body {
   width: 100%;
   z-index: 100;
   top: 7.2vh;
-
 }
 
 .navbar-sticky > p {
@@ -60,7 +60,8 @@ body {
   position: fixed;
   width: 100%;
   z-index: 100;
-  top: 7.2vh
+  top: 7.2vh;
+  height: 8vh;
 }
 
 .hide-cipher-navbar {
@@ -81,3 +82,14 @@ body {
   top: 0;
   z-index: 1000;
 }
+
+.right {
+  display: inline-block;
+  right: 18.3vw;
+  position: absolute;
+}
+
+.center {
+  text-align: center;
+}
+

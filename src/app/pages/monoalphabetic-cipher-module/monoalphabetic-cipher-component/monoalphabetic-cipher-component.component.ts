@@ -58,7 +58,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   private numberOfAttempt = 2;
   // Show the data after calculation
   calcDone = false;
-  topGap = 230;
+  topGap = 110;
 
   constructor(headerService: HeaderService) {
     headerService.cipherName.next(NAME_CIPHER);
@@ -238,11 +238,11 @@ export class MonoalphCipher implements OnInit, OnDestroy {
 
   @HostListener("window:scroll")
   checkScroll() {
-    if (window.pageYOffset >= 70) {
-      this.topGap = 100;
-    } else {
-      this.topGap = 250;
-    }
+    // if (window.pageYOffset >= 70) {
+    //   this.topGap = 100;
+    // } else {
+    //   this.topGap = 250;
+    // }
   }
 
   ngOnDestroy() {
