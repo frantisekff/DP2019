@@ -16,6 +16,7 @@ export class PolyalphBoxesComponentComponent implements OnInit {
   @Input() allBoxesIc: number[][] = [];
 
   selectedValue = "4";
+  selectedValueNum: number = 4;
   @Input() toggleOptions: string[] = [];
 
   private nearestLanguage: string;
@@ -27,6 +28,7 @@ export class PolyalphBoxesComponentComponent implements OnInit {
     this.polyalphCipherService.selectedValue.subscribe(newSelectedValue => {
       console.log(newSelectedValue);
       this.selectedValue = newSelectedValue.toString();
+      this.selectedValueNum = newSelectedValue;
       // this.selectionOfGraphChanged(newSelectedValue);
     });
   }
@@ -43,6 +45,7 @@ export class PolyalphBoxesComponentComponent implements OnInit {
 
   // Change data for updateFlagCompareFreq based of selection <1-26>
   public selectionOfGraphChanged(item, numItem?: number) {
+    this.selectedValueNum = numItem ? numItem : item.value;
     this.ic = numItem
       ? this.allBoxesAvgIc[numItem - 2]
       : this.allBoxesAvgIc[item.value - 2];
