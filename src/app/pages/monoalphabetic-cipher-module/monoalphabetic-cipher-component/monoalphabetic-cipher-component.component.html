@@ -20,7 +20,9 @@
         <div class="row">
           <mat-card id="inputs" class="col-md-12 action-mat-card">
             <mat-card-header>
-              <mat-card-title>Generate random key for encryption</mat-card-title>
+              <mat-card-title
+                >Generate random key for encryption</mat-card-title
+              >
             </mat-card-header>
             <mat-card-content style="word-wrap: break-word;">
               {{ rndKey }}
@@ -41,23 +43,37 @@
             <mat-card-content style="word-wrap: break-word;">
               <form [formGroup]="cipherInputsForm">
                 <mat-form-field style="width:50vw">
-                  <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="2"
-                    cdkAutosizeMaxRows="9" placeholder="Type message to encrypt" name="messageInput"
-                    formControlName="message"></textarea>
-                  <mat-hint>Please, enter message longer than 20 letters and text must
+                  <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="2"
+                    cdkAutosizeMaxRows="9"
+                    placeholder="Type message to encrypt"
+                    name="messageInput"
+                    formControlName="message"
+                  ></textarea>
+                  <mat-hint
+                    >Please, enter message longer than 20 letters and text must
                     include letters a-z or A-Z.
                   </mat-hint>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       cipherInputsForm.get('message').hasError('minlength')
-                    ">
+                    "
+                  >
                     Please, enter message longer than 20 letters.
                   </mat-error>
-                  <mat-error *ngIf="
+                  <mat-error
+                    *ngIf="
                       cipherInputsForm.get('message').hasError('maxlength')
-                    ">
+                    "
+                  >
                     Please, enter message shorter than 2000 letters.
                   </mat-error>
-                  <mat-error *ngIf="cipherInputsForm.get('message').hasError('pattern')">
+                  <mat-error
+                    *ngIf="cipherInputsForm.get('message').hasError('pattern')"
+                  >
                     Please, text must include letters a-z or A-Z.
                   </mat-error>
                 </mat-form-field>
@@ -106,7 +122,9 @@
     <div class="row">
       <mat-card class="info-mat-card col-md-12">
         <mat-card-header>
-          <mat-card-title>Find decryption key with Hill Climbing alghorithm</mat-card-title>
+          <mat-card-title
+            >Find decryption key with Hill Climbing alghorithm</mat-card-title
+          >
         </mat-card-header>
         <mat-card-content style="word-wrap: break-word;">
           To find key we will be repeat next steps:
@@ -143,13 +161,22 @@
 
           <form [formGroup]="cipherAttemptForm">
             <mat-form-field>
-              <input matInput type="number" placeholder="Set number of attempts" name="attemptInput"
-                formControlName="numberOfAttempt" min="1" max="10" />
+              <input
+                matInput
+                type="number"
+                placeholder="Set number of attempts"
+                name="attemptInput"
+                formControlName="numberOfAttempt"
+                min="1"
+                max="10"
+              />
               <mat-hint>Please, enter number from 1 to 10. </mat-hint>
-              <mat-error *ngIf="
+              <mat-error
+                *ngIf="
                   cipherAttemptForm.get('numberOfAttempt').hasError('max') ||
                   cipherAttemptForm.get('numberOfAttempt').hasError('min')
-                ">
+                "
+              >
                 Please, enter number from 1 to 10.
               </mat-error>
             </mat-form-field>
@@ -166,31 +193,24 @@
     <br />
     <br />
 
-    <div [ngClass]="{ hide: !calcDone, show: calcDone }">
-      <div class="row col-md-12">
-        <ng-container *ngFor="let guess of allGuess">
-          <div class="col-md-4">
-            <mat-card>
-              <mat-card-header>
-                <mat-card-title>Finded key</mat-card-title>
-                <mat-card-subtitle> {{ guess.key }} </mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content style="word-wrap: break-word;">
-                <p>{{ guess.decryptedText | slice: 0:150 }}</p>
-                <h5>Sum {{ guess.sum | number: "1.0-3" }} *</h5>
-                <p>
-                  <small>
-                    *difference between calculated frequencies and referal
-                    values for English alphabet)
-                  </small>
-                </p>
-              </mat-card-content>
-              <mat-card-actions> </mat-card-actions>
-            </mat-card>
-            <br />
-          </div>
-        </ng-container>
-      </div>
+    <div *ngIf="theBestGuess" [ngClass]="{ hide: !calcDone, show: calcDone }">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>The best finded key</mat-card-title>
+          <mat-card-subtitle> {{ theBestGuess.key }} </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content style="word-wrap: break-word;">
+          <p>{{ theBestGuess.decryptedText | slice: 0:150 }}</p>
+          <h5>Sum {{ theBestGuess.sum | number: "1.0-3" }} *</h5>
+          <p>
+            <small>
+              *difference between calculated frequencies and referal values for
+              English alphabet)
+            </small>
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <br />
     </div>
   </div>
   <!-- <div  [ngClass]="{ hide: !calcDone, show: calcDone }" class="container" id="compareBigrams">
@@ -223,27 +243,45 @@
       </div>
     </div>
   </div> -->
-  <div [ngClass]="{ hide: !calcDone, show: calcDone }" class="container" >
+  <div [ngClass]="{ hide: !calcDone, show: calcDone }" class="container">
     <div class="row">
       <div class="col-md-12 col-xs-12">
         <mat-card>
+          <mat-card-header>
+            <mat-card-title
+              >Evolution of sum and match rate during iterations, only for the
+              best guess
+            </mat-card-title>
+          </mat-card-header>
+
           <mat-card-content>
-            <app-table [columnNames]="columnsBestResults" [dataSource]="dataSourceBestResults"
-              [defaultSort]="sortBestResults" [ready]="dataSourceBestResultsReady">
+            <app-table
+              [columnNames]="columnsBestResults"
+              [dataSource]="dataSourceBestResults"
+              [defaultSort]="sortBestResults"
+              [ready]="dataSourceBestResultsReady"
+            >
             </app-table>
           </mat-card-content>
         </mat-card>
       </div>
     </div>
   </div>
-  <br>
-  <div [ngClass]="{ hide: !calcDone, show: calcDone }" class="container" id="compareBigrams">
+  <br />
+  <div
+    [ngClass]="{ hide: !calcDone, show: calcDone }"
+    class="container"
+    id="compareBigrams"
+  >
     <div class="row">
       <div class="col-md-12 col-xs-12">
         <mat-card>
           <mat-card-content>
-            <app-graph #iterScoreGraph [chartOptionsFreqGraph]="chartOptionsIterScoreGraph"
-              [data]="dataSourceiterScoreGraph"></app-graph>
+            <app-graph
+              #iterScoreGraph
+              [chartOptionsFreqGraph]="chartOptionsIterScoreGraph"
+              [data]="dataSourceiterScoreGraph"
+            ></app-graph>
           </mat-card-content>
         </mat-card>
       </div>
@@ -252,7 +290,10 @@
 
   <div class="container">
     <div class="row">
-      <mat-card class="text-center col-md-12" [ngClass]="{ hide: calcDone, show: !calcDone }">
+      <mat-card
+        class="text-center col-md-12"
+        [ngClass]="{ hide: calcDone, show: !calcDone }"
+      >
         <mat-card-content>
           <h5>Please wait, after calculation ends</h5>
           <br />
