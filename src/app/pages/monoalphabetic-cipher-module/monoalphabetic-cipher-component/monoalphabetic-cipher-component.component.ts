@@ -21,14 +21,20 @@ import {
   CHART_OPTIONS_ITER_SCORE
 } from "../monoalphabetic-cipher.constant";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import AnalysisText from "src/app/analysis-text";
 import Utils from "src/app/utils";
 import { GraphComponent } from "src/app/components/graph/graph.component";
 import * as BIGRAMS_IN_MAP from "../../../constants/bigramsInMap.json";
 import { MatButtonToggleChange } from "@angular/material/button-toggle";
 import { HeaderService } from "src/app/components/header/header.service";
-import { Keys, GuessKey } from "src/app/models/common.model";
+import {
+  Keys,
+  GuessKey,
+  SortTable,
+  Ordering
+} from "src/app/models/common.model";
+import { MatTableDataSource } from "@angular/material/table";
 
 @Component({
   selector: "app-monoalphabetic-cipher-component",
@@ -56,6 +62,21 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   @ViewChild("iterScoreGraph", { static: true })
   iterScoreGraph: GraphComponent;
   dataSourceiterScoreGraph;
+
+  //Variables for Final Table
+  columnsBestResults: string[] = [
+    "iteration",
+    "key",
+    "matchRate",
+    "sum",
+    "decryptedText"
+  ];
+  sortBestResults: SortTable = {
+    sortByColumn: "iteration",
+    order: Ordering.asc
+  } as SortTable;
+  dataSourceBestResults = new MatTableDataSource<any>();
+  dataSourceBestResultsReady = new Subject<boolean>();
 
   initKeyPair: [string, number][];
   selectedValue = "1";
@@ -134,9 +155,10 @@ export class MonoalphCipher implements OnInit, OnDestroy {
             this.allGuess.length,
             1
           );
-
+          // Sort allGuess desc
           this.allGuess.sort((a, b) => (a.sum > b.sum ? 1 : -1));
 
+          // Get data to arrays, we use it in graph
           const iterations = [] as Array<number>;
           const sums = [] as Array<number>;
           const matchRates = [] as Array<number>;
@@ -147,10 +169,32 @@ export class MonoalphCipher implements OnInit, OnDestroy {
             matchRates.push(guess.matchRate);
           }
 
+          // Send data to graph
           this.chartOptionsIterScoreGraph.xAxis.categories = iterations;
           this.dataSourceiterScoreGraph = [sums, matchRates];
-
           this.iterScoreGraph.updateGraph();
+
+          // Prepare data for table
+          // Choose every n-th element from results
+          const numChoosenElements = 5;
+          const numElements = this.allGuess[0].allBestGuess.length;
+          const choooseEveryNthElement = Math.floor(
+            numElements / numChoosenElements
+          );
+          const allBestGuessNthEl = [];
+
+          for (let i = 0; i < numElements; i = i + choooseEveryNthElement) {
+            const tmpGuess = this.allGuess[0].allBestGuess[i];
+            tmpGuess.sum = Math.round(tmpGuess.sum * 1000) / 1000;
+            tmpGuess.matchRate = Math.round(tmpGuess.matchRate * 1000) / 1000;
+            allBestGuessNthEl.push(this.allGuess[0].allBestGuess[i]);
+          }
+
+          // Send data to table
+          this.dataSourceBestResults.data = allBestGuessNthEl;
+          this.dataSourceBestResultsReady.next(true);
+
+          // Calculation done show data to user
           this.calcDone = true;
 
           // Set up data to graph
@@ -307,5 +351,6 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscrMessage.unsubscribe();
     this.numberOfAttemptSubscr.unsubscribe();
+    this.webWorker.terminate();
   }
 }
