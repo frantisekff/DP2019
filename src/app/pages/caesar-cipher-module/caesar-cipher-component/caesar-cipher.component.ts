@@ -190,9 +190,9 @@ export class CaesarCipher implements OnInit, OnDestroy {
 
   // Change data for CompareFreq based of selection <1-26>
   selectionOfGraphChanged(item: MatButtonToggleChange) {
-    this.dataSourceCompareFreqGraph = Array.from(
+    this.dataSourceCompareFreqGraph = [Array.from(
       this.freqDecryptedTexts[item.value - 1]
-    );
+    )];
     this.comparefreqGraph.updateGraph();
     console.log('Selected value: ', item.value);
     console.log(this.dataSourceCompareFreqGraph);
@@ -249,9 +249,9 @@ export class CaesarCipher implements OnInit, OnDestroy {
     this.minDisctanceLength = Utils.sortObjectAsc(bestDisLength)[0];
     this.selectedValue = this.minDisctanceLength;
 
-    this.dataSourceCompareFreqGraph = Array.from(
+    this.dataSourceCompareFreqGraph = [Array.from(
       this.freqDecryptedTexts[+this.minDisctanceLength - 1]
-    );
+    )];
     this.comparefreqGraph.updateGraph();
 
     console.log('Min Distance Length', this.minDisctanceLength);
@@ -266,7 +266,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
         this.frequency,
         encryptedTextLength
       );
-    this.dataSourceFreqGraph = AnalysisText.mapLetterToFreqPerc(this.frequency, this.frequencyInPercentage);
+    this.dataSourceFreqGraph = [AnalysisText.mapLetterToFreqPerc(this.frequency, this.frequencyInPercentage)];
     this.freqGraph.updateGraph();
   }
 

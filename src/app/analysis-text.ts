@@ -44,7 +44,8 @@ export default class AnalysisText {
 
   static getFreqOfBigramsPerc(
     textLength: number,
-    freqBigrams: Map<string, number>, outputBigrams: Map<string, number>
+    freqBigrams: Map<string, number>,
+    outputBigrams: Map<string, number>
   ) {
     for (const iterator of freqBigrams) {
       // console.log(iterator);
@@ -82,7 +83,7 @@ export default class AnalysisText {
     let sum = 0;
     for (let i = 0; i < 26; i++) {
       for (let j = 0; j < 26; j++) {
-        const diff = refBigrams[i][j] - (freqOfBigrams[i][j] / textLength);
+        const diff = refBigrams[i][j] - freqOfBigrams[i][j] / textLength;
         sum += Math.abs(diff);
       }
     }
@@ -142,7 +143,7 @@ export default class AnalysisText {
     });
   }
 
-  static getMapFromMapping(ref): Map<string, number>{
+  static getMapFromMapping(ref): Map<string, number> {
     const ref2 = new Map<string, number>();
     ref.forEach(element => {
       const bigram_name = element[0][0];
@@ -153,6 +154,19 @@ export default class AnalysisText {
     return ref2;
   }
 
+  static matchRate(firstText: string, secondText: string): number {
+    let resultMatchRate = 0;
+    if (firstText.length !== secondText.length) {
+      return;
+    }
+    let sum = 0;
+    for (let i = 0; i < firstText.length; i++) {
+      if (firstText[i] === secondText[i]) {
+        sum++;
+      }
+    }
+    resultMatchRate = sum / firstText.length;
+
+    return resultMatchRate;
+  }
 }
-
-

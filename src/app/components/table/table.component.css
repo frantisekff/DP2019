@@ -1,4 +1,12 @@
 .full-width {
-    display: block;
-    overflow-x: auto;
+  display: block;
+  overflow-x: auto;
+}
+
+.mat-row {
+  height: auto;
+}
+
+.mat-cell {
+  padding: 8px 8px 8px 0;
 }

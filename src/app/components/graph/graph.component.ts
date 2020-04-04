@@ -7,23 +7,22 @@ import * as Highcharts from 'highcharts';
   styleUrls: ['./graph.component.css']
 })
 export class GraphComponent implements OnInit {
-  
   updateState = false;
   Highcharts = Highcharts;
-  
+
   @Input() chartOptionsFreqGraph: any = {};
-  @Input() set data(data: any) {
-    this.chartOptionsFreqGraph.series[0].data = data;
+  @Input() set data(data: []) {
+    if (data) {
+      for (let i = 0; i < data.length; i++) {
+        this.chartOptionsFreqGraph.series[i].data = data[i];
+      }
+    }
   }
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  updateGraph(){
+  updateGraph() {
     this.updateState = true;
   }
-
-  
-
 }
