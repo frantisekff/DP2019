@@ -92,6 +92,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   numberOfAttempt = 2;
   private numIterations = 10000;
   private numberOfAttemptSubscr: Subscription;
+  theBestGuess: GuessKey;
 
   constructor(headerService: HeaderService) {
     headerService.cipherName.next(NAME_CIPHER);
@@ -162,8 +163,9 @@ export class MonoalphCipher implements OnInit, OnDestroy {
           const iterations = [] as Array<number>;
           const sums = [] as Array<number>;
           const matchRates = [] as Array<number>;
+          this.theBestGuess =  this.allGuess[0];
 
-          for (const guess of this.allGuess[0].allBestGuess) {
+          for (const guess of this.theBestGuess.allBestGuess) {
             iterations.push(guess.iteration);
             sums.push(guess.sum);
             matchRates.push(guess.matchRate);
