@@ -18,7 +18,7 @@
       <br />
       <div class="col-md-12">
         <div class="row">
-          <mat-card id="inputs" class="col-md-12">
+          <mat-card id="inputs" class="col-md-12 action-mat-card">
             <mat-card-header>
               <mat-card-title
                 >Generate random key for encryption</mat-card-title
@@ -218,7 +218,7 @@
       </div>
     </div>
   </div>
-  <div  [ngClass]="{ hide: !calcDone, show: calcDone }" class="container" id="compareBigrams">
+  <!-- <div  [ngClass]="{ hide: !calcDone, show: calcDone }" class="container" id="compareBigrams">
     <div class="row">
       <div class="col-md-12 col-xs-12">
         <mat-card>
@@ -243,6 +243,22 @@
                 >
               </mat-button-toggle-group>
             </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div> -->
+
+  <div  [ngClass]="{ hide: !calcDone, show: calcDone }" class="container"  id="compareBigrams">
+    <div class="row">
+      <div class="col-md-12 col-xs-12">
+        <mat-card>
+          <mat-card-content>
+            <app-graph
+              #iterScoreGraph
+              [chartOptionsFreqGraph]="chartOptionsIterScoreGraph"
+              [data]="dataSourceiterScoreGraph"
+            ></app-graph>
           </mat-card-content>
         </mat-card>
       </div>

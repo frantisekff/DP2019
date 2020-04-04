@@ -10,7 +10,8 @@ function guessKey(
   encText: string,
   rndKey: Array<string>,
   refBigrams,
-  initKeyPair
+  initKeyPair,
+  correctDecText: string
 ): GuessKey {
   // generate Random Key
 
@@ -22,9 +23,10 @@ function guessKey(
     refBigrams
   );
 
+  const allBestGuess =  [] as Array<GuessKey>;
   let bestGuess = {} as GuessKey;
   bestGuess.sum = sum;
-  bestGuess.key = rndKey.join("");
+  bestGuess.key = rndKey.join('');
 
   for (let index = 0; index < interations; index++) {
     const iterationKey = swapTwoLetters([...bestGuess.key.split("")]);
@@ -53,6 +55,11 @@ function guessKey(
         ...initKeyPair.values()
       ]);
 
+
+      // ---------------------------------- Calculate Match rate ----------------------------------- 
+
+      const matchRate = AnalysisText.matchRate( decTextIteration, correctDecText );
+
       AnalysisText.getFreqOfBigramsPerc(
         encText.length - 1,
         result.bigramsFreq,
@@ -60,11 +67,16 @@ function guessKey(
       );
 
       result.bigramsFreqInPerc = initBigramsMap;
+      result.matchRate = matchRate;
+      result.iteration = index;
 
       bestGuess = result;
+      allBestGuess.push(result);
       rndKey = result.key.split("");
     }
   }
+  bestGuess.allBestGuess = allBestGuess;
+  console.log(bestGuess);
   return bestGuess;
 }
 
@@ -88,5 +100,5 @@ function swapTwoLetters(key: Array<string>) {
 }
 
 addEventListener("message", ({ data }) => {
-  postMessage(guessKey(data[0], data[1], data[2], data[3], data[4]));
+  postMessage(guessKey(data[0], data[1], data[2], data[3], data[4], data[5]));
 });

@@ -58,7 +58,8 @@ export const CHART_OPTIONS_COMPARE_BIGRAMS = {
   // },
   xAxis: {
     categories: [],
-    crosshair: true
+    crosshair: true,
+  
   },
   yAxis: {
     min: 0,
@@ -85,4 +86,51 @@ export const CHART_OPTIONS_COMPARE_BIGRAMS = {
       data: []
     }
   ]
+};
+
+export const CHART_OPTIONS_ITER_SCORE = {
+  chart: {
+    type: 'column'
+  },
+  title: {
+    text: 'Compare score and match rate by iterations'
+  },
+  // subtitle: {
+  //     text: 'Source: WorldClimate.com'
+  // },
+  xAxis: {
+    categories: [],
+    crosshair: true,
+    title: {
+      text: 'Iterations'
+    }
+  },
+  yAxis: {
+    min: 0,
+    title: {
+      text: 'Score/Match Rate'
+    }
+  },
+  tooltip: {
+    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
+    footerFormat: '</table>',
+    shared: true,
+    useHTML: true
+},
+  plotOptions: {
+    column: {
+      pointPadding: 0.2,
+      borderWidth: 0
+    }
+  },
+  series: [   {
+    name: 'Iterations vs Score',
+    data: []
+  },
+  {
+    name: 'Iterations vs MatchRate',
+    data: []
+  } ]
 };

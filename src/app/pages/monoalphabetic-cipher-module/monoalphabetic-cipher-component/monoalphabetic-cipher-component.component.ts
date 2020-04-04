@@ -17,7 +17,8 @@ import {
   CHART_OPTIONS_COMPARE_BIGRAMS,
   NAME_CIPHER,
   TYPE_CIPHER,
-  ITERATIONS
+  ITERATIONS,
+  CHART_OPTIONS_ITER_SCORE
 } from "../monoalphabetic-cipher.constant";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
@@ -43,11 +44,18 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   encryptedText: string;
   decryptedText: string;
   cipherInputsForm: FormGroup;
+
   // Options for Graph - Encrypted text graph
   chartOptionsFreqGraph = CHART_OPTIONS_COMPARE_BIGRAMS;
   @ViewChild("comparefreqBigramsGraph", { static: true })
   comparefreqGraph: GraphComponent;
-  dataSourceCompareFreqGraph;
+  dataSourceCompareFreqGraph = {};
+
+  // Options for Graph - Iteration vs Score
+  chartOptionsIterScoreGraph = CHART_OPTIONS_ITER_SCORE;
+  @ViewChild("iterScoreGraph", { static: true })
+  iterScoreGraph: GraphComponent;
+  dataSourceiterScoreGraph;
 
   initKeyPair: [string, number][];
   selectedValue = "1";
@@ -70,6 +78,11 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const first = "abcdef";
+    const second = "abdcef";
+
+    const result = AnalysisText.matchRate(first, second);
+    console.log("Match Rate Result", result);
 
     this.cipherAttemptForm = new FormGroup({
       numberOfAttempt: new FormControl(this.numberOfAttempt, [
@@ -116,24 +129,42 @@ export class MonoalphCipher implements OnInit, OnDestroy {
         this.allGuess.push(event.data);
 
         if (this.allGuess.length === this.numberOfAttempt) {
-          this.calcDone = true;
           // Generate toogle button for graphs based on number of guessedKeys
           this.toggleOptions = Utils.createArrayOfLength(
             this.allGuess.length,
             1
           );
+
+          this.allGuess.sort((a, b) => (a.sum > b.sum ? 1 : -1));
+
+          const iterations = [] as Array<number>;
+          const sums = [] as Array<number>;
+          const matchRates = [] as Array<number>;
+
+          for (const guess of this.allGuess[0].allBestGuess) {
+            iterations.push(guess.iteration);
+            sums.push(guess.sum);
+            matchRates.push(guess.matchRate);
+          }
+
+          this.chartOptionsIterScoreGraph.xAxis.categories = iterations;
+          this.dataSourceiterScoreGraph = [sums, matchRates];
+
+          this.iterScoreGraph.updateGraph();
+          this.calcDone = true;
+
           // Set up data to graph
-          this.dataSourceCompareFreqGraph = [
-            ...this.allGuess[0].bigramsFreqInPerc.values()
-          ];
-          this.comparefreqGraph.updateGraph();
+          // this.dataSourceCompareFreqGraph = [
+          //   ...this.allGuess[0].bigramsFreqInPerc.values()
+          // ];
+          // this.comparefreqGraph.updateGraph();
         }
       };
     }
     this.calcDataForPage();
   }
 
-  encryptEndDecryptMessage(){
+  encryptEndDecryptMessage() {
     this.keys = this.calcInverseKeyFromRndAlphabet(this.rndKey);
     this.encryptedText = this.enDecrypt(this.message, this.keys.encKey);
     this.decryptedText = this.enDecrypt(this.encryptedText, this.keys.decKey);
@@ -143,6 +174,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     if (this.cipherAttemptForm.invalid || this.cipherInputsForm.invalid) {
       return;
     }
+
     this.encryptEndDecryptMessage();
     this.calcDone = false;
     this.allGuess = [];
@@ -156,7 +188,8 @@ export class MonoalphCipher implements OnInit, OnDestroy {
         this.encryptedText,
         rndKey,
         [...this.refBigrams],
-        [...initKeyPairValues]
+        [...initKeyPairValues],
+        this.decryptedText
       ]);
       // const guessedKey: GuessKey = this.guessKey(ITERATIONS, this.encryptedText);
     }
@@ -241,7 +274,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     this.dataSourceCompareFreqGraph = [
       ...this.allGuess[item.value - 1].bigramsFreqInPerc.values()
     ];
-    this.comparefreqGraph.updateGraph();
+    // this.comparefreqGraph.updateGraph();
     console.log("Selected value: ", item.value);
     console.log(this.dataSourceCompareFreqGraph);
   }
@@ -258,8 +291,8 @@ export class MonoalphCipher implements OnInit, OnDestroy {
       return [item.toString(), 0];
     });
 
-    this.chartOptionsFreqGraph.xAxis.categories = bigramsKeys;
-    this.chartOptionsFreqGraph.series[1].data = bigramsValues;
+    // this.chartOptionsFreqGraph.xAxis.categories = bigramsKeys;
+    // this.chartOptionsFreqGraph.series[1].data = bigramsValues;
   }
 
   @HostListener("window:scroll")

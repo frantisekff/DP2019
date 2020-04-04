@@ -51,6 +51,12 @@ export interface GuessKey {
   sum: number;
   bigramsFreq: Map<string, number>;
   bigramsFreqInPerc: Map<string, number>;
+  // number of iteration when we guess key
+  iteration: number;
+  // matchRate v porovnani k spravnemu vysledku
+  matchRate: number;
+  // for n iteration we save only better results
+  allBestGuess: GuessKey[];
 }
 
 export interface Keys {
