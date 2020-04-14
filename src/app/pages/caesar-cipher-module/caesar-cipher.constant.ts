@@ -118,3 +118,42 @@ export const CHART_OPTIONS_COMPARE_FREQ = {
         data: EN_ALPHABET_FREQUENCY
     }]
 };
+export const TOP_GAP = 110;
+export const SIDE_MENU = [
+  {
+    title: "Set inputs",
+    active: true,
+    id: "inputs",
+    bottomPosition: 0,
+    topPosition: 0
+
+  },
+  {
+    title: "Frequency of Encrypted Message",
+    active: true,
+    id: "frequency",
+    bottomPosition: 0,
+    topPosition: 0
+  },
+  {
+    title: "Index of Coincidence for Message",
+    active: true,
+    id: "index",
+    bottomPosition: 0,
+    topPosition: 0
+  },
+  {
+    title: "Differences between frequencies",
+    active: true,
+    id: "differences",
+    bottomPosition: 0,
+    topPosition: 0
+  },
+  {
+    title: "Compare Language accuracy",
+    active: true,
+    id: "compare",
+    bottomPosition: 0,
+    topPosition: 0
+  }
+];

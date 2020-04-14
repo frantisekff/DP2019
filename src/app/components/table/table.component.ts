@@ -14,6 +14,8 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() dataSource: MatTableDataSource<any>;
   @Input() defaultSort: SortTable;
   @Input() ready: Observable<boolean>;
+  @Input() fullWidth: boolean = true;
+
   @ViewChild("sort", { static: true }) sort: MatSort;
   private readySubscription: Subscription;
 

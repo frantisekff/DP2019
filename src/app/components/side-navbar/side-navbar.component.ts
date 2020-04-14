@@ -10,7 +10,7 @@ export class SideNavbarComponent implements OnInit {
   fixed = false;
   selectedIndex = 0;
   private lastPositionOfscrolling = 0;
-  sideMenu = [
+  @Input() sideMenu = [
     {
       title: "Set inputs",
       active: true,

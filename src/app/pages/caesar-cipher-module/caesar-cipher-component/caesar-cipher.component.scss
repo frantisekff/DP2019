@@ -10,17 +10,52 @@ table {
   background-color: azure;
 }
 
-mat-button-toggle-group {
-  flex-wrap: wrap;
+// mat-button-toggle-group {
+//   flex-wrap: wrap;
+// }
+
+// mat-button-toggle {
+//   background-color: rgba(36, 47, 201, 0.527); /* Green */
+//   border: none;
+//   color: white;
+//   padding: 3px 3px;
+//   text-align: center;
+//   text-decoration: none;
+//   display: inline-block;
+//   font-size: 13px;
+// }
+
+.mat-drawer-content {
+  overflow: unset !important;
 }
 
-mat-button-toggle {
-  background-color: rgba(36, 47, 201, 0.527); /* Green */
-  border: none;
-  color: white;
-  padding: 3px 3px;
+.remove-left-marigns {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.remove-right-marigns {
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.text-center {
   text-align: center;
-  text-decoration: none;
+}
+
+.spinner {
   display: inline-block;
-  font-size: 13px;
+}
+
+.info-mat-card {
+  border-left: 3px solid #4e824e;
+  background-color: #d2ead2;
+}
+
+.action-mat-card {
+  border-left: 3px solid #ab4439;
+}
+
+.center-toogle-group {
+  margin: auto;
 }

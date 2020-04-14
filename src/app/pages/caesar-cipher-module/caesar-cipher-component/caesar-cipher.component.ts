@@ -33,7 +33,10 @@ import {
   MESSAGE,
   EQUATION,
   NAME_CIPHER,
-  TYPE_CIPHER
+  TYPE_CIPHER,
+  TOP_GAP,
+  SIDE_MENU
+
 } from '../caesar-cipher.constant';
 import { Subscribable, Subscription, Subject } from 'rxjs';
 import { HeaderService } from 'src/app/components/header/header.service';
@@ -57,6 +60,10 @@ export class CaesarCipher implements OnInit, OnDestroy {
   private decryptedTexts = [];
   private freqDecryptedTexts = [];
   private diffFreqDecryptedTexts = [];
+  
+  // var for sideNavbar 
+  sideMenu = SIDE_MENU;
+  topGap = TOP_GAP;
 
   // Variables for Tables
   sortRefFreqLang: SortTable = {
