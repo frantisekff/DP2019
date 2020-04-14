@@ -46,6 +46,46 @@ let DIFF_FREQ_DATA: AlphabetElement[] = [];
   templateUrl: './caesar-cipher.component.html'
 })
 export class CaesarCipher implements OnInit, OnDestroy {
+
+  sideMenu = [
+    {
+      title: "Set inputs",
+      active: true,
+      id: "inputs",
+      bottomPosition: 0,
+      topPosition: 0
+
+    },
+    {
+      title: "Frequency of Encrypted Message",
+      active: true,
+      id: "frequency",
+      bottomPosition: 0,
+      topPosition: 0
+    },
+    {
+      title: "Index of Coincidence for Message",
+      active: true,
+      id: "index",
+      bottomPosition: 0,
+      topPosition: 0
+    },
+    {
+      title: "Differences between frequencies",
+      active: true,
+      id: "differences",
+      bottomPosition: 0,
+      topPosition: 0
+    },
+    {
+      title: "Compare Language accuracy",
+      active: true,
+      id: "compare",
+      bottomPosition: 0,
+      topPosition: 0
+    }
+  ];
+
   private enAlphabetFrequency = EN_ALPHABET_FREQUENCY;
   private alphabet = ALPHABET;
   private key = 4;
