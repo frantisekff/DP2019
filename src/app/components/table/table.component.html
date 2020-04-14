@@ -1,4 +1,4 @@
-<div class="col-md-12 full-width mat-elevation-z8">
+<div class="col-md-12" [ngClass]="fullWidth?'full-width mat-elevation-z8':''" >
 
 <table mat-table #sort="matSort" [dataSource]="dataSource" matSort [matSortActive]="defaultSort.sortByColumn" [matSortDirection]="defaultSort.order"
     class="">
