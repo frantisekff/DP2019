@@ -145,6 +145,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   }
 
   public calcDataForPage() {
+    this.calcDonee = false;
     console.log(this.cipherInputsForm);
     this.formatedMessage = Utils.stripWhiteSpToLowerCase(this.message);
     this.keyLength = this.key.length;
