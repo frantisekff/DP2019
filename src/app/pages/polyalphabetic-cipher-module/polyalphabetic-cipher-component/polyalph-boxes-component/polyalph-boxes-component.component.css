@@ -1,3 +1,12 @@
 .center-toogle-group {
-    margin: auto;
+  margin: auto;
+}
+
+.box {
+  margin: 7px 0;
+  padding: 8px;
+}
+
+mat-button-toggle-group {
+  flex-wrap: wrap;
 }

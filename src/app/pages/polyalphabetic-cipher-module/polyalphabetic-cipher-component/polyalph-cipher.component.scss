@@ -1,12 +1,41 @@
 .example-container {
-    height: 400px;
-    overflow: auto;
-  }
-  
-  table {
-    width: 100%;
-  }
+  height: 400px;
+  overflow: auto;
+}
 
-  .box {
-    margin: 5px;
-  }
+table {
+  width: 100%;
+}
+
+.remove-left-marigns {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.remove-right-marigns {
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.spinner {
+  display: inline-block;
+}
+
+.info-mat-card {
+  border-left: 6px solid #17a2b8;
+  // background-color: #e3fafd;
+  background-color: white;
+}
+
+.action-mat-card {
+  border-left: 6px solid #ab4439;
+}
+
+.computed-mat-card {
+  border-left: 6px solid #4e824e;
+}
+

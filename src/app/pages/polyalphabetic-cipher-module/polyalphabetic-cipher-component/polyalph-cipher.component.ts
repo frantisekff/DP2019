@@ -10,7 +10,9 @@ import { Subject, Subscription } from "rxjs";
 import {
   MESSAGE,
   TYPE_CIPHER,
-  NAME_CIPHER
+  NAME_CIPHER,
+  SIDE_MENU,
+  TOP_GAP
 } from "../polyalphabetic-cipher.constants";
 import { PolyalphCipherService } from "../polyalphabetic-cipher.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -22,6 +24,9 @@ import { HeaderService } from "src/app/components/header/header.service";
   templateUrl: "./polyalph-cipher.component.html"
 })
 export class PolyalphCipher implements OnInit, OnDestroy {
+  sideMenu = SIDE_MENU;
+  topGap = TOP_GAP;
+
   colors = COLORS;
   private key = "abr";
   private subscrKey: Subscription;
