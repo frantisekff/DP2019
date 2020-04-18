@@ -63,6 +63,9 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   allCombinations: any = (ALL_COMBINATIONS_KEY as any).default;
   cipherInputsForm: FormGroup;
 
+  // Show the data after calculation
+  calcDonee = false;
+
   constructor(
     private polyalphCipherService: PolyalphCipherService,
     headerService: HeaderService
@@ -255,6 +258,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     // update data in table
     this.dataSourceBestResults.data = this.best10Results;
     this.dataSourceBestResultsReady.next(true);
+    this.calcDonee = true;
   }
 
   // Split message to boxes, number of boxes is defined by maxSelectedValue
