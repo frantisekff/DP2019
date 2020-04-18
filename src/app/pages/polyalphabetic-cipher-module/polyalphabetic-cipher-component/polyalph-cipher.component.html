@@ -219,12 +219,20 @@
             <br />
 
             <app-table
+              [ngClass]="{ hide: !calcDonee, show: calcDonee }"
               [columnNames]="columnsBestResults"
               [dataSource]="dataSourceBestResults"
               [defaultSort]="sortBestResults"
               [ready]="dataSourceBestResultsReady"
             >
             </app-table>
+
+            <div [ngClass]="{ hide: calcDonee, show: !calcDonee }" class="text-center">
+              <h5>Please wait, after calculation ends</h5>
+              <br />
+              <mat-progress-spinner class="spinner" [mode]="'indeterminate'">
+              </mat-progress-spinner>
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
