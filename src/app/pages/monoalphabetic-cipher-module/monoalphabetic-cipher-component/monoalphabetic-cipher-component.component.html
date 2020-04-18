@@ -180,6 +180,27 @@
                 Please, enter number from 1 to 10.
               </mat-error>
             </mat-form-field>
+
+            <mat-form-field>
+              <input
+                matInput
+                type="number"
+                placeholder="Set number of iterations"
+                name="iterationsInput"
+                formControlName="numberOfIterations"
+                min="100"
+                max="10000"
+              />
+              <mat-hint>Please, enter number from 100 to 10 000. </mat-hint>
+              <mat-error
+                *ngIf="
+                  cipherAttemptForm.get('numberOfIterations').hasError('max') ||
+                  cipherAttemptForm.get('numberOfIterations').hasError('min')
+                "
+              >
+                Please, enter number from 100 to 10 000.
+              </mat-error>
+            </mat-form-field>
           </form>
         </mat-card-content>
         <mat-card-actions>
@@ -303,4 +324,5 @@
       </mat-card>
     </div>
   </div>
+  <br>
 </app-side-navbar>
