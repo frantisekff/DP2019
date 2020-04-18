@@ -88,10 +88,16 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   // Show the data after calculation
   calcDone = false;
   topGap = 110;
+  // Form inputs
   cipherAttemptForm: FormGroup;
   numberOfAttempt = 2;
-  private numIterations = 10000;
   private numberOfAttemptSubscr: Subscription;
+
+  numberOfIterations = 10000;
+  private numberOfIterationsSubscr: Subscription;
+
+
+
   theBestGuess: GuessKey;
 
   constructor(headerService: HeaderService) {
@@ -111,12 +117,23 @@ export class MonoalphCipher implements OnInit, OnDestroy {
         Validators.required,
         Validators.min(1),
         Validators.max(10)
+      ]),
+      numberOfIterations: new FormControl(this.numberOfIterations, [
+        Validators.required,
+        Validators.min(100),
+        Validators.max(10000)
       ])
     });
 
     this.numberOfAttemptSubscr = this.cipherAttemptForm.controls.numberOfAttempt.valueChanges.subscribe(
       newValue => {
         this.numberOfAttempt = newValue;
+      }
+    );
+
+    this.numberOfIterationsSubscr =  this.cipherAttemptForm.controls.numberOfIterations.valueChanges.subscribe(
+      newValue => {
+        this.numberOfIterations = newValue;
       }
     );
 
@@ -230,7 +247,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
       let rndKey = [...this.rndKey];
       rndKey = this.shuffleArray(rndKey);
       this.webWorker.postMessage([
-        this.numIterations,
+        this.numberOfIterations,
         this.encryptedText,
         rndKey,
         [...this.refBigrams],
@@ -353,6 +370,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscrMessage.unsubscribe();
     this.numberOfAttemptSubscr.unsubscribe();
+    this.numberOfIterationsSubscr.unsubscribe();
     this.webWorker.terminate();
   }
 }

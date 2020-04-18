@@ -58,6 +58,8 @@
               </mat-form-field>
 
               <br />
+              <br />
+              <br />
 
               <mat-form-field style="width: 50vw;">
                 <textarea
@@ -94,11 +96,7 @@
 
               <br />
               <br />
-            </form>
-          </mat-card-content>
-
-          <mat-card-actions>
-            <button
+              <button
               [disabled]="!cipherInputsForm.valid"
               mat-stroked-button
               color="primary"
@@ -106,6 +104,11 @@
             >
               En/Decrypt Text
             </button>
+            </form>
+          </mat-card-content>
+
+          <mat-card-actions>
+          
           </mat-card-actions>
         </mat-card>
       </div>
