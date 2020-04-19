@@ -11,6 +11,7 @@ import { HighchartsChartModule } from 'highcharts-angular';
 import { SharedModule } from './shared/shared.module';
 import { HeaderService } from './components/header/header.service';
 import { SideNavbarComponent } from './components/side-navbar/side-navbar.component';
+import { AboutComponent } from './pages/about/about.component';
 
 const appRoutes: Routes = [
   { path: '', component: Home },
@@ -34,11 +35,13 @@ const appRoutes: Routes = [
     path: 'monoalphcipher',
     loadChildren:
       './pages/monoalphabetic-cipher-module/monoalphabetic-cipher.module#MonoalphCipherModule'
-  }
+  },
+  { path: 'about', component: AboutComponent },
+
 ];
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, Home],
+  declarations: [AppComponent, HeaderComponent, Home, AboutComponent],
   imports: [
     BrowserModule,
     MatInputModule,
