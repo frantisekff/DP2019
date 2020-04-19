@@ -101,6 +101,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   theBestGuess: GuessKey;
 
   constructor(headerService: HeaderService) {
+    headerService.showInfoPanel.next(true);
     headerService.cipherName.next(NAME_CIPHER);
     headerService.cipherType.next(TYPE_CIPHER);
   }

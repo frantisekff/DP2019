@@ -70,6 +70,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     private polyalphCipherService: PolyalphCipherService,
     headerService: HeaderService
   ) {
+    headerService.showInfoPanel.next(true);
     headerService.cipherName.next(NAME_CIPHER);
     headerService.cipherType.next(TYPE_CIPHER);
   }

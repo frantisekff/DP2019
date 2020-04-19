@@ -55,13 +55,13 @@
         </li>
       </div>
     </div>
-    <button type="button" class="btn btn-sm btn-outline-secondary">About</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" routerLink="/about">About</button>
   </div>
 
   </div>
 
 </nav>
-<nav
+<nav *ngIf="showInfoPanel"
   class="cipher-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue "
   [@scrollAnimation]="isHeader1Visible"
 >

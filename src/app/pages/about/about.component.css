@@ -1,0 +1,15 @@
+.mode-down {
+  top: 125px;
+}
+.info-mat-card {
+  border-left: 6px solid #17a2b8;
+  background-color: white;
+}
+
+.action-mat-card {
+  border-left: 6px solid #ab4439;
+}
+
+.computed-mat-card {
+  border-left: 6px solid #4e824e;
+}
