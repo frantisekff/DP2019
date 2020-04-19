@@ -1,2 +1,84 @@
-<h3>Home Screen {{id}}  </h3>
-<a [routerLink]="['/home', 15]">Click</a>
+<div class="col-md-10 offset-md-1 mode-down">
+  <div class="container">
+    <div class="row">
+      <mat-card class="offset-md-1 col-md-4 card">
+        <mat-card-header>
+          <div mat-card-avatar><img src="assets/icons/bruteforce.svg" /></div>
+          <mat-card-title>Caesar Cipher</mat-card-title>
+          <mat-card-subtitle>Brute force attack</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            Caesar Cipher is replace every letter in message with diferent
+            letter. We try find a shift, with text analysis.
+            Then we use brute force attack to find decrypted message. 
+            We use index of coincidence and decryted text freqencies to 
+            evaluate the correctness of decrypted message.
+            You can set up message and shift.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button routerLink="/caesarcipher">Learn More</button>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card class="offset-md-1 col-md-4 card">
+        <mat-card-header>
+          <div mat-card-avatar><img src="assets/icons/climbing.svg" /></div>
+          <mat-card-title>Simple Substitution cipher</mat-card-title>
+          <mat-card-subtitle>Hill climbing attack</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            Simple Substitution cipher substituting every plaintext character for a 
+            different ciphertext character. It differs from the Caesar 
+            cipher in that the cipher alphabet it is completely jumbled.
+            We try find a key, with Hill climbing alghorithm. 
+            You can set up configuration of alghorithm and then see results.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button routerLink="/monoalphcipher">Learn More</button>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card class="offset-md-1 col-md-4 card">
+        <mat-card-header>
+          <div mat-card-avatar><img src="assets/icons/statistics.svg" /></div>
+          <mat-card-title>Vigenere cipher</mat-card-title>
+          <mat-card-subtitle>Statistic analysis attack</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            Vigenere Cipher using a series of Caesar ciphers, based on the letters of a keyword.
+            We try find a key, with text analysis. We use index of coincidence and freqencies 
+            of letters to find a key.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button routerLink="/polyalphcipher">Learn More</button>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card class="offset-md-1 col-md-4 card">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>Transposition cipher</mat-card-title>
+          <mat-card-subtitle>Example text</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+           Example text ... using a series of Caesar ciphers, based on the letters of a keyword.
+            We try find a key, with text analysis. We use index of coincidence and freqencies 
+            of letters to find a key.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button  routerLink="/transpositioncipher" >Learn More</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <br />
+</div>

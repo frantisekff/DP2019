@@ -7,6 +7,7 @@ import { HeaderService } from 'src/app/components/header/header.service';
 })
 export class TranspositioncipherComponent {
     constructor(headerService: HeaderService) {
+        headerService.showInfoPanel.next(true);
         headerService.cipherName.next('Transposition Cipher');
         headerService.cipherType.next('Transposition');
       }

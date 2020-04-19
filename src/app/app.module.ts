@@ -14,7 +14,7 @@ import { SideNavbarComponent } from './components/side-navbar/side-navbar.compon
 
 const appRoutes: Routes = [
   { path: '', component: Home },
-  { path: 'home/:id', component: Home },
+  { path: 'home', component: Home },
   {
     path: 'caesarcipher',
     loadChildren:

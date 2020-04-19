@@ -121,6 +121,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
   constructor(
     private caesarCipherService: CaesarCipherService, headerService: HeaderService
   ) {
+    headerService.showInfoPanel.next(true);
     headerService.cipherName.next(NAME_CIPHER);
     headerService.cipherType.next(TYPE_CIPHER);
   }
