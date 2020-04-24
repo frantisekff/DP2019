@@ -90,10 +90,10 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   topGap = 110;
   // Form inputs
   cipherAttemptForm: FormGroup;
-  numberOfAttempt = 2;
+  numberOfAttempt = 5;
   private numberOfAttemptSubscr: Subscription;
 
-  numberOfIterations = 10000;
+  numberOfIterations = 2500;
   private numberOfIterationsSubscr: Subscription;
 
 
@@ -204,11 +204,22 @@ export class MonoalphCipher implements OnInit, OnDestroy {
           const allBestGuessNthEl = [];
 
           for (let i = 0; i < numElements; i = i + choooseEveryNthElement) {
+            // Last element not push, we will do it out of loop
+            if (i === numElements - 1) {
+              continue;
+            }
             const tmpGuess = this.allGuess[0].allBestGuess[i];
             tmpGuess.sum = Math.round(tmpGuess.sum * 1000) / 1000;
             tmpGuess.matchRate = Math.round(tmpGuess.matchRate * 1000) / 1000;
             allBestGuessNthEl.push(this.allGuess[0].allBestGuess[i]);
           }
+          // Push to table the best/last result too.
+          const bestGuess = this.allGuess[0].allBestGuess[numElements - 1];
+          bestGuess.sum = Math.round(bestGuess.sum * 1000) / 1000;
+          bestGuess.matchRate = Math.round(bestGuess.matchRate * 1000) / 1000;
+          allBestGuessNthEl.push(
+            bestGuess
+          );
 
           // Send data to table
           this.dataSourceBestResults.data = allBestGuessNthEl;
