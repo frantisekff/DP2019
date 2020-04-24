@@ -1,0 +1,39 @@
+.main-footer {
+    background: white ;
+    padding: 1rem;
+    margin-top: 148px;
+}
+
+.main-footer__links {
+    font-size: smaller;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.main-footer__link {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    margin: 0 16px;
+}
+
+.main-footer__link a {
+    color: #a5a5a5;
+    text-decoration: none;
+}
+
+.main-footer__link p {
+    color: #a5a5a5;
+    text-decoration: none;
+    margin: auto;
+}
+
+
+.main-footer__link a:hover,
+.main-footer__link a:active {
+    color: #ccc;
+}

@@ -12,6 +12,7 @@ import { SharedModule } from './shared/shared.module';
 import { HeaderService } from './components/header/header.service';
 import { SideNavbarComponent } from './components/side-navbar/side-navbar.component';
 import { AboutComponent } from './pages/about/about.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 const appRoutes: Routes = [
   { path: '', component: Home },
@@ -41,7 +42,7 @@ const appRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, Home, AboutComponent],
+  declarations: [AppComponent, HeaderComponent, Home, AboutComponent, FooterComponent],
   imports: [
     BrowserModule,
     MatInputModule,
