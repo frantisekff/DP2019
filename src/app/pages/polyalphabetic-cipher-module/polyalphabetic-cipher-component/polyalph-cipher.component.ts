@@ -20,7 +20,7 @@ import { HeaderService } from "src/app/components/header/header.service";
 
 @Component({
   selector: "app-polyalphcipher",
-  styleUrls: ["./polyalph-cipher.component.scss"],
+  styleUrls: ['../../../app.component.css',"./polyalph-cipher.component.scss"],
   templateUrl: "./polyalph-cipher.component.html"
 })
 export class PolyalphCipher implements OnInit, OnDestroy {

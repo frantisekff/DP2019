@@ -39,7 +39,7 @@ import { MatTableDataSource } from "@angular/material/table";
 @Component({
   selector: "app-monoalphabetic-cipher-component",
   templateUrl: "./monoalphabetic-cipher-component.component.html",
-  styleUrls: ["./monoalphabetic-cipher-component.component.css"]
+  styleUrls: ['../../../app.component.css', "./monoalphabetic-cipher-component.component.css"]
 })
 export class MonoalphCipher implements OnInit, OnDestroy {
   rndKey = EXAMPLE_RND_ALPHABET;
