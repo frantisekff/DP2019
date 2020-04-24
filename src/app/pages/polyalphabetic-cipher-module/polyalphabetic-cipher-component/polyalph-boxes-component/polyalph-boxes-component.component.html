@@ -22,7 +22,7 @@
     <br />
     <div class="container">
       <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-5 offset-md-4">
           <div
             *ngIf="passedMinIc; else notPassed"
             class="alert alert-danger"
@@ -37,7 +37,7 @@
             <br />
           </div>
           <ng-template #notPassed>
-            <div class="alert alert-success" role="alert">
+            <div class="alert computed-box" role="alert">
               <span
                 >Avarage Index of coincidence for all boxes is:
                 {{ ic.value | number: "1.0-4" }}</span
@@ -53,25 +53,25 @@
 </div>
 
 <div class="col-md-12 container">
-  <div class="row">
-  <div
-    class="col-md-3 col-sm-3 box"
-    *ngFor="let box of allBoxes[selectedValueNum - 2]; let j = index"
-  >
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Box {{ j + 1 }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content style="word-wrap: break-word;">
-        <span [style.color]="colors[j % selectedValueNum]">
-          {{ box }}
-        </span>
-      </mat-card-content>
-      <mat-card-actions>
-        IC for box is:
-        {{ allBoxesIc[selectedValueNum - 2][j] | number: "1.0-4" }}
-      </mat-card-actions>
-    </mat-card>
+  <div class="row justify-content-center">
+    <div
+      class="col-md-3 col-sm-3 box"
+      *ngFor="let box of allBoxes[selectedValueNum - 2]; let j = index"
+    >
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Box {{ j + 1 }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="word-wrap: break-word;">
+          <span [style.color]="colors[j % selectedValueNum]">
+            {{ box }}
+          </span>
+        </mat-card-content>
+        <mat-card-actions>
+          IC for box is:
+          {{ allBoxesIc[selectedValueNum - 2][j] | number: "1.0-4" }}
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
-</div>
 </div>

@@ -82,7 +82,7 @@
           </mat-card-content>
 
           <mat-card-actions>
-            <button mat-button (click)="enDeCryptMessage()">
+            <button class="btn btn-sm btn-action" (click)="enDeCryptMessage()">
               Generate
             </button>
           </mat-card-actions>
@@ -91,13 +91,9 @@
 
       <br />
 
-      <!-- <ng-template matStepLabel
-            >Encrypted and Decrypted Message</ng-template
-          > -->
-      <br />
       <div class="row">
         <div class="col-md-6 remove-left-marigns">
-          <mat-card >
+          <mat-card class="computed-mat-card">
             <mat-card-header>
               <mat-card-title>Encrypted Text</mat-card-title>
             </mat-card-header>
@@ -109,7 +105,7 @@
           </mat-card>
         </div>
         <div class="col-md-6 remove-right-marigns">
-          <mat-card>
+          <mat-card class="computed-mat-card">
             <mat-card-header>
               <mat-card-title>Dencrypted Text</mat-card-title>
             </mat-card-header>
@@ -121,11 +117,11 @@
           </mat-card>
         </div>
       </div>
+
       <br />
-      <br />
-      <!-- <ng-template matStepLabel>Frequency of Encrypted Message</ng-template> -->
+
       <div class="row">
-        <mat-card id="frequency" class="col-md-12">
+        <mat-card id="frequency" class="col-md-12 computed-mat-card">
           <mat-card-header>
             <mat-card-title>Frequency of Encrypted Message</mat-card-title>
           </mat-card-header>
@@ -147,8 +143,7 @@
       </div>
 
       <br />
-      <br />
-
+ 
       <div class="row">
         <mat-card id="index" class="info-mat-card col-md-12">
           <mat-card-header>
@@ -180,9 +175,9 @@
       </div>
 
       <br />
-      <br />
+
       <div class="row">
-        <mat-card id="differences" class="col-md-12">
+        <mat-card id="differences" class="col-md-12 computed-mat-card">
           <mat-card-header>
             <mat-card-title>Differences between frequencies</mat-card-title>
           </mat-card-header>
@@ -199,7 +194,7 @@
               <br />
             </div>
             <ng-template #notPassed>
-              <div class="alert alert-success" role="alert">
+              <div class="alert computed-box" role="alert">
                 <span
                   >Index of coincidence for encrypted text is: {{ ic }}</span
                 >
@@ -236,10 +231,11 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <br /><br />
+
+      <br />
 
       <div class="row">
-        <mat-card id="compare" class="col-md-12">
+        <mat-card id="compare" class="col-md-12 computed-mat-card">
           <mat-card-header>
             <mat-card-title
               >Compare Language accuracy of message with real
@@ -281,15 +277,8 @@
           </mat-card-content>
         </mat-card>
       </div>
-
-      <!-- <ng-template matStepLabel
-            >Compare Language accuracy of message with real data</ng-template
-          > -->
-      <br /><br />
-
-      <!-- <button mat-stroked-button color="primary" (click)="enDeCryptMessage()">En/Decrypt Text</button> -->
     </div>
-
-    <br />
   </div>
+  <br>
+  <br>
 </app-side-navbar>

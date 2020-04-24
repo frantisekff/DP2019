@@ -45,7 +45,7 @@ let DIFF_FREQ_DATA: AlphabetElement[] = [];
 
 @Component({
   selector: 'app-caesarcipher',
-  styleUrls: ['./caesar-cipher.component.scss'],
+  styleUrls: ['../../../app.component.css', './caesar-cipher.component.scss'],
   templateUrl: './caesar-cipher.component.html'
 })
 export class CaesarCipher implements OnInit, OnDestroy {

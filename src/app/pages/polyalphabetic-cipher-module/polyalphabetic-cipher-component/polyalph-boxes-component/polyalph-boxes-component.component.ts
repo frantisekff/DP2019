@@ -7,7 +7,7 @@ import { PolyalphCipherService } from "../../polyalphabetic-cipher.service";
 @Component({
   selector: "app-polyalph-boxes-component",
   templateUrl: "./polyalph-boxes-component.component.html",
-  styleUrls: ["./polyalph-boxes-component.component.css"]
+  styleUrls: ['../../../../app.component.css',"./polyalph-boxes-component.component.css"]
 })
 export class PolyalphBoxesComponentComponent implements OnInit {
   @Input() allBoxesAvgIc = [];

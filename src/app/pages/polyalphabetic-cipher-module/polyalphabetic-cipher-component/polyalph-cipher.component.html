@@ -17,8 +17,6 @@
       </mat-card-content>
     </mat-card>
 
-    <br />
-
     <div class="col-md-12">
       <br />
       <div class="row">
@@ -93,38 +91,27 @@
                   Please, text must include letters a-z or A-Z.
                 </mat-error>
               </mat-form-field>
-
-              <br />
-              <br />
-              <button
-              [disabled]="!cipherInputsForm.valid"
-              mat-stroked-button
-              color="primary"
-              type="submit"
-            >
-              En/Decrypt Text
-            </button>
             </form>
           </mat-card-content>
 
           <mat-card-actions>
-          
-          </mat-card-actions>
+            <button
+              [disabled]="!cipherInputsForm.valid"
+              class="btn btn-sm btn-action"
+              color="primary"
+              type="submit"
+            >
+              En/Decrypt Text
+            </button></mat-card-actions
+          >
         </mat-card>
       </div>
 
-      <!-- <ng-template matStepLabel
-              >Show Encrypted and Decrypted Message</ng-template
-            > -->
       <br />
-      <!-- In Encrypted block we can see separated text to blocks. For example when
-        we have key of length 3. We get 3 boxes. See a more detailed example
-        below -->
-      <br />
-      <br />
+
       <div class="row">
         <div class="col-md-6 remove-left-marigns">
-          <mat-card>
+          <mat-card class="computed-mat-card">
             <mat-card-header>
               <mat-card-title>Encrypted Text</mat-card-title>
             </mat-card-header>
@@ -139,7 +126,7 @@
           </mat-card>
         </div>
         <div class="col-md-6 remove-right-marigns">
-          <mat-card>
+          <mat-card class="computed-mat-card">
             <mat-card-header>
               <mat-card-title>Dencrypted Text</mat-card-title>
             </mat-card-header>
@@ -153,93 +140,100 @@
       </div>
 
       <br />
-
-      <mat-card id="alghorithm" class="col-md-12 info-mat-card">
-        <mat-card-header>
-          <mat-card-title>Alghorithm to find key</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="word-wrap: break-word;">
-          <div class="col-md-8 col-md-offset-2">
-            We try find length of key. We separate text into boxes, number of
-            boxes is length of key. For example when we have key of length 3
-            boxe, in first box will be first letter from encrypted text(CT), in
-            second box second letter form CT, in third box third letter of CT.
-            Then we repeat and in first box will be fourth letter of CT, in
-            second box will be fifth letter and so on. Then we compute frequency
-            of every box and Index Coincidence(IC). For boxes we compute average
-            of ICs. Then we repeat this steps and we compute average ICs for key
-            of length <2,16> In this example we expect that text is in English
-            language.
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <br />
-
-      <mat-card id="findkey" class="col-md-12 computed-mat-card">
-        <mat-card-header>
-          <mat-card-title>Show IC for different length of key</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="word-wrap: break-word;">
-          <div class="col-md-12">
-            <div class="alert alert-success" role="alert">
-              <!-- <span>The best Index of coincidence is: {{highestIC | number:'1.0-4'}}</span> -->
-              <span>The best lengths of key are: </span>
-              <ol>
-                <li *ngFor="let index of highestIC">
-                  <span>Length of {{ index.box }} </span>
-                  <span>with IC {{ index.value | number: "1.0-4" }}</span>
-                </li>
-              </ol>
+      <div class="row">
+        <mat-card id="alghorithm" class="col-md-12 info-mat-card">
+          <mat-card-header>
+            <mat-card-title>Alghorithm to find key</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            <div class="col-md-8 col-md-offset-2">
+              We try find length of key. We separate text into boxes, number of
+              boxes is length of key. For example when we have key of length 3
+              boxe, in first box will be first letter from encrypted text(CT),
+              in second box second letter form CT, in third box third letter of
+              CT. Then we repeat and in first box will be fourth letter of CT,
+              in second box will be fifth letter and so on. Then we compute
+              frequency of every box and Index Coincidence(IC). For boxes we
+              compute average of ICs. Then we repeat this steps and we compute
+              average ICs for key of length <2,16> In this example we expect
+              that text is in English language.
             </div>
-          </div>
-          <br />
+          </mat-card-content>
+        </mat-card>
+      </div>
 
-          <app-polyalph-boxes-component
-            [allBoxesAvgIc]="allBoxesAvgIc"
-            [ic]="ic"
-            [allBoxes]="allBoxes"
-            [allBoxesIc]="allBoxesIc"
-            [toggleOptions]="toggleOptions"
-          ></app-polyalph-boxes-component>
-        </mat-card-content>
-      </mat-card>
+      <br />
+      <div class="row">
+        <mat-card id="findkey" class="col-md-12 computed-mat-card">
+          <mat-card-header>
+            <mat-card-title>Show IC for different length of key</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            <div class="col-md-12">
+              <div class="alert computed-box" role="alert">
+                <span>The best lengths of key are: </span>
+                <ol>
+                  <li *ngFor="let index of highestIC">
+                    <span>Length of {{ index.box }} </span>
+                    <span>with IC {{ index.value | number: "1.0-4" }}</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <br />
+
+            <app-polyalph-boxes-component
+              [allBoxesAvgIc]="allBoxesAvgIc"
+              [ic]="ic"
+              [allBoxes]="allBoxes"
+              [allBoxesIc]="allBoxesIc"
+              [toggleOptions]="toggleOptions"
+            ></app-polyalph-boxes-component>
+          </mat-card-content>
+        </mat-card>
+      </div>
 
       <br />
 
-      <mat-card id="allcombinations" class="col-md-12 computed-mat-card">
-        <mat-card-header>
-          <mat-card-title>Compute all combinations for key</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="word-wrap: break-word;">
-          <div class="col-md-12">
-            We try decrypt message and find out key of encrypted message. We use
-            guess of key length form previous step. We do it only for key of
-            length <2,3> because we compute all possibilities on client
-            computer. Key of length has 26^3 = 17,576‬ possible keys, but key of
-            length 4 has 26^4 has 456 976 keys.
-            <br />
-            <br />
-
-            <app-table
-              [ngClass]="{ hide: !calcDonee, show: calcDonee }"
-              [columnNames]="columnsBestResults"
-              [dataSource]="dataSourceBestResults"
-              [defaultSort]="sortBestResults"
-              [ready]="dataSourceBestResultsReady"
-            >
-            </app-table>
-
-            <div [ngClass]="{ hide: calcDonee, show: !calcDonee }" class="text-center">
-              <h5>Please wait, after calculation ends</h5>
+      <div class="row">
+        <mat-card id="allcombinations" class="col-md-12 computed-mat-card">
+          <mat-card-header>
+            <mat-card-title>Compute all combinations for key</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            <div class="col-md-12">
+              We try decrypt message and find out key of encrypted message. We
+              use guess of key length form previous step. We do it only for key
+              of length <2,3> because we compute all possibilities on client
+              computer. Key of length has 26^3 = 17,576‬ possible keys, but key
+              of length 4 has 26^4 has 456 976 keys.
               <br />
-              <mat-progress-spinner class="spinner" [mode]="'indeterminate'">
-              </mat-progress-spinner>
+              <br />
+
+              <app-table
+                [ngClass]="{ hide: !calcDonee, show: calcDonee }"
+                [columnNames]="columnsBestResults"
+                [dataSource]="dataSourceBestResults"
+                [defaultSort]="sortBestResults"
+                [ready]="dataSourceBestResultsReady"
+              >
+              </app-table>
+
+              <div
+                [ngClass]="{ hide: calcDonee, show: !calcDonee }"
+                class="text-center"
+              >
+                <h5>Please wait, after calculation ends</h5>
+                <br />
+                <mat-progress-spinner class="spinner" [mode]="'indeterminate'">
+                </mat-progress-spinner>
+              </div>
             </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+          </mat-card-content>
+        </mat-card>
+      </div>
       <br />
     </div>
   </div>
+  <br />
 </app-side-navbar>

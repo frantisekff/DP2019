@@ -5,7 +5,7 @@ import { HeaderService } from "src/app/components/header/header.service";
 @Component({
   selector: "app-about",
   templateUrl: "./about.component.html",
-  styleUrls: ["./about.component.css"],
+  styleUrls: ['../../app.component.css', "./about.component.css"],
 })
 export class AboutComponent implements OnInit {
   showInfoPanel: boolean;
