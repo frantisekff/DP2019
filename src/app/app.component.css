@@ -88,7 +88,7 @@ mat-button-toggle:hover {
 }
 
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 992px) {
   .remove-left-marigns {
     padding-right: 0;
   }

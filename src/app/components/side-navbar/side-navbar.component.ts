@@ -1,43 +1,65 @@
-import { Component, OnInit, Input, HostListener } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  AfterContentChecked,
+  Input,
+  HostListener,
+  AfterViewInit,
+} from "@angular/core";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "app-side-navbar",
   templateUrl: "./side-navbar.component.html",
-  styleUrls: ["./side-navbar.component.css"]
+  styleUrls: ["./side-navbar.component.css"],
 })
-export class SideNavbarComponent implements OnInit {
+export class SideNavbarComponent implements OnInit, AfterViewInit {
   @Input() public topGap;
   fixed = false;
   selectedIndex = 0;
   private lastPositionOfscrolling = 0;
+  initGap = 1;
   @Input() sideMenu = [
     {
       title: "Set inputs",
       active: true,
       id: "inputs",
       bottomPosition: 0,
-      topPosition: 0
-
+      topPosition: 0,
     },
     {
       title: "Find decryption key",
       active: false,
       id: "findKey",
       bottomPosition: 0,
-      topPosition: 0
+      topPosition: 0,
     },
     {
       title: "Compare bigrams frequency",
       active: false,
       id: "compareBigrams",
       bottomPosition: 0,
-      topPosition: 0
+      topPosition: 0,
     },
-
   ];
-  constructor() { }
+  gap: Subject<number> = new Subject<number>();
+  topGap2;
+  constructor() {}
+  ngOnInit() {
+    this.gap.subscribe((value) => {
+      this.topGap2 = value;
+    });
+  }
 
-  ngOnInit() { }
+  ngAfterViewInit() {
+    setTimeout(() => {
+      let height = document.getElementById("header").getBoundingClientRect()
+        .height;
+      console.log(height);
+      this.gap.next(height);
+      this.initGap = 0;
+    }, 0);
+  }
 
   scroll(elementObj, index: number) {
     this.selectedIndex = index;
@@ -49,8 +71,17 @@ export class SideNavbarComponent implements OnInit {
 
     window.scrollTo({
       top: offsetPosition,
-      behavior: "smooth"
+      behavior: "smooth",
     });
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    let height = document.getElementById("header").getBoundingClientRect()
+      .height;
+    console.log(height, event.target.innerWidth);
+
+    this.gap.next(height);
   }
 
   @HostListener("window:scroll")
@@ -58,17 +89,27 @@ export class SideNavbarComponent implements OnInit {
     const scrollDownCheckPosition = 200;
     let index = 0;
     for (const value of this.sideMenu) {
-      value.bottomPosition = document.getElementById(value.id).getBoundingClientRect().bottom;
-      value.topPosition = document.getElementById(value.id).getBoundingClientRect().top;
+      value.bottomPosition = document
+        .getElementById(value.id)
+        .getBoundingClientRect().bottom;
+      value.topPosition = document
+        .getElementById(value.id)
+        .getBoundingClientRect().top;
       // if scroll down
       if (this.lastPositionOfscrolling < window.pageYOffset) {
-        if (value.bottomPosition <= scrollDownCheckPosition && value.bottomPosition > 0) {
+        if (
+          value.bottomPosition <= scrollDownCheckPosition &&
+          value.bottomPosition > 0
+        ) {
           this.selectedIndex = index + 1;
           break;
         }
         // if scroll up
       } else if (this.lastPositionOfscrolling > window.pageYOffset) {
-        if (value.topPosition >= scrollDownCheckPosition && value.topPosition > 0) {
+        if (
+          value.topPosition >= scrollDownCheckPosition &&
+          value.topPosition > 0
+        ) {
           this.selectedIndex = index;
           break;
         }
@@ -78,8 +119,6 @@ export class SideNavbarComponent implements OnInit {
     }
     // console.log(this.sideMenu);
     // console.log(window.pageYOffset);
-
-
 
     this.lastPositionOfscrolling = window.pageYOffset;
   }
