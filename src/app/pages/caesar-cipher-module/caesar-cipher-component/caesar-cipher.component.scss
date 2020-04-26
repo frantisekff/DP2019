@@ -2,3 +2,13 @@
   height: 400px;
   overflow: auto;
 }
+.responsive-toogle-btn-group > * {
+  flex-grow: 0;
+}
+
+.responsive-toogle-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+

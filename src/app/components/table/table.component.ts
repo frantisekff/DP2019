@@ -7,7 +7,7 @@ import { Subscription, Subscribable, Subscriber, Observable } from "rxjs";
 @Component({
   selector: "app-table",
   templateUrl: "./table.component.html",
-  styleUrls: ["./table.component.css"]
+  styleUrls: ["./table.component.css"],
 })
 export class TableComponent implements OnInit, OnDestroy {
   @Input() columnNames: string[];
@@ -15,6 +15,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() defaultSort: SortTable;
   @Input() ready: Observable<boolean>;
   @Input() fullWidth: boolean = true;
+  @Input() stickyColumns?: { stickyStart: string; stickyEnd: string; stickyHeader: boolean };
 
   @ViewChild("sort", { static: true }) sort: MatSort;
   private readySubscription: Subscription;
@@ -25,11 +26,25 @@ export class TableComponent implements OnInit, OnDestroy {
     if (this.dataSource) {
       this.dataSource.sort = this.sort;
     }
-    this.readySubscription = this.ready.subscribe(data => {
+    this.readySubscription = this.ready.subscribe((data) => {
       if (data === true && this.dataSource) {
         this.dataSource.sort = this.sort;
       }
     });
+  }
+
+  isStickyStart(column: string): boolean {
+    if (!this.stickyColumns) {
+      return false;
+    }
+    return this.stickyColumns.stickyStart === column ? true : false;
+  }
+
+  isStickyEnd(column: string): boolean {
+    if (!this.stickyColumns) {
+      return false;
+    }
+    return this.stickyColumns.stickyEnd === column ? true : false;
   }
 
   ngOnDestroy(): void {

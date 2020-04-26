@@ -24,7 +24,11 @@ export const EQUATION = "\\sum_{i=A}^{i=Z}\\frac {n_i (n_i - 1)} {N (N - 1)}";
 
 export const CHART_OPTIONS_FREQ_GRAPH = {
     chart: {
-        type: 'column'
+        type: 'column',
+        scrollablePlotArea: {
+            minWidth: 700,
+            scrollPositionX: 1
+          }
     },
     title: {
         text: 'Frequency for encrypted text'
@@ -42,7 +46,9 @@ export const CHART_OPTIONS_FREQ_GRAPH = {
             style: {
                 fontSize: '13px',
                 fontFamily: 'Verdana, sans-serif'
-            }
+            },
+            overflow: 'justify'
+
         }
     },
     yAxis: {
@@ -78,7 +84,11 @@ export const CHART_OPTIONS_FREQ_GRAPH = {
 
 export const CHART_OPTIONS_COMPARE_FREQ = {
     chart: {
-        type: 'column'
+        type: 'column',
+        scrollablePlotArea: {
+            minWidth: 700,
+            scrollPositionX: 1
+          }
     },
     title: {
         text: 'Compare letter accuracy with language data values'

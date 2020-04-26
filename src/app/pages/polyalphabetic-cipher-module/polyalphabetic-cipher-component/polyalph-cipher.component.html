@@ -213,6 +213,7 @@
               <app-table
                 [ngClass]="{ hide: !calcDonee, show: calcDonee }"
                 [columnNames]="columnsBestResults"
+                [stickyColumns]="stickyColumns"
                 [dataSource]="dataSourceBestResults"
                 [defaultSort]="sortBestResults"
                 [ready]="dataSourceBestResultsReady"

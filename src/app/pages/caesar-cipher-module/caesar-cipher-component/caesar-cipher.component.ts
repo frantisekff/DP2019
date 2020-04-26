@@ -1,30 +1,30 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
 import {
   FormBuilder,
   FormGroup,
   Validators,
   AbstractControl,
-  FormControl
-} from '@angular/forms';
+  FormControl,
+} from "@angular/forms";
 import {
   AlphabetElement,
   SortTable,
-  Ordering
-} from '../../../models/common.model';
+  Ordering,
+} from "../../../models/common.model";
 import {
   LANGUAGEIC_DATA,
   EN_ALPHABET_FREQUENCY,
   ALPHABET,
   A_ASCII,
-  EN_ALPHABET_FREQUENCY_PERC
-} from '../../../constants/language.constants';
-import AnalysisText from '../../../analysis-text';
-import Utils from 'src/app/utils';
-import { GraphComponent } from 'src/app/components/graph/graph.component';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { CaesarCipherService } from '../caesar-cipher.service';
+  EN_ALPHABET_FREQUENCY_PERC,
+} from "../../../constants/language.constants";
+import AnalysisText from "../../../analysis-text";
+import Utils from "src/app/utils";
+import { GraphComponent } from "src/app/components/graph/graph.component";
+import { MatButtonToggleChange } from "@angular/material/button-toggle";
+import { CaesarCipherService } from "../caesar-cipher.service";
 import {
   CHART_OPTIONS_FREQ_GRAPH,
   CHART_OPTIONS_COMPARE_FREQ,
@@ -35,18 +35,17 @@ import {
   NAME_CIPHER,
   TYPE_CIPHER,
   TOP_GAP,
-  SIDE_MENU
-
-} from '../caesar-cipher.constant';
-import { Subscribable, Subscription, Subject } from 'rxjs';
-import { HeaderService } from 'src/app/components/header/header.service';
+  SIDE_MENU,
+} from "../caesar-cipher.constant";
+import { Subscribable, Subscription, Subject } from "rxjs";
+import { HeaderService } from "src/app/components/header/header.service";
 
 let DIFF_FREQ_DATA: AlphabetElement[] = [];
 
 @Component({
-  selector: 'app-caesarcipher',
-  styleUrls: ['../../../app.component.css', './caesar-cipher.component.scss'],
-  templateUrl: './caesar-cipher.component.html'
+  selector: "app-caesarcipher",
+  styleUrls: ["../../../app.component.css", "./caesar-cipher.component.scss"],
+  templateUrl: "./caesar-cipher.component.html",
 })
 export class CaesarCipher implements OnInit, OnDestroy {
   private enAlphabetFrequency = EN_ALPHABET_FREQUENCY;
@@ -60,29 +59,33 @@ export class CaesarCipher implements OnInit, OnDestroy {
   private decryptedTexts = [];
   private freqDecryptedTexts = [];
   private diffFreqDecryptedTexts = [];
-  
-  // var for sideNavbar 
+
+  // var for sideNavbar
   sideMenu = SIDE_MENU;
   topGap = TOP_GAP;
 
   // Variables for Tables
   sortRefFreqLang: SortTable = {
-    sortByColumn: 'value',
-    order: Ordering.asc
+    sortByColumn: "value",
+    order: Ordering.asc,
   } as SortTable;
   sortCalcFreqLang: SortTable = {
-    sortByColumn: 'sum',
-    order: Ordering.asc
+    sortByColumn: "sum",
+    order: Ordering.asc,
   } as SortTable;
   columnsRefFreqLanguage = COLUMNS_REFFREQ_LANGUAGE;
   columnsCalcFreqLanguage = COLUMN_CALC_FREQ_LANGUAGE;
+  stickyColumnsCalcFreqLanguage: {
+    stickyStart: string;
+    stickyEnd: string;
+    stickyHeader: boolean;
+  } = { stickyStart: "shift", stickyEnd: "sum", stickyHeader: true };
 
   dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
   dataSourceCalcFreqLang = new MatTableDataSource();
 
   dataSourceRefFreqLangReady = new Subject<boolean>();
   dataSourceCalcFreqLangReady = new Subject<boolean>();
-
 
   // Options for Graph - Encrypted text graph
   updateFlagFreqGraph = false;
@@ -92,26 +95,26 @@ export class CaesarCipher implements OnInit, OnDestroy {
   updateFlagCompareFreq = false;
   chartOptionsCompareFreq = CHART_OPTIONS_COMPARE_FREQ;
   frequency = [];
-  encryptedText = '';
-  decryptedText = '';
+  encryptedText = "";
+  decryptedText = "";
   ic = -1;
   passedMinIc = false;
   nearestLanguage: string;
-  selectedValue = '15';
+  selectedValue = "15";
   toggleOptions: string[] = Utils.createArrayOfLength(26, 1);
-  minDisctanceLength = '';
+  minDisctanceLength = "";
   isLinear = false;
   cipherInputsForm: FormGroup;
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
   fourthFormGroup: FormGroup;
 
-  @ViewChild('comparefreqGraph', { static: true })
+  @ViewChild("comparefreqGraph", { static: true })
   comparefreqGraph: GraphComponent;
-  @ViewChild('freqGraph', { static: true }) freqGraph: GraphComponent;
+  @ViewChild("freqGraph", { static: true }) freqGraph: GraphComponent;
 
-  @ViewChild('sortCalcFreq', { static: true }) sortCalcFreq: MatSort;
-  @ViewChild('sortRefFreq', { static: true }) sortRefFreq: MatSort;
+  @ViewChild("sortCalcFreq", { static: true }) sortCalcFreq: MatSort;
+  @ViewChild("sortRefFreq", { static: true }) sortRefFreq: MatSort;
 
   dataSourceCompareFreqGraph;
   dataSourceFreqGraph;
@@ -119,7 +122,8 @@ export class CaesarCipher implements OnInit, OnDestroy {
   equation = EQUATION;
 
   constructor(
-    private caesarCipherService: CaesarCipherService, headerService: HeaderService
+    private caesarCipherService: CaesarCipherService,
+    headerService: HeaderService
   ) {
     headerService.showInfoPanel.next(true);
     headerService.cipherName.next(NAME_CIPHER);
@@ -132,24 +136,24 @@ export class CaesarCipher implements OnInit, OnDestroy {
       key: new FormControl(this.key, [
         Validators.required,
         Validators.min(1),
-        Validators.max(26)
+        Validators.max(26),
       ]),
       message: new FormControl(MESSAGE, [
         Validators.required,
         Validators.pattern("^[a-zA-Z]+$"),
         Validators.minLength(20),
-        Validators.maxLength(2000)
-      ])
+        Validators.maxLength(2000),
+      ]),
     });
 
     this.subscrMessage = this.cipherInputsForm.controls.message.valueChanges.subscribe(
-      newMessage => {
+      (newMessage) => {
         this.message = newMessage;
       }
     );
 
     this.subscrKey = this.cipherInputsForm.controls.key.valueChanges.subscribe(
-      newKey => {
+      (newKey) => {
         this.key = newKey;
       }
     );
@@ -173,19 +177,21 @@ export class CaesarCipher implements OnInit, OnDestroy {
     this.calculateFrequencyGraph();
 
     // TO DO
-    this.ic = AnalysisText.getIC( this.frequency, this.encryptedText.length);
+    this.ic = AnalysisText.getIC(this.frequency, this.encryptedText.length);
 
     this.nearestLanguage = AnalysisText.findNearestLanguage(
       this.ic,
       LANGUAGEIC_DATA
     );
 
-    if (this.nearestLanguage === 'Min IC') {
+    if (this.nearestLanguage === "Min IC") {
       this.passedMinIc = true;
     }
 
     // desifrovanie pre kazdy kluc <1-26>
-    this.decryptedTexts = this.caesarCipherService.decryptForEveryKey(this.encryptedText);
+    this.decryptedTexts = this.caesarCipherService.decryptForEveryKey(
+      this.encryptedText
+    );
 
     // Calculate frequency for all decrypted options. Shift 1-26
     this.freqDecryptedTexts = AnalysisText.computeFreqForArray(
@@ -193,28 +199,30 @@ export class CaesarCipher implements OnInit, OnDestroy {
     );
 
     this.calculateDiffFreqGraphTable(this.freqDecryptedTexts);
-
   }
 
   // Change data for CompareFreq based of selection <1-26>
   selectionOfGraphChanged(item: MatButtonToggleChange) {
-    this.dataSourceCompareFreqGraph = [Array.from(
-      this.freqDecryptedTexts[item.value - 1]
-    )];
+    this.dataSourceCompareFreqGraph = [
+      Array.from(this.freqDecryptedTexts[item.value - 1]),
+    ];
     this.comparefreqGraph.updateGraph();
-    console.log('Selected value: ', item.value);
+    console.log("Selected value: ", item.value);
     console.log(this.dataSourceCompareFreqGraph);
   }
 
   public calculateDiffFreqGraphTable(freqDecryptedTexts: Array<string>) {
-
     // Calculate differecnies between frequancies of input text and referal values for language
     // for every letter
     let minDistance = 100;
-    this.minDisctanceLength = '';
+    this.minDisctanceLength = "";
     const bestDisLength = {};
 
-    for (let currentText = 0; currentText < freqDecryptedTexts.length; currentText++) {
+    for (
+      let currentText = 0;
+      currentText < freqDecryptedTexts.length;
+      currentText++
+    ) {
       const freqForOneShift = freqDecryptedTexts[currentText];
       const diffFreqForOneShift = [];
       const lang = {} as AlphabetElement;
@@ -222,9 +230,8 @@ export class CaesarCipher implements OnInit, OnDestroy {
       for (let letter = 0; letter < freqForOneShift.length; letter++) {
         const freqDiff =
           Math.round(
-            Math.abs(
-              +freqForOneShift[letter] - EN_ALPHABET_FREQUENCY[letter]
-            ) * 100
+            Math.abs(+freqForOneShift[letter] - EN_ALPHABET_FREQUENCY[letter]) *
+              100
           ) / 100;
         diffFreqForOneShift.push(freqDiff);
         lang[this.alphabet[letter]] = freqDiff;
@@ -257,13 +264,12 @@ export class CaesarCipher implements OnInit, OnDestroy {
     this.minDisctanceLength = Utils.sortObjectAsc(bestDisLength)[0];
     this.selectedValue = this.minDisctanceLength;
 
-    this.dataSourceCompareFreqGraph = [Array.from(
-      this.freqDecryptedTexts[+this.minDisctanceLength - 1]
-    )];
+    this.dataSourceCompareFreqGraph = [
+      Array.from(this.freqDecryptedTexts[+this.minDisctanceLength - 1]),
+    ];
     this.comparefreqGraph.updateGraph();
 
-    console.log('Min Distance Length', this.minDisctanceLength);
-
+    console.log("Min Distance Length", this.minDisctanceLength);
   }
 
   // Calculate frequencies for FreqGraph and update data in Graph
@@ -271,10 +277,15 @@ export class CaesarCipher implements OnInit, OnDestroy {
     this.frequency = AnalysisText.getFrequencyOfText(this.encryptedText);
     const encryptedTextLength = this.encryptedText.length;
     this.frequencyInPercentage = AnalysisText.freqToPerc(
+      this.frequency,
+      encryptedTextLength
+    );
+    this.dataSourceFreqGraph = [
+      AnalysisText.mapLetterToFreqPerc(
         this.frequency,
-        encryptedTextLength
-      );
-    this.dataSourceFreqGraph = [AnalysisText.mapLetterToFreqPerc(this.frequency, this.frequencyInPercentage)];
+        this.frequencyInPercentage
+      ),
+    ];
     this.freqGraph.updateGraph();
   }
 
