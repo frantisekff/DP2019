@@ -1,82 +1,92 @@
-<nav class="main-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue">
-  <div class="center-navbar">
-    <a class="navbar-brand" href="#">
-      <img
-        class="d-inline-block align-top"
-        src="../../../assets/img/caesarCipherLogoWhite.png"
-        width="40"
-        height="40"
-        alt=""
-      />
-      Clasical Ciphers
-    </a>
-    <div class="right">
-
-    <div class="btn-group">
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary dropdown-toggle"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        Choose Cipher
-      </button>
-      <div class="dropdown-menu dropdown-menu-right">
-        <li
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
+<div class="fixed" id="header">
+  <nav
+    class="navbar main-navbar navbar-expand-lg navbar-dark bg-dark bg-navbar-blue"
+  >
+    <div class="col-md-10 offset-md-1">
+      <div class="align-main-navbar">
+        <a class="navbar-brand" href="#">
+          <img
+            class=""
+            src="../../../assets/img/caesarCipherLogoWhite.png"
+            width="40"
+            height="40"
+            alt=""
+          />
+          <span>Clasical Ciphers</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
-          <a class="dropdown-item" routerLink="/caesarcipher">Caesar Cipher</a>
-        </li>
-        <li
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="navbar-toogle collapse navbar-collapse"
+          id="navbarNavDropdown"
         >
-          <a class="dropdown-item" routerLink="/transpositioncipher"
-            >Transposition Cipher</a
-          >
-        </li>
-        <li
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <a class="dropdown-item" routerLink="/polyalphcipher"
-            >Vigenere Cipher</a
-          >
-        </li>
-        <li
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <a class="dropdown-item" routerLink="/monoalphcipher"
-            >Simple Substitution Cipher</a
-          >
-        </li>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/about">About</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdownMenuLink"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Ciphers
+              </a>
+              <div
+                class="dropdown-menu"
+                aria-labelledby="navbarDropdownMenuLink"
+              >
+                <li>
+                  <a class="dropdown-item" routerLink="/caesarcipher"
+                    >Caesar Cipher</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/transpositioncipher"
+                    >Transposition Cipher</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/polyalphcipher"
+                    >Vigenere Cipher</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/monoalphcipher"
+                    >Simple Substitution Cipher</a
+                  >
+                </li>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-    <button type="button" class="btn btn-sm btn-outline-secondary" routerLink="/about">About</button>
-  </div>
-
-  </div>
-
-</nav>
-<nav *ngIf="showInfoPanel"
-  class="cipher-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue "
-  [@scrollAnimation]="isHeader1Visible"
->
-  <!-- [ngClass]="{ 'show-cipher-navbar': !isSticky, 'hide-cipher-navbar': isSticky  }" -->
-  <div class="d-flex flex-column  col-md-4 offset-md-1">
-    <div class="cipher-type">
-      <h5>{{ cipherType }}</h5>
-    </div>
-    <div class="cipher-name">
-      <h3>{{ cipherName }}</h3>
+  </nav>
+  <div
+    *ngIf="showInfoPanel"
+    class="cipher-navbar navbar navbar-expand-lg navbar-light bg-navbar-blue"
+    [@scrollAnimation]="isHeader1Visible"
+  >
+    <div class="d-flex flex-column col-md-4 offset-md-1">
+      <div class="cipher-type">
+        <h5>{{ cipherType }}</h5>
+      </div>
+      <div class="cipher-name">
+        <h3>{{ cipherName }}</h3>
+      </div>
     </div>
   </div>
-</nav>
-
-<div class="navbar-sticky" [@scrollAnimation]="isHeader2Visible">
-  <p>Up</p>
-  {{ cipherName }}
 </div>

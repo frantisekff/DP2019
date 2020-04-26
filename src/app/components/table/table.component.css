@@ -1,6 +1,7 @@
 .full-width {
   display: block;
-  overflow-x: auto;
+  overflow: scroll;
+  max-height: 400px;
 }
 
 .mat-row {

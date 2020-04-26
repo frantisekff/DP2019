@@ -1,4 +1,4 @@
-<app-side-navbar [sideMenu]="sideMenu" [topGap]="topGap" class="col-md-12">
+<app-side-navbar [sideMenu]="sideMenu" [topGap]="topGap" class="d-block">
   <div class="container">
     <mat-card class="col-md-12 info-mat-card">
       <mat-card-header>
@@ -143,7 +143,7 @@
       </div>
 
       <br />
- 
+
       <div class="row">
         <mat-card id="index" class="info-mat-card col-md-12">
           <mat-card-header>
@@ -218,16 +218,15 @@
               from encrypted text and real data for language
             </h6>
             <span>Based of minimum frequency for shift, we guess shift</span>
-
-            <div class="row scrollTable">
-              <app-table
-                [columnNames]="columnsCalcFreqLanguage"
-                [dataSource]="dataSourceCalcFreqLang"
-                [defaultSort]="sortCalcFreqLang"
-                [ready]="dataSourceCalcFreqLangReady"
-              >
-              </app-table>
-            </div>
+            <br>
+            <app-table
+              [columnNames]="columnsCalcFreqLanguage"
+              [stickyColumns]="stickyColumnsCalcFreqLanguage"
+              [dataSource]="dataSourceCalcFreqLang"
+              [defaultSort]="sortCalcFreqLang"
+              [ready]="dataSourceCalcFreqLangReady"
+            >
+            </app-table>
           </mat-card-content>
         </mat-card>
       </div>
@@ -258,13 +257,15 @@
                   [data]="dataSourceCompareFreqGraph"
                 ></app-graph>
               </div>
+              <br>
               <div class="row">
                 <mat-button-toggle-group
-                  class="center-toogle-group"
+                  class="btn-group responsive-toogle-btn-group center-toogle-group"
                   [(ngModel)]="selectedValue"
                   #group="matButtonToggleGroup"
                 >
                   <mat-button-toggle
+                    class="toogle-btn"
                     *ngFor="let item of toggleOptions"
                     (change)="selectionOfGraphChanged($event)"
                     [value]="item"
@@ -279,6 +280,6 @@
       </div>
     </div>
   </div>
-  <br>
-  <br>
+  <br />
+  <br />
 </app-side-navbar>

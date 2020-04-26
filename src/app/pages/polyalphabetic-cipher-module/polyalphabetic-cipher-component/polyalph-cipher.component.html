@@ -1,4 +1,4 @@
-<app-side-navbar [sideMenu]="sideMenu" [topGap]="topGap" class="col-md-12">
+<app-side-navbar [sideMenu]="sideMenu" [topGap]="topGap" class="d-block">
   <div class="container">
     <mat-card class="col-md-12 info-mat-card">
       <mat-card-header>
@@ -213,6 +213,7 @@
               <app-table
                 [ngClass]="{ hide: !calcDonee, show: calcDonee }"
                 [columnNames]="columnsBestResults"
+                [stickyColumns]="stickyColumns"
                 [dataSource]="dataSourceBestResults"
                 [defaultSort]="sortBestResults"
                 [ready]="dataSourceBestResultsReady"

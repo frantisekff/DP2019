@@ -1,31 +1,29 @@
 <mat-sidenav-container class="col-md-10 offset-md-1 mode-down">
-    <mat-sidenav
+  <mat-sidenav
     #sidenav
     mode="side"
     opened
     [fixedInViewport]="true"
-    [fixedTopGap]="210"
-    class="col-md-2 side-nav"
-  
-    >
-
-  <ol >
-    <li  class="btn-side-navbar col-md-12"  (click)="scroll(menu, i)"
-        *ngFor="let menu of sideMenu, let i = index"
-        [class.active]="selectedIndex === i" >
-      <a>{{ menu.title }}</a>
-    </li>
-  </ol>
-
-  <!-- <ol class="number-circle-list number-circle-list--primary-color">
-    <li class="number-circle-list--list-item">Ordered list - first list item</li>
-    <li class="number-circle-list--list-item">Ordered list - second list item</li>
-    <li class="number-circle-list--list-item">Ordered list - third list item</li>
-</ol> -->
-    </mat-sidenav>
-    <mat-sidenav-content class="col-md-10">
-      <ng-content>
-      </ng-content>
-     
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+    class="col-lg-2 col-md-12 side-nav"
+    [style.margin-top.px]="topGap2 + 20"
+  >
+    <ol>
+      <li
+        class="btn-side-navbar col-md-12"
+        (click)="scroll(menu, i)"
+        *ngFor="let menu of sideMenu; let i = index"
+        [class.active]="selectedIndex === i"
+      >
+        <a
+          ><span>{{ menu.title }}</span></a
+        >
+      </li>
+    </ol>
+  </mat-sidenav>
+  <mat-sidenav-content
+    [style.margin-top.px]="topGap2 + 20"
+    class="content remove-left-margin col-md-10"
+  >
+    <ng-content> </ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

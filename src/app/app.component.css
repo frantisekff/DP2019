@@ -65,3 +65,37 @@ table {
   color: #ab4439;
   border-color: #ab4439;
 }
+
+mat-button-toggle-group {
+  border: none;
+}
+
+mat-button-toggle {
+    background-color: rgba(219, 217, 217, 0.918);
+    margin-top: 5px !important;
+    padding: 0 5px !important;
+    border-radius: 0.2rem;
+}
+
+mat-button-toggle:hover {
+    background-color: #FFF !important;
+    border-radius: 5px !important;
+}
+
+.mat-button-toggle-checked {
+    background-color: rgba(231, 231, 231, 0.788) !important;
+    border: 2px solid #687bb9 !important;
+}
+
+
+@media screen and (max-width: 992px) {
+  .remove-left-marigns {
+    padding-right: 0;
+  }
+  .remove-right-marigns {
+    padding-left: 0;
+    margin-top: 2vh;
+}
+}
+
+

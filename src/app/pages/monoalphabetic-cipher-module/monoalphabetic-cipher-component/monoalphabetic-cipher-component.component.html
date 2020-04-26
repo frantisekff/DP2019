@@ -1,4 +1,4 @@
-<app-side-navbar [topGap]="topGap" class="col-md-12">
+<app-side-navbar [topGap]="topGap" class="d-block">
   <!-- <button mat-button (click)="sidenav.toggle()">Toggle</button> -->
   <div class="container">
     <div id="inputs">
@@ -257,6 +257,7 @@
             <mat-card-content>
               <app-table
                 [columnNames]="columnsBestResults"
+                [stickyColumns]="stickyColumns"
                 [dataSource]="dataSourceBestResults"
                 [defaultSort]="sortBestResults"
                 [ready]="dataSourceBestResultsReady"

@@ -53,6 +53,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   bestKeyLength;
   best10Results = [];
   columnsBestResults: string[] = ["key", "sum", "decryptedText"];
+  stickyColumns = { stickyStart: "key", stickyEnd: "", stickyHeader: true };
   sortBestResults: SortTable = {
     sortByColumn: "sum",
     order: Ordering.asc

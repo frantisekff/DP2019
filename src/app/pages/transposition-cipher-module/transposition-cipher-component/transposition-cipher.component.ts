@@ -4,6 +4,7 @@ import { HeaderService } from 'src/app/components/header/header.service';
 @Component({
     selector: 'app-transpositioncipher',
     templateUrl: 'transposition-cipher.component.html',
+    styleUrls: ["transposition-cipher.component.css"]
 })
 export class TranspositioncipherComponent {
     constructor(headerService: HeaderService) {

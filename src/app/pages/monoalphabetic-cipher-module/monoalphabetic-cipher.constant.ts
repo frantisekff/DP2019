@@ -48,7 +48,11 @@ export const MESSAGE =
 
 export const CHART_OPTIONS_COMPARE_BIGRAMS = {
   chart: {
-    type: 'column'
+    type: 'column',
+    scrollablePlotArea: {
+      minWidth: 700,
+      scrollPositionX: 1
+    }
   },
   title: {
     text: 'Compare bigrams frequency with language data values'
@@ -90,7 +94,11 @@ export const CHART_OPTIONS_COMPARE_BIGRAMS = {
 
 export const CHART_OPTIONS_ITER_SCORE = {
   chart: {
-    type: 'column'
+    type: 'column',
+    scrollablePlotArea: {
+      minWidth: 700,
+      scrollPositionX: 1
+    }
   },
   title: {
     text: 'Compare score and match rate by iterations'

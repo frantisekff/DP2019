@@ -71,6 +71,7 @@ export class MonoalphCipher implements OnInit, OnDestroy {
     "sum",
     "decryptedText"
   ];
+  stickyColumns = { stickyStart: "key", stickyEnd: "", stickyHeader: false };
   sortBestResults: SortTable = {
     sortByColumn: "iteration",
     order: Ordering.asc
