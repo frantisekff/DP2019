@@ -3,7 +3,11 @@ import { MatTableDataSource } from "@angular/material/table";
 import * as ALL_COMBINATIONS_KEY from "../../../constants/allCombinations1_3.json";
 
 import { SortTable, Ordering } from "../../../models/common.model";
-import { COLORS, A_ASCII, LANGUAGEIC_DATA } from "../../../constants/language.constants";
+import {
+  COLORS,
+  A_ASCII,
+  LANGUAGEIC_DATA,
+} from "../../../constants/language.constants";
 import Utils from "src/app/utils";
 import AnalysisText from "src/app/analysis-text";
 import { Subject, Subscription } from "rxjs";
@@ -12,7 +16,7 @@ import {
   TYPE_CIPHER,
   NAME_CIPHER,
   SIDE_MENU,
-  TOP_GAP
+  TOP_GAP,
 } from "../polyalphabetic-cipher.constants";
 import { PolyalphCipherService } from "../polyalphabetic-cipher.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -20,8 +24,8 @@ import { HeaderService } from "src/app/components/header/header.service";
 
 @Component({
   selector: "app-polyalphcipher",
-  styleUrls: ['../../../app.component.css',"./polyalph-cipher.component.scss"],
-  templateUrl: "./polyalph-cipher.component.html"
+  styleUrls: ["../../../app.component.css", "./polyalph-cipher.component.scss"],
+  templateUrl: "./polyalph-cipher.component.html",
 })
 export class PolyalphCipher implements OnInit, OnDestroy {
   sideMenu = SIDE_MENU;
@@ -56,7 +60,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   stickyColumns = { stickyStart: "key", stickyEnd: "", stickyHeader: true };
   sortBestResults: SortTable = {
     sortByColumn: "sum",
-    order: Ordering.asc
+    order: Ordering.asc,
   } as SortTable;
   dataSourceBestResults = new MatTableDataSource<any>();
   dataSourceBestResultsReady = new Subject<boolean>();
@@ -65,7 +69,10 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   cipherInputsForm: FormGroup;
 
   // Show the data after calculation
-  calcDonee = false;
+  // 0 - show calculation in progresss
+  // 1 - show data, calculation done
+  // 3 - show that key is bigger than 3
+  calcDonee = 0;
 
   constructor(
     private polyalphCipherService: PolyalphCipherService,
@@ -80,31 +87,31 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     this.cipherInputsForm = new FormGroup({
       key: new FormControl(this.key, [
         Validators.required,
-        Validators.pattern("^[a-zA-Z]{2,3}$"),
-        Validators.maxLength(3),
-        Validators.minLength(2)
+        Validators.pattern("^[a-zA-Z]{2,15}$"),
+        Validators.maxLength(15),
+        Validators.minLength(2),
       ]),
       message: new FormControl(this.message, [
         Validators.required,
         Validators.pattern("^[a-zA-Z]+$"),
         Validators.minLength(20),
-        Validators.maxLength(2000)
-      ])
+        Validators.maxLength(2000),
+      ]),
     });
 
     this.subscrMessage = this.cipherInputsForm.controls.message.valueChanges.subscribe(
-      newMessage => {
+      (newMessage) => {
         this.message = newMessage;
       }
     );
 
     this.subscrKey = this.cipherInputsForm.controls.key.valueChanges.subscribe(
-      newKey => {
+      (newKey) => {
         this.key = newKey;
       }
     );
 
-    this.cipherInputsForm.statusChanges.subscribe(status => {
+    this.cipherInputsForm.statusChanges.subscribe((status) => {
       console.log(status);
       console.log(this.cipherInputsForm);
     });
@@ -114,7 +121,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
         type: `module`
       });
 
-      this.webWorker.onmessage = event => {
+      this.webWorker.onmessage = (event) => {
         const freqAllCombinationsOfDecMessage = event.data.freqAllCombinations;
         const decryptedAllCombinations = event.data.decryptedAllCombinations;
 
@@ -147,7 +154,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
   }
 
   public calcDataForPage() {
-    this.calcDonee = false;
+    this.calcDonee = 0;
     console.log(this.cipherInputsForm);
     this.formatedMessage = Utils.stripWhiteSpToLowerCase(this.message);
     this.keyLength = this.key.length;
@@ -198,7 +205,8 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     // Filter only values which are near to Best Key Length and select only first 5 values
     this.highestIC = this.allBoxesAvgIc
       .filter(
-        item => this.bestKeyLength.value - item.value <= minDiffBetweenEnFreqAndText
+        (item) =>
+          this.bestKeyLength.value - item.value <= minDiffBetweenEnFreqAndText
       )
       .slice(0, 5);
     console.log("Highest IC after filter ", this.highestIC);
@@ -213,9 +221,14 @@ export class PolyalphCipher implements OnInit, OnDestroy {
 
     this.polyalphCipherService.selectedValue.next(this.highestIC[0].box);
 
+    if (this.key.length > 3) {
+      this.calcDonee = 3;
+      return;
+    }
+
     this.webWorker.postMessage([
       this.allCombinations[this.highestIC[0].box - 1],
-      this.encryptedText
+      this.encryptedText,
     ]);
   }
 
@@ -225,10 +238,10 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     const allBoxesFrequency = [];
     const allBoxesIc = [];
     const allBoxesAvgIc = [];
-    allBoxes.forEach(boxes => {
+    allBoxes.forEach((boxes) => {
       const boxesFrequency: number[][] = [];
       const boxesIc: number[] = [];
-      boxes.forEach(box => {
+      boxes.forEach((box) => {
         const boxFreq: number[] = AnalysisText.getFrequencyOfText(box);
         boxesFrequency.push(boxFreq);
         boxesIc.push(AnalysisText.getIC(boxFreq, box.length));
@@ -253,7 +266,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
 
   // remap data for Table
   private remapDataTableBestResult(sortedDiff) {
-    this.best10Results = sortedDiff.slice(0, 10).map(data => {
+    this.best10Results = sortedDiff.slice(0, 10).map((data) => {
       data["decryptedText"] = data["decryptedText"];
       return data;
     });
@@ -261,7 +274,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
     // update data in table
     this.dataSourceBestResults.data = this.best10Results;
     this.dataSourceBestResultsReady.next(true);
-    this.calcDonee = true;
+    this.calcDonee = 1;
   }
 
   // Split message to boxes, number of boxes is defined by maxSelectedValue
@@ -282,7 +295,7 @@ export class PolyalphCipher implements OnInit, OnDestroy {
         }
       }
       const boxToString: string[] = [];
-      box.forEach(element => {
+      box.forEach((element) => {
         boxToString.push(element.join(""));
       });
       boxes.push(boxToString);

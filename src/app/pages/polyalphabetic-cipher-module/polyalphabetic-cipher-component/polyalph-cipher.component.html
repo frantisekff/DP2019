@@ -27,19 +27,26 @@
 
           <mat-card-content style="word-wrap: break-word;">
             <form [formGroup]="cipherInputsForm" (ngSubmit)="calcDataForPage()">
-              <mat-form-field>
+              <mat-form-field class="col-md-4">
                 <input
                   matInput
                   type="text"
                   placeholder="Set key"
                   name="keyInput"
                   formControlName="key"
-                  maxlength="3"
+                  maxlength="15"
                 />
                 <mat-hint
-                  >Please, enter key of length 2 to 3 and key must include
+                  >Please, enter key of length 2 to 15 and key must include
                   letters a-z or A-Z.
                 </mat-hint>
+                <br>
+                <mat-hint *ngIf="cipherInputsForm.get('key').value.length > 3">
+                  <span class="mat-error">You enter key bigger than 3, the section with guess of
+                    original message will be inactive.</span> 
+                </mat-hint>
+
+
                 <mat-error
                   *ngIf="
                     cipherInputsForm.get('key').hasError('maxlength') ||
@@ -53,7 +60,9 @@
                 >
                   Please, text must include letters a-z or A-Z.
                 </mat-error>
+     
               </mat-form-field>
+     
 
               <br />
               <br />
@@ -96,6 +105,7 @@
 
           <mat-card-actions>
             <button
+              (click)="calcDataForPage()"
               [disabled]="!cipherInputsForm.valid"
               class="btn btn-sm btn-action"
               color="primary"
@@ -209,26 +219,34 @@
               of length 4 has 26^4 has 456 976 keys.
               <br />
               <br />
+              <div *ngIf="calcDonee !== 3; else elseBlock">
+                <app-table
+                  [ngClass]="{ hide: !calcDonee, show: calcDonee }"
+                  [columnNames]="columnsBestResults"
+                  [stickyColumns]="stickyColumns"
+                  [dataSource]="dataSourceBestResults"
+                  [defaultSort]="sortBestResults"
+                  [ready]="dataSourceBestResultsReady"
+                >
+                </app-table>
 
-              <app-table
-                [ngClass]="{ hide: !calcDonee, show: calcDonee }"
-                [columnNames]="columnsBestResults"
-                [stickyColumns]="stickyColumns"
-                [dataSource]="dataSourceBestResults"
-                [defaultSort]="sortBestResults"
-                [ready]="dataSourceBestResultsReady"
-              >
-              </app-table>
-
-              <div
-                [ngClass]="{ hide: calcDonee, show: !calcDonee }"
-                class="text-center"
-              >
-                <h5>Please wait, after calculation ends</h5>
-                <br />
-                <mat-progress-spinner class="spinner" [mode]="'indeterminate'">
-                </mat-progress-spinner>
+                <div
+                  [ngClass]="{ hide: calcDonee, show: !calcDonee }"
+                  class="text-center"
+                >
+                  <h5>Please wait, after calculation ends</h5>
+                  <br />
+                  <mat-progress-spinner
+                    class="spinner"
+                    [mode]="'indeterminate'"
+                  >
+                  </mat-progress-spinner>
+                </div>
               </div>
+              <ng-template #elseBlock
+                > <h5 class="mat-error">Data will be computed only for key of length smaller than
+                4</h5></ng-template
+              >
             </div>
           </mat-card-content>
         </mat-card>

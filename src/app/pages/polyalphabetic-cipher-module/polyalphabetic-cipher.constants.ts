@@ -1,5 +1,5 @@
 export const NAME_CIPHER = "Vigenere Cipher";
-export const TYPE_CIPHER = "Polyalphabetic";
+export const TYPE_CIPHER = "Friedman test and brute-force key search on";
 
 export const COLUMNS_REFFREQ_LANGUAGE: string[] = ["name", "value"];
 
