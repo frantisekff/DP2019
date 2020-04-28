@@ -3,7 +3,7 @@ import { EN_ALPHABET_FREQUENCY, ALPHABET } from 'src/app/constants/language.cons
 export const ITERATIONS = 10000;
 
 export const NAME_CIPHER = 'Simple Substitution Cipher';
-export const TYPE_CIPHER = 'Monoalphabetic';
+export const TYPE_CIPHER = 'Hill-Climbing attack on';
 
 export const EXAMPLE_RND_ALPHABET = [
   'v',
