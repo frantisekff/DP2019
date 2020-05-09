@@ -160,7 +160,7 @@ export const SIDE_MENU = [
     topPosition: 0
   },
   {
-    title: "Compare Language accuracy",
+    title: "Comparsion of language frequencies",
     active: true,
     id: "compare",
     bottomPosition: 0,

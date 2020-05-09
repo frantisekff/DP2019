@@ -2,17 +2,20 @@
   <div class="container">
     <mat-card class="col-md-12 info-mat-card">
       <mat-card-header>
-        <mat-card-title>Description</mat-card-title>
+        <mat-card-title>Description of cipher</mat-card-title>
       </mat-card-header>
       <mat-card-content style="word-wrap: break-word;">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="">
           The Vigenere Cipher is a method of encrypting alphabetic text by using
           a series of Caesar ciphers, based on the letters of a keyword. In a
-          Caesar cipher, each letter of the alphabet is shifted along some
-          number of places. For example, in a Caesar cipher of shift 3, A would
-          become D, B would become E, Y would become B and so on. The Vigenère
-          cipher has several Caesar ciphers in sequence with different shift
-          values.
+          Caesar cipher, each letter of the alphabet is shifted by several
+          places.
+          <p>
+            For example, in a Caesar cipher with shift 3, „A“ would become „D“,
+            „B“ would become „E“, „Y“ would become „B“ and so on. The Vigenere
+            cipher uses several Caesar ciphers in sequence with different shift
+            values.
+          </p>
         </div>
       </mat-card-content>
     </mat-card>
@@ -40,12 +43,13 @@
                   >Please, enter key of length 2 to 15 and key must include
                   letters a-z or A-Z.
                 </mat-hint>
-                <br>
+                <br />
                 <mat-hint *ngIf="cipherInputsForm.get('key').value.length > 3">
-                  <span class="mat-error">You enter key bigger than 3, the section with guess of
-                    original message will be inactive.</span> 
+                  <span class="mat-error"
+                    >You enter key bigger than 3, the section with guess of
+                    original message will be inactive.</span
+                  >
                 </mat-hint>
-
 
                 <mat-error
                   *ngIf="
@@ -60,9 +64,7 @@
                 >
                   Please, text must include letters a-z or A-Z.
                 </mat-error>
-     
               </mat-form-field>
-     
 
               <br />
               <br />
@@ -111,12 +113,26 @@
               color="primary"
               type="submit"
             >
-              En/Decrypt Text
+            En/Decrypt Text & Run the attack
             </button></mat-card-actions
           >
         </mat-card>
       </div>
 
+      <br />
+      <div class="row">
+        <mat-card class="col-md-12 info-mat-card">
+          <mat-card-header>
+            <mat-card-title>Colored shifts</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            <div>
+              In tab "Encrypted Text" we highlight with the same color letters
+              which have the same shift.
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
       <br />
 
       <div class="row">
@@ -153,20 +169,21 @@
       <div class="row">
         <mat-card id="alghorithm" class="col-md-12 info-mat-card">
           <mat-card-header>
-            <mat-card-title>Alghorithm to find key</mat-card-title>
+            <mat-card-title>Alghorithm to find length of key</mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
             <div class="col-md-8 col-md-offset-2">
-              We try find length of key. We separate text into boxes, number of
-              boxes is length of key. For example when we have key of length 3
-              boxe, in first box will be first letter from encrypted text(CT),
-              in second box second letter form CT, in third box third letter of
-              CT. Then we repeat and in first box will be fourth letter of CT,
-              in second box will be fifth letter and so on. Then we compute
-              frequency of every box and Index Coincidence(IC). For boxes we
-              compute average of ICs. Then we repeat this steps and we compute
-              average ICs for key of length <2,16> In this example we expect
-              that text is in English language.
+              We try find length of key with Friedman test.
+              <p>Basically, Friedman test is when we separate text into boxes, number of boxes is length of key.
+                For example when we have key of length 3 boxe, in first box will
+                be first letter from encrypted text(CT), in second box second
+                letter form CT, in third box third letter of CT. Then we repeat
+                and in first box will be fourth letter of CT, in second box will
+                be fifth letter and so on.
+              </p>
+              Then we compute the frequency of every box and Index Coincidence(IC). 
+              For boxes we compute the average of ICs. We repeat these steps and we compute average 
+              ICs for the key of length <2,16> In this example we expect that text is in the English language.
             </div>
           </mat-card-content>
         </mat-card>
@@ -206,16 +223,34 @@
       <br />
 
       <div class="row">
+        <mat-card id="attack" class="col-md-12 info-mat-card">
+          <mat-card-header>
+            <mat-card-title>Description of attack</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="word-wrap: break-word;">
+            <div>
+              We try to decrypt message and find out the key of encrypted message. 
+              We use the guess of length from the previous step. 
+              We decrypt message for all combination and we calculate a score for this message.
+              The score function is calculated as differences between frequencies of letters (decrypted message) and referral values of the English language.
+              Finally, the score function sum these differences and this is the score for one key.
+              We expect that the lowest score determines the key, which we are looking for. The frequencies of the correct message will be similar to referral values.
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <br />
+
+      <div class="row">
         <mat-card id="allcombinations" class="col-md-12 computed-mat-card">
           <mat-card-header>
             <mat-card-title>Compute all combinations for key</mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
             <div class="col-md-12">
-              We try decrypt message and find out key of encrypted message. We
-              use guess of key length form previous step. We do it only for key
-              of length <2,3> because we compute all possibilities on client
-              computer. Key of length has 26^3 = 17,576‬ possible keys, but key
+              We do it only for key of length <2,3> because we compute all possibilities on client
+              computer. Key of length has 26<sup>3</sup> = 17,576‬ possible keys, but key
               of length 4 has 26^4 has 456 976 keys.
               <br />
               <br />
@@ -243,9 +278,10 @@
                   </mat-progress-spinner>
                 </div>
               </div>
-              <ng-template #elseBlock
-                > <h5 class="mat-error">Data will be computed only for key of length smaller than
-                4</h5></ng-template
+              <ng-template #elseBlock>
+                <h5 class="btn-action">
+                  Data will be computed only for key of length smaller than 4
+                </h5></ng-template
               >
             </div>
           </mat-card-content>

@@ -18,7 +18,9 @@ import {
   NAME_CIPHER,
   TYPE_CIPHER,
   ITERATIONS,
-  CHART_OPTIONS_ITER_SCORE
+  CHART_OPTIONS_ITER_SCORE,
+  SIDE_MENU,
+  TOP_GAP
 } from "../monoalphabetic-cipher.constant";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Subscription, Subject } from "rxjs";
@@ -88,7 +90,11 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   // numberOfAttempt = 2;
   // Show the data after calculation
   calcDone = false;
-  topGap = 110;
+
+  // var for sideNavbar
+  sideMenu = SIDE_MENU;
+  topGap = TOP_GAP;
+  
   // Form inputs
   cipherAttemptForm: FormGroup;
   numberOfAttempt = 5;

@@ -101,7 +101,7 @@ export const CHART_OPTIONS_ITER_SCORE = {
     }
   },
   title: {
-    text: 'Compare score and match rate by iterations'
+    text: ''
   },
   // subtitle: {
   //     text: 'Source: WorldClimate.com'
@@ -116,7 +116,7 @@ export const CHART_OPTIONS_ITER_SCORE = {
   yAxis: {
     min: 0,
     title: {
-      text: 'Score/Match Rate'
+      text: 'Sum/Match Rate'
     }
   },
   tooltip: {
@@ -134,7 +134,7 @@ export const CHART_OPTIONS_ITER_SCORE = {
     }
   },
   series: [   {
-    name: 'Iterations vs Score',
+    name: 'Iterations vs Sum',
     data: []
   },
   {
@@ -142,3 +142,35 @@ export const CHART_OPTIONS_ITER_SCORE = {
     data: []
   } ]
 };
+
+export const TOP_GAP = 110;
+export const SIDE_MENU =  [
+  {
+    title: "Set inputs",
+    active: true,
+    id: "inputs",
+    bottomPosition: 0,
+    topPosition: 0,
+  },
+  {
+    title: "Find decryption key",
+    active: true,
+    id: "findKey",
+    bottomPosition: 0,
+    topPosition: 0,
+  },
+  {
+    title: "Custom and run attack",
+    active: true,
+    id: "attack",
+    bottomPosition: 0,
+    topPosition: 0,
+  },
+  {
+    title: "Comparsion of sum and match rate",
+    active: true,
+    id: "compareBigrams",
+    bottomPosition: 0,
+    topPosition: 0,
+  },
+];
