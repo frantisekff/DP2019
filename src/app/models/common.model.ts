@@ -57,6 +57,8 @@ export interface GuessKey {
   matchRate: number;
   // for n iteration we save only better results
   allBestGuess: GuessKey[];
+  // percentual increase of match rate
+  matchRateIncrease: number;
 }
 
 export interface Keys {

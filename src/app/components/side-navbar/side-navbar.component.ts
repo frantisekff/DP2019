@@ -19,29 +19,7 @@ export class SideNavbarComponent implements OnInit, AfterViewInit {
   selectedIndex = 0;
   private lastPositionOfscrolling = 0;
   initGap = 1;
-  @Input() sideMenu = [
-    {
-      title: "Set inputs",
-      active: true,
-      id: "inputs",
-      bottomPosition: 0,
-      topPosition: 0,
-    },
-    {
-      title: "Find decryption key",
-      active: false,
-      id: "findKey",
-      bottomPosition: 0,
-      topPosition: 0,
-    },
-    {
-      title: "Compare bigrams frequency",
-      active: false,
-      id: "compareBigrams",
-      bottomPosition: 0,
-      topPosition: 0,
-    },
-  ];
+  @Input() sideMenu = [];
   gap: Subject<number> = new Subject<number>();
   topGap2;
   constructor() {}

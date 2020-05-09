@@ -6,7 +6,7 @@ export const TYPE_CIPHER = 'Brute-force key search on';
 export const COLUMN_CALC_FREQ_LANGUAGE = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
 
-export const COLUMNS_REFFREQ_LANGUAGE: string[] = ['name', 'value'];
+export const COLUMNS_REFFREQ_LANGUAGE: string[] = ['Name','English', 'German', 'Italian', 'French', 'Spanish', 'Russian', 'minIC' ];
 
 export const MESSAGE =
     'theenglishwikipediawasthefirstwikipediaeditionandhasremainedthelargestithaspioneeredmanyi' +
@@ -61,7 +61,7 @@ export const CHART_OPTIONS_FREQ_GRAPH = {
         enabled: false
     },
     tooltip: {
-        pointFormat: 'Population {point.y:.1f} %</b>'
+        pointFormat: 'Population {point.y:.3f} %</b>'
     },
     series: [{
         name: 'Population',
@@ -71,7 +71,7 @@ export const CHART_OPTIONS_FREQ_GRAPH = {
             rotation: -90,
             color: '#FFFFFF',
             align: 'right',
-            format: '{point.y:.1f} %', // one decimal
+            format: '{point.y:.3f} %', // one decimal
             y: 10, // 10 pixels down from the top
             style: {
                 fontSize: '13px',
@@ -109,7 +109,7 @@ export const CHART_OPTIONS_COMPARE_FREQ = {
     tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} %</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
@@ -139,16 +139,16 @@ export const SIDE_MENU = [
 
   },
   {
-    title: "Frequency of Encrypted Message",
+    title: "Description of Attack",
     active: true,
-    id: "frequency",
+    id: "attack",
     bottomPosition: 0,
     topPosition: 0
   },
   {
-    title: "Index of Coincidence for Message",
+    title: "Frequency of Encrypted Message",
     active: true,
-    id: "index",
+    id: "frequency",
     bottomPosition: 0,
     topPosition: 0
   },
@@ -160,7 +160,7 @@ export const SIDE_MENU = [
     topPosition: 0
   },
   {
-    title: "Compare Language accuracy",
+    title: "Comparsion of language frequencies",
     active: true,
     id: "compare",
     bottomPosition: 0,

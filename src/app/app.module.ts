@@ -23,11 +23,6 @@ const appRoutes: Routes = [
       './pages/caesar-cipher-module/caesar-cipher.module#CaesarCipherModule'
   },
   {
-    path: 'transpositioncipher',
-    loadChildren:
-      './pages/transposition-cipher-module/transposition-cipher.module#TranspositionCipherModule'
-  },
-  {
     path: 'polyalphcipher',
     loadChildren:
       './pages/polyalphabetic-cipher-module/polyalphabetic-cipher.module#PolyalphCipherModule'

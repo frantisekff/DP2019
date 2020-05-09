@@ -25,7 +25,7 @@ export const SIDE_MENU = [
     topPosition: 0,
   },
   {
-    title: "Alghorithm to find key",
+    title: "Alghorithm to find length key",
     active: true,
     id: "alghorithm",
     bottomPosition: 0,
@@ -35,6 +35,13 @@ export const SIDE_MENU = [
     title: "Show IC for different length of key",
     active: true,
     id: "findkey",
+    bottomPosition: 0,
+    topPosition: 0,
+  },
+  {
+    title: "Description of attack",
+    active: true,
+    id: "attack",
     bottomPosition: 0,
     topPosition: 0,
   },

@@ -31,12 +31,12 @@ function guessKey(
   for (let index = 0; index < interations; index++) {
     const iterationKey = swapTwoLetters([...bestGuess.key.split("")]);
     const decTextIteration = enDecrypt(encText, iterationKey);
-    // vypocitat freq pre desifrovany text
+    // vypocitat freq bigramov pre desifrovany text
     const freqBigramsIteration = AnalysisText.getFreqOfBigrams(
       decTextIteration
     );
     // Get diff of Referal values (EN) and decrypted text
-    // that is fitnes finc for evaluate of decrypted text
+    // that is fitnes func for evaluate of decrypted text
     const sumIteration: number = AnalysisText.getSumOfDiffBigramsFromRef(
       freqBigramsIteration[0],
       decTextIteration.length - 1,
@@ -67,8 +67,13 @@ function guessKey(
       );
 
       result.bigramsFreqInPerc = initBigramsMap;
-      result.matchRate = matchRate;
+      result.matchRate = matchRate !== undefined ? matchRate : 0;
       result.iteration = index;
+      if( allBestGuess.length !== 0){
+         result.matchRateIncrease = matchRate - allBestGuess[allBestGuess.length - 1].matchRate;
+      } else {
+        result.matchRateIncrease = 0;
+      }
 
       bestGuess = result;
       allBestGuess.push(result);

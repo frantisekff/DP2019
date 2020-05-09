@@ -1,17 +1,19 @@
-<app-side-navbar [topGap]="topGap" class="d-block">
+<app-side-navbar [sideMenu]="sideMenu" [topGap]="topGap" class="d-block">
   <!-- <button mat-button (click)="sidenav.toggle()">Toggle</button> -->
   <div class="container">
-    <div id="inputs">
-      <mat-card class="col-md-12 info-mat-card">
+    <div >
+      <mat-card  class="col-md-12 info-mat-card">
         <mat-card-header>
-          <mat-card-title>Description</mat-card-title>
+          <mat-card-title>Description of cipher</mat-card-title>
         </mat-card-header>
         <mat-card-content style="word-wrap: break-word;">
           <div class="col-md-8 col-md-offset-2">
-            Monoalphabetic cipher is a substitution cipher in which for a given
-            key, the cipher alphabet for each plain alphabet is fixed. For
-            example, if 'B' is encrypted as 'L', for any number of occurrence in
-            that plaintext, 'B' will always get encrypted to 'L'.
+            <p>
+              Monoalphabetic cipher is a substitution cipher, which the key is
+              randomly arranged alphabet. For example, if 'B' is encrypted as
+              'L', for any number of occurrence in that plaintext, 'B' will
+              always get encrypted to 'L'.
+            </p>
           </div>
         </mat-card-content>
       </mat-card>
@@ -77,6 +79,15 @@
                     Please, text must include letters a-z or A-Z.
                   </mat-error>
                 </mat-form-field>
+                <p>
+                  <br>
+                  For remove accents and punctuation from text, you can use
+                  <a
+                    href="https://manulab.hcportal.eu/example/index.html"
+                    target="_blank"
+                    >HcPortal app</a
+                  >.
+                </p>
               </form>
             </mat-card-content>
             <mat-card-actions>
@@ -119,23 +130,28 @@
 
       <br />
     </div>
-    <div class="container" id="findKey">
+    <div class="container">
       <div class="row">
-        <mat-card class="info-mat-card col-md-12">
+        <mat-card  id="findKey" class="info-mat-card col-md-12">
           <mat-card-header>
             <mat-card-title
               >Find decryption key with Hill Climbing alghorithm</mat-card-title
             >
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
-            To find key we will be repeat next steps:
+            <p>
+              Monoalphabetic cipher has to much combinations of key. We can't
+              use a brute force attack, but meta-heuristic algorithm can be
+              useful.
+            </p>
+            We use Hill Climbing alghorithm, which consists of these steps.
             <ul style="list-style-type: disc;">
               <li>
-                swap 2 letters of key - we compute freguencies of bigrams
+                swap 2 letters of key and compute freguencies of bigrams
               </li>
               <li>
-                calculate difference between calculated frequencies and referal
-                values for English alphabet
+                calculate difference between calculated frequencies of bigrams
+                and referal values for English alphabet
               </li>
               <li>save only better result</li>
               <li>
@@ -143,25 +159,30 @@
                 better result.
               </li>
             </ul>
-            These steps we repeat for n times
+            <p>These steps we repeat for n times/number iterations.</p>
+
+            <p>
+              You can set the number of iterations in the tab below and the
+              number of attempts. The number of attempts represents which times
+              this whole Hill climbing will run.
+            </p>
           </mat-card-content>
         </mat-card>
       </div>
 
       <br />
       <div class="row">
-        <mat-card class="col-md-12 action-mat-card">
+        <mat-card id="attack" class="col-md-12 action-mat-card">
           <mat-card-header>
-            <mat-card-title>Generated random key</mat-card-title>
+            <mat-card-title>Custom and run attack</mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
             We generate random key for Hill Climbing
-
-            <h5>We generate random key {{ rndKey }}</h5>
-            <h5>We try to find key {{ keys.decKey }}</h5>
-
-            <br>
-
+            <p>
+              <b>We generate random key {{ rndKey }}</b> <br />
+              <b>We try to find key {{ keys.decKey }}</b>
+            </p>
+            <br />
             <form [formGroup]="cipherAttemptForm">
               <mat-form-field>
                 <input
@@ -255,6 +276,20 @@
             </mat-card-header>
 
             <mat-card-content>
+              We can evalute this results with Match rate and Sum. 
+              <p> <b>The Match rate</b> is
+                how much letters from decrypted text match with letters from input
+                message. For example the input message is "abcd". With some guess
+                key decrypted message is "abhg". Between these strings only two
+                letters out of four match, so Match rate is 0,5.
+              </p>
+              <p>
+                <b>The sum </b>is the difference between calculated frequencies (the frequency for every letter separately) and referral values
+                for English alphabet.
+              </p>
+
+              <br /><br />
+
               <app-table
                 [columnNames]="columnsBestResults"
                 [stickyColumns]="stickyColumns"
@@ -272,15 +307,43 @@
     <div
       [ngClass]="{ hide: !calcDone, show: calcDone }"
       class="row"
-      id="compareBigrams"
+     
     >
       <div class="col-md-12 col-xs-12">
-        <mat-card class="computed-mat-card">
+        <mat-card  id="compareBigrams" class="computed-mat-card">
+          <mat-card-header>
+            <mat-card-title>
+              Comparsion of score and match rate by iterations
+            </mat-card-title>
+          </mat-card-header>
           <mat-card-content>
+            On the graph we can see, that Match rate during iterations increase and sum decrease.
+            <p>The last iteration is also important. It is iterations when we find out the best solution. With this information we can set up the algorithm more precisely.</p>
+            
             <app-graph
               #iterScoreGraph
               [chartOptionsFreqGraph]="chartOptionsIterScoreGraph"
               [data]="dataSourceiterScoreGraph"
+            ></app-graph>
+          </mat-card-content>
+        </mat-card>
+
+        <br>
+        
+        <mat-card id="increaseDecMatchRate" class="computed-mat-card">
+          <mat-card-header>
+            <mat-card-title>
+              Increase/Decrease of Match rate during iterations
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            On the graph we can see, increase or decrease of the Match rate during iterations. The value represents an increase/decrease of Match rate (in percentage) compare to previous better guess/step.
+            <p>The last iteration is also important. It is iterations when we find out the best solution. With this information we can set up the algorithm more precisely.</p>
+            
+            <app-graph
+              #matchRateIncrease
+              [chartOptionsFreqGraph]="chartOptionsMatchRateIncreaseGraph"
+              [data]="dataSourceMatchRateIncreaseGraph"
             ></app-graph>
           </mat-card-content>
         </mat-card>
@@ -289,7 +352,7 @@
 
     <div class="container">
       <div class="row">
-        <mat-card
+        <mat-card  
           class="text-center col-md-12"
           [ngClass]="{ hide: calcDone, show: !calcDone }"
         >
