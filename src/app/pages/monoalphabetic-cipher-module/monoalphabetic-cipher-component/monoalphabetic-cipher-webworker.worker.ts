@@ -67,8 +67,13 @@ function guessKey(
       );
 
       result.bigramsFreqInPerc = initBigramsMap;
-      result.matchRate = matchRate;
+      result.matchRate = matchRate !== undefined ? matchRate : 0;
       result.iteration = index;
+      if( allBestGuess.length !== 0){
+         result.matchRateIncrease = matchRate - allBestGuess[allBestGuess.length - 1].matchRate;
+      } else {
+        result.matchRateIncrease = 0;
+      }
 
       bestGuess = result;
       allBestGuess.push(result);

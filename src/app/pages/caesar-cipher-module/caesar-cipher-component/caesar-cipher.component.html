@@ -76,8 +76,15 @@
                   Please, text must include letters a-z or A-Z.
                 </mat-error>
               </mat-form-field>
-
-              <br />
+              <p>
+                <br>
+                For remove accents and punctuation from text, you can use
+                <a
+                  href="https://manulab.hcportal.eu/example/index.html"
+                  target="_blank"
+                  >HcPortal app</a
+                >.
+              </p>
             </form>
           </mat-card-content>
 
@@ -164,8 +171,10 @@
               </p>
               We compute IC with the equation:
               <h3><ng-katex [equation]="equation"></ng-katex>,</h3>
-              <p> where N is the length of text, n<sub>i</sub> is number a
-              occurrences of letters in the text.</p>
+              <p>
+                where N is the length of text, n<sub>i</sub> is number a
+                occurrences of letters in the text.
+              </p>
             </div>
 
             <b> IC for the most used languages</b>
@@ -218,14 +227,18 @@
             >
               <strong>Input text is not from language</strong>
               <br />
-              <span>Index of coincidence for encrypted text is: {{ ic | number: "1.0-3" }}</span>
+              <span
+                >Index of coincidence for encrypted text is:
+                {{ ic | number: "1.0-3" }}</span
+              >
 
               <br />
             </div>
             <ng-template #notPassed>
               <div class="alert computed-box" role="alert">
                 <span
-                  >Index of coincidence for encrypted text is: {{ ic | number: "1.0-3"  }}</span
+                  >Index of coincidence for encrypted text is:
+                  {{ ic | number: "1.0-3" }}</span
                 >
                 <br />
                 <span
@@ -244,9 +257,13 @@
 
             <h6>
               For every shift we make difference between frequency of letter
-              from encrypted text and real data for language. Then we sum these differences and the column „sum“ is this result.
+              from encrypted text and real data for language. Then we sum these
+              differences and the column „sum“ is this result.
             </h6>
-            <span>Based of minimum frequency for shift, we guess shift in first row</span>
+            <span
+              >Based of minimum frequency for shift, we guess shift in first
+              row</span
+            >
             <br />
             <app-table
               [columnNames]="columnsCalcFreqLanguage"
@@ -266,16 +283,17 @@
         <mat-card id="compare" class="col-md-12 computed-mat-card">
           <mat-card-header>
             <mat-card-title
-              >Comparsion of language frequencies from the message with real data
-              </mat-card-title
-            >
+              >Comparsion of language frequencies from the message with real
+              data
+            </mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
             <p>
-              Based on the minimal frequency we guess that length is 
-              {{ minDisctanceLength }}. 
-              When we compare frequencies of letters with real data of the English language we can see the similarity. 
-              If we compare other shifts with referral values, they are different.
+              Based on the minimal frequency we guess that length is
+              {{ minDisctanceLength }}. When we compare frequencies of letters
+              with real data of the English language we can see the similarity.
+              If we compare other shifts with referral values, they are
+              different.
             </p>
 
             <div class="container">

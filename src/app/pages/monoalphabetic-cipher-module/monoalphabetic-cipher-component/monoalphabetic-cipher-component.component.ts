@@ -20,7 +20,8 @@ import {
   ITERATIONS,
   CHART_OPTIONS_ITER_SCORE,
   SIDE_MENU,
-  TOP_GAP
+  TOP_GAP,
+  CHART_OPTIONS_MATCH_RATE_INCREASE
 } from "../monoalphabetic-cipher.constant";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Subscription, Subject } from "rxjs";
@@ -64,6 +65,12 @@ export class MonoalphCipher implements OnInit, OnDestroy {
   @ViewChild("iterScoreGraph", { static: true })
   iterScoreGraph: GraphComponent;
   dataSourceiterScoreGraph;
+
+  // Options for Graph - Match Rate
+  chartOptionsMatchRateIncreaseGraph = CHART_OPTIONS_MATCH_RATE_INCREASE;
+  @ViewChild("matchRateIncrease", { static: true })
+  matchRateIncreaseGraph: GraphComponent;
+  dataSourceMatchRateIncreaseGraph;
 
   //Variables for Final Table
   columnsBestResults: string[] = [
@@ -188,18 +195,26 @@ export class MonoalphCipher implements OnInit, OnDestroy {
           const iterations = [] as Array<number>;
           const sums = [] as Array<number>;
           const matchRates = [] as Array<number>;
+          const matchRatesIncrease = [] as Array<number>;
+
           this.theBestGuess =  this.allGuess[0];
 
           for (const guess of this.theBestGuess.allBestGuess) {
             iterations.push(guess.iteration);
             sums.push(guess.sum);
             matchRates.push(guess.matchRate);
+            matchRatesIncrease.push((Math.round(guess.matchRateIncrease * 1000) / 1000) * 100);
           }
 
-          // Send data to graph
+          // Send data to graph Compare Sum and Match Rate
           this.chartOptionsIterScoreGraph.xAxis.categories = iterations;
           this.dataSourceiterScoreGraph = [sums, matchRates];
           this.iterScoreGraph.updateGraph();
+
+           // Send data to graph Show MAtch Rate increase
+           this.chartOptionsMatchRateIncreaseGraph.xAxis.categories = iterations;
+           this.dataSourceMatchRateIncreaseGraph = [matchRatesIncrease];
+           this.matchRateIncreaseGraph.updateGraph();
 
           // Prepare data for table
           // Choose every n-th element from results

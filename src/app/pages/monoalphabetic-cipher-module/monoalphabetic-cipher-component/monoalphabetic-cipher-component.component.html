@@ -79,6 +79,15 @@
                     Please, text must include letters a-z or A-Z.
                   </mat-error>
                 </mat-form-field>
+                <p>
+                  <br>
+                  For remove accents and punctuation from text, you can use
+                  <a
+                    href="https://manulab.hcportal.eu/example/index.html"
+                    target="_blank"
+                    >HcPortal app</a
+                  >.
+                </p>
               </form>
             </mat-card-content>
             <mat-card-actions>
@@ -298,10 +307,10 @@
     <div
       [ngClass]="{ hide: !calcDone, show: calcDone }"
       class="row"
-      id="compareBigrams"
+     
     >
       <div class="col-md-12 col-xs-12">
-        <mat-card class="computed-mat-card">
+        <mat-card  id="compareBigrams" class="computed-mat-card">
           <mat-card-header>
             <mat-card-title>
               Comparsion of score and match rate by iterations
@@ -318,12 +327,32 @@
             ></app-graph>
           </mat-card-content>
         </mat-card>
+
+        <br>
+        
+        <mat-card id="increaseDecMatchRate" class="computed-mat-card">
+          <mat-card-header>
+            <mat-card-title>
+              Increase/Decrease of Match rate during iterations
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            On the graph we can see, increase or decrease of the Match rate during iterations. The value represents an increase/decrease of Match rate (in percentage) compare to previous better guess/step.
+            <p>The last iteration is also important. It is iterations when we find out the best solution. With this information we can set up the algorithm more precisely.</p>
+            
+            <app-graph
+              #matchRateIncrease
+              [chartOptionsFreqGraph]="chartOptionsMatchRateIncreaseGraph"
+              [data]="dataSourceMatchRateIncreaseGraph"
+            ></app-graph>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
 
     <div class="container">
       <div class="row">
-        <mat-card
+        <mat-card  
           class="text-center col-md-12"
           [ngClass]="{ hide: calcDone, show: !calcDone }"
         >

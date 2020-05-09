@@ -61,7 +61,7 @@ export const CHART_OPTIONS_FREQ_GRAPH = {
         enabled: false
     },
     tooltip: {
-        pointFormat: 'Population {point.y:.1f} %</b>'
+        pointFormat: 'Population {point.y:.3f} %</b>'
     },
     series: [{
         name: 'Population',
@@ -71,7 +71,7 @@ export const CHART_OPTIONS_FREQ_GRAPH = {
             rotation: -90,
             color: '#FFFFFF',
             align: 'right',
-            format: '{point.y:.1f} %', // one decimal
+            format: '{point.y:.3f} %', // one decimal
             y: 10, // 10 pixels down from the top
             style: {
                 fontSize: '13px',
@@ -109,7 +109,7 @@ export const CHART_OPTIONS_COMPARE_FREQ = {
     tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} %</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
