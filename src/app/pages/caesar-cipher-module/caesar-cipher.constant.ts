@@ -6,7 +6,7 @@ export const TYPE_CIPHER = 'Brute-force key search on';
 export const COLUMN_CALC_FREQ_LANGUAGE = ['shift', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'sum'];
 
-export const COLUMNS_REFFREQ_LANGUAGE: string[] = ['name', 'value'];
+export const COLUMNS_REFFREQ_LANGUAGE: string[] = ['Name','English', 'German', 'Italian', 'French', 'Spanish', 'Russian', 'minIC' ];
 
 export const MESSAGE =
     'theenglishwikipediawasthefirstwikipediaeditionandhasremainedthelargestithaspioneeredmanyi' +
@@ -139,16 +139,16 @@ export const SIDE_MENU = [
 
   },
   {
-    title: "Frequency of Encrypted Message",
+    title: "Description of Attack",
     active: true,
-    id: "frequency",
+    id: "attack",
     bottomPosition: 0,
     topPosition: 0
   },
   {
-    title: "Index of Coincidence for Message",
+    title: "Frequency of Encrypted Message",
     active: true,
-    id: "index",
+    id: "frequency",
     bottomPosition: 0,
     topPosition: 0
   },

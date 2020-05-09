@@ -19,6 +19,7 @@ import {
   ALPHABET,
   A_ASCII,
   EN_ALPHABET_FREQUENCY_PERC,
+  LANGUAGEIC_DATA_ROW_VIEW,
 } from "../../../constants/language.constants";
 import AnalysisText from "../../../analysis-text";
 import Utils from "src/app/utils";
@@ -28,7 +29,6 @@ import { CaesarCipherService } from "../caesar-cipher.service";
 import {
   CHART_OPTIONS_FREQ_GRAPH,
   CHART_OPTIONS_COMPARE_FREQ,
-  COLUMNS_REFFREQ_LANGUAGE,
   COLUMN_CALC_FREQ_LANGUAGE,
   MESSAGE,
   EQUATION,
@@ -36,6 +36,7 @@ import {
   TYPE_CIPHER,
   TOP_GAP,
   SIDE_MENU,
+  COLUMNS_REFFREQ_LANGUAGE,
 } from "../caesar-cipher.constant";
 import { Subscribable, Subscription, Subject } from "rxjs";
 import { HeaderService } from "src/app/components/header/header.service";
@@ -66,7 +67,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
 
   // Variables for Tables
   sortRefFreqLang: SortTable = {
-    sortByColumn: "value",
+    sortByColumn: "",
     order: Ordering.asc,
   } as SortTable;
   sortCalcFreqLang: SortTable = {
@@ -81,7 +82,7 @@ export class CaesarCipher implements OnInit, OnDestroy {
     stickyHeader: boolean;
   } = { stickyStart: "shift", stickyEnd: "sum", stickyHeader: true };
 
-  dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA);
+  dataSourceRefFreqLang = new MatTableDataSource(LANGUAGEIC_DATA_ROW_VIEW);
   dataSourceCalcFreqLang = new MatTableDataSource();
 
   dataSourceRefFreqLangReady = new Subject<boolean>();
