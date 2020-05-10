@@ -93,5 +93,12 @@ ol li::before {
 
   .remove-left-margin {
     margin-left: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
+  .btn-side-navbar {
+    padding: 2px;
+    margin-bottom: 3px;
+  }
+  
 }
