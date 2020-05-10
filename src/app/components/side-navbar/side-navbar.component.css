@@ -75,7 +75,7 @@ ol li::before {
   margin-right: 0.5rem;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 992px) {
   .side-nav {
     position: relative;
     top: 0 !important;
@@ -93,5 +93,12 @@ ol li::before {
 
   .remove-left-margin {
     margin-left: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
+  .btn-side-navbar {
+    padding: 2px;
+    margin-bottom: 3px;
+  }
+  
 }
