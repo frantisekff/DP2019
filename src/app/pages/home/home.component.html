@@ -4,16 +4,16 @@
       <mat-card class="offset-md-1 col-md-4 card">
         <mat-card-header>
           <div mat-card-avatar><img src="assets/icons/bruteforce.svg" /></div>
-          <mat-card-title>Caesar Cipher</mat-card-title>
+          <mat-card-title>Caesar cipher</mat-card-title>
           <mat-card-subtitle>Brute force attack</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
           <p>
-            Caesar Cipher is replacing every letter in a message with a different letter. 
-            We try to find a shift, with text analysis.
-            Then we use a brute force attack to find a decrypted message.
-            We use the index of coincidence and frequencies of decrypted text to evaluate the correctness of the decrypted message.
+            Ceasar cipher replaces every letter in a message with a different letter. 
             You can set up a message and shift.
+            At first step of our attack on this cipher, we try to find the shift by the text analysis. 
+            Then we make the brute force attack to find a decrypted message.
+            We use the index of coincidence and frequencies of decrypted text to evaluate the correctness of the decrypted message.
           </p>
         </mat-card-content>
         <mat-card-actions>
@@ -29,8 +29,8 @@
         </mat-card-header>
         <mat-card-content>
           <p>
-            Simple Substitution cipher substituting every plaintext character for a different ciphertext character. 
-            From Caesar cipher differs in that the alphabet/key is completely jumbled.
+            Simple Substitution cipher substitutes every plaintext character for a different ciphertext character. 
+            It differs from the Ceasar cipher is that the cipher alphabet/key is completely jumbled.
             We try to find a key, with the Hill climbing algorithm.
             You can set up a configuration of the algorithm and then see results.
           </p>
@@ -48,8 +48,9 @@
         </mat-card-header>
         <mat-card-content>
           <p>
-            Vigenere Cipher is using a series of Caesar ciphers, based on the letters of a keyword. We try to find a key, with text analysis. 
-            We use the index of coincidence and frequencies of letters to find a key.
+            Vigenere cipher uses a series of Caesar ciphers, based on the letters of a keyword. 
+            We try to find a key with the text analysis. 
+            We use the index of coincidence and frequencies of letters.
           </p>
         </mat-card-content>
         <mat-card-actions>

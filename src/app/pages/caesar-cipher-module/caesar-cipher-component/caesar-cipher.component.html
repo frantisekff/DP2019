@@ -2,13 +2,14 @@
   <div class="container">
     <mat-card class="col-md-12 info-mat-card">
       <mat-card-header>
-        <mat-card-title>Description of cipher</mat-card-title>
+        <mat-card-title>Description of the cipher</mat-card-title>
       </mat-card-header>
       <mat-card-content style="word-wrap: break-word;">
         <div class="  ">
           The main function of Caesar Cipher is replace every letter in a message
-          with diferent letter. Different letter is shift by n letters in 26
-          alpahabet. For example: when we use shift 2, a will be c.
+          with different letter. This letter is shifted by n letters in alphabet (26 letters).
+           For example: when we use shift 2, “A” would become “C”.
+          
         </div>
       </mat-card-content>
     </mat-card>
@@ -130,15 +131,15 @@
       <div class="row">
         <mat-card id="attack" class="col-md-12 info-mat-card">
           <mat-card-header>
-            <mat-card-title>Description of attack</mat-card-title>
+            <mat-card-title>Description of the attack</mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
             <div>
               To break a Caesar cipher we decide to use a brute force attack
-              with statistical analysis. We can find all combinations of keys
-              because Caesar cipher has a small number of combinations. We are
-              working with the telegraphic English alphabet (26 letters), so it
-              is relatively quick to find the correct key/shift.
+              with a statistical analysis. We can find all combinations of keys
+              because the Ceasar cipher has a small number of combinations. We are
+              working with the telegraphic English alphabet (26 letters), 
+              so it is relatively quickly to find the correct key/shift.
             </div>
           </mat-card-content>
         </mat-card>
@@ -150,13 +151,12 @@
         <mat-card class="col-md-12 info-mat-card">
           <mat-card-header>
             <mat-card-title
-              >Frequencies and Index of coincidence</mat-card-title
+              >Frequencies and the index of coincidence</mat-card-title
             >
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
             <div>
-              First we need to find out the length of key/shift. For this we
-              must understand the frequencies of text and index of coincidence.
+              At first we need to find out a length of key/shift. Due to this we must understand the frequencies of text and index of coincidence.
 
               <p>
                 We calculate <b>the frequency</b> of letters by counting the
@@ -166,13 +166,13 @@
               <p>
                 <b>Index coincidence (IC)</b> is based on the relative
                 frequencies of letters. It reflects the accuracy that two texts
-                (choose randomly) will be the same. With IC we can identify the
+                (choosen randomly) will be the same. With IC we can identify the
                 language of the text.
               </p>
               We compute IC with the equation:
               <h3><ng-katex [equation]="equation"></ng-katex>,</h3>
               <p>
-                where N is the length of text, n<sub>i</sub> is number a
+                where N is the length of text, n<sub>i</sub> is the number a
                 occurrences of letters in the text.
               </p>
             </div>
@@ -256,9 +256,8 @@
             </div>
 
             <h6>
-              For every shift we make difference between frequency of letter
-              from encrypted text and real data for language. Then we sum these
-              differences and the column „sum“ is this result.
+              For every shift we compute difference between frequency of letter from encrypted text and real data for language. 
+              Then we sum these differences and the column “sum” is the result.
             </h6>
             <span
               >Based of minimum frequency for shift, we guess shift in first
@@ -283,16 +282,15 @@
         <mat-card id="compare" class="col-md-12 computed-mat-card">
           <mat-card-header>
             <mat-card-title
-              >Comparsion of language frequencies from the message with real
-              data
+              >Comparsion of the language frequencies from the message with real data
             </mat-card-title>
           </mat-card-header>
           <mat-card-content style="word-wrap: break-word;">
             <p>
-              Based on the minimal frequency we guess that length is
+              Based on the minimal frequency we guess that the length is
               {{ minDisctanceLength }}. When we compare frequencies of letters
               with real data of the English language we can see the similarity.
-              If we compare other shifts with referral values, they are
+              If we compare other shifts with referral values, they will be
               different.
             </p>
 
