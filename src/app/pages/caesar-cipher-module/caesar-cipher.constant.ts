@@ -139,7 +139,7 @@ export const SIDE_MENU = [
 
   },
   {
-    title: "Description of Attack",
+    title: "Description of the Attack",
     active: true,
     id: "attack",
     bottomPosition: 0,
